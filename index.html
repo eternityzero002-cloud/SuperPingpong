@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { user-select: none; -webkit-user-select: none; touch-action: none; box-sizing: border-box; }
+        /* 允許手機端在選單與技能列表內順暢上下滑動 */
+        .touch-scroll, .touch-scroll * {
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch;
+        }
         html, body {
             width: 100vw; height: 100dvh; margin: 0; padding: 0;
             background-color: #03040a; overflow: hidden; overscroll-behavior: none;
@@ -94,8 +99,8 @@
             </div>
         </div>
 
-        <!-- 底部中央：超顯眼獨立「超能力必殺能量槽」與進化大按鈕 -->
-        <div id="bottom-overdrive-hud" class="fixed bottom-3 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-4">
+        <!-- 底部中央：超顯眼獨立「超能力必殺能量槽」、進化大按鈕與常駐灰色一行小字操作說明 -->
+        <div id="bottom-overdrive-hud" class="fixed bottom-2.5 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-3">
             <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
                 <span>⬆️ 能量全滿！點擊或【雙指下滑 / E鍵】進化至</span>
                 <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full text-xs">LV.2</span>
@@ -112,8 +117,9 @@
                 </div>
             </div>
 
-            <div id="controls-onboarding" class="text-[11px] text-slate-200 bg-black/80 px-4 py-1 rounded-full border border-cyan-500/30 transition-opacity duration-700 text-center">
-                💻 <b>電腦</b>：滑鼠全向移動 · 左鍵揮拍旋球 · 右鍵高球 · 空白鍵必殺 · E鍵進化 ｜ 📱 <b>手機</b>：單指全向滑動 · <b>雙指輕點必殺</b> · 雙指上滑高球 · 雙指下滑進化
+            <!-- 常駐灰色一行小字操作說明 -->
+            <div id="controls-onboarding" class="text-[10px] sm:text-xs text-slate-400 bg-slate-950/80 px-3.5 py-0.5 rounded-full border border-slate-700/50 whitespace-nowrap max-w-[96vw] overflow-hidden text-ellipsis text-center">
+                💻 電腦：滑鼠全向移動 · 左鍵揮拍旋球 · 右鍵高球 · 空白鍵必殺 · E鍵進化 ｜ 📱 手機：單指全向滑動 · 雙指輕點必殺 · 雙指上滑高球 · 雙指下滑進化
             </div>
         </div>
 
@@ -165,15 +171,15 @@
             </div>
         </div>
 
-        <!-- 戰前準備選單 -->
-        <div id="setup-modal" class="absolute inset-0 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
+        <!-- 戰前準備選單（已加入 touch-scroll 支援手機順暢上下滑動） -->
+        <div id="setup-modal" class="touch-scroll absolute inset-0 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
             <div class="cyber-panel max-w-5xl w-full rounded-2xl p-3.5 sm:p-5 flex flex-col shadow-[0_0_50px_rgba(0,242,254,0.25)] pointer-events-auto my-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
                     <div>
                         <h1 class="text-xl sm:text-3xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-500">
                             CYBER PONG 2077 : HYPER ARCADE
                         </h1>
-                        <p class="text-slate-300 text-[11px]">街機沉浸視角 · 全向自由球拍 · 24大超能(含⚛️量子躍遷) · 180+種融合神技</p>
+                        <p class="text-slate-300 text-[11px]">街機沉浸視角 · 全向自由球拍 · 24大實質超能特技 · 180+種雙重屬性融合神技</p>
                     </div>
                     <div class="flex bg-slate-900/90 p-1 rounded-xl border border-cyan-500/40">
                         <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500 text-slate-950 transition">🤖 單機 AI</button>
@@ -219,8 +225,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (24 選 1 · 新增【⚛️ 量子躍遷】蟲洞傳送門特技！)</div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[42vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
+                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (24 選 1 · 手機可上下滑動列表)</div>
+                    <div class="touch-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[38vh] sm:max-h-[42vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
                 </div>
 
                 <button onclick="initMatch()" id="btn-start-match" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500 hover:brightness-110 active:scale-98 text-white font-black text-sm sm:text-base cyber-font rounded-xl shadow-[0_0_25px_rgba(0,242,254,0.55)] transition">
@@ -250,7 +256,7 @@
     </div>
 
     <script>
-        // ================= 一、24 大基礎技能（含原創第 24 技能：⚛️ 量子躍遷）與融合矩陣 =================
+        // ================= 一、24 大基礎技能（全實質物理與視覺特技版）與融合矩陣 =================
         const ARCH_STYLE = {
             fire:    { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400' },
             thunder: { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300' },
@@ -279,30 +285,30 @@
         };
 
         const BASE_SKILLS = [
-            { id: 'quantum', name: '⚛️ 量子躍遷', desc: '開啟雙色蟲洞瞬間傳送球路', passiveName: '疊加態', passiveDesc: '擊球+6%能量且相位偏移', arch: 'quantum' },
-            { id: 'fire',    name: '🔥 熾焰重扣', desc: '濃煙烈焰球·留加速火帶', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量', arch: 'fire' },
-            { id: 'thunder', name: '⚡ 雷霆瞬影', desc: '閃電折線瞬移·留麻痺網', passiveName: '疾電', passiveDesc: '球拍移速+10%', arch: 'thunder' },
-            { id: 'gravity', name: '🪐 黑洞重力', desc: '紫色引力漩渦·拉扯對手', passiveName: '引力井', passiveDesc: '甜區半徑+10%', arch: 'gravity' },
-            { id: 'sonic',   name: '💨 音速疾風', desc: '馬赫音爆環·落地二次飆速', passiveName: '疾風', passiveDesc: '揮拍速度+15%', arch: 'sonic' },
-            { id: 'ghost',   name: '🌀 次元幽靈', desc: '3分身螺旋交錯混淆視覺', passiveName: '幻影', passiveDesc: 'AI預判誤差+10%', arch: 'ghost' },
-            { id: 'prism',   name: '🛡️ 稜鏡力場', desc: '張開全息盾牆自動反彈1次', passiveName: '稜鏡', passiveDesc: '破防硬直-50%', arch: 'prism' },
-            { id: 'chrono',  name: '⏳ 時滯領域', desc: '全場降速40%·甜區放大',  passiveName: '時之沙', passiveDesc: '能量獲取+15%', arch: 'chrono' },
-            { id: 'leech',   name: '🩸 熵能汲取', desc: '抽取對手30%能量歸己',   passiveName: '吸取', passiveDesc: '每擊偷取3%能量', arch: 'leech' },
-            { id: 'mirror',  name: '🪞 鏡像複製', desc: '複製敵方技能湊同系超載', passiveName: '鏡映', passiveDesc: '融合威力+10%', arch: 'mirror' },
-            { id: 'laser',   name: '💎 相位雷射', desc: '筆直雷射光束·貼地急衝', passiveName: '精準', passiveDesc: '甜區判定+8%', arch: 'laser' },
-            { id: 'void',    name: '🌑 虛空相位', desc: '週期性隱身閃爍干擾預判', passiveName: '虛無', passiveDesc: 'AI預判誤差+15%', arch: 'void' },
-            { id: 'frost',   name: '❄️ 絕對冰霜', desc: '六角暴雪軌跡·大冰面減速', passiveName: '冰晶', passiveDesc: '冰面減速達-65%', arch: 'frost' },
-            { id: 'toxin',   name: '☠️ 劇毒腐蝕', desc: '生成毒池疊滿中毒麻痺',  passiveName: '毒素', passiveDesc: '毒池+50%·2層麻痺', arch: 'toxin' },
-            { id: 'cyclone', name: '🌪️ 氣旋龍捲', desc: '強制S型大拐彎·旋風甩飛', passiveName: '螺旋', passiveDesc: '旋球曲率+15%', arch: 'cyclone' },
-            { id: 'aqua',    name: '🌊 潮汐水能', desc: '激流下沉水花·水窪減速', passiveName: '潮汐', passiveDesc: '水窪範圍+30%', arch: 'aqua' },
-            { id: 'nova',    name: '💫 新星爆發', desc: '全屏衝擊波·落地二次爆炸', passiveName: '星核', passiveDesc: '擊球球速+10%', arch: 'nova' },
-            { id: 'web',     name: '🕸️ 相位蛛網', desc: '落點生成蛛網黏住0.8秒', passiveName: '黏絲', passiveDesc: '蛛網持續+50%', arch: 'web' },
-            { id: 'oracle',  name: '🔮 預言棱鏡', desc: '預示空檔·圈內甜區×1.5', passiveName: '預見', passiveDesc: '滿能標示對手空檔', arch: 'oracle' },
-            { id: 'gambler', name: '🎲 命運賭徒', desc: '押注能量使下次融合LV+1', passiveName: '豪賭', passiveDesc: '對拉>5拍能量+50%', arch: 'gambler' },
-            { id: 'twin',    name: '👥 雙子分身', desc: '召喚AI分身球拍自動協防', passiveName: '雙生', passiveDesc: '分身擋球+25%能量', arch: 'twin' },
-            { id: 'rewind',  name: '⏪ 時光倒流', desc: '漏球前定格時間回溯重打', passiveName: '回檔', passiveDesc: '每局免費1次回溯', arch: 'rewind' },
-            { id: 'thief',   name: '🔮 技能竊取', desc: '竊取對手被動(最多疊3個)', passiveName: '妙手', passiveDesc: '每3擊自動偷被動', arch: 'thief' },
-            { id: 'yinyang', name: '🌗 陰陽切換', desc: '切換陰(大甜區)/陽(強破防)', passiveName: '共濟', passiveDesc: '連切3次下球必Tier3', arch: 'yinyang' }
+            { id: 'quantum', name: '⚛️ 量子躍遷', desc: '開啟雙色蟲洞瞬間傳送球路至死角', passiveName: '疊加態', passiveDesc: '擊球+6%能量且相位偏移', arch: 'quantum' },
+            { id: 'fire',    name: '🔥 熾焰重扣', desc: '落地炸出火柱加速1.4倍並震退對手', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量', arch: 'fire' },
+            { id: 'thunder', name: '⚡ 雷霆瞬影', desc: '空中固定3次Z字閃電折躍+落雷麻痺', passiveName: '疾電', passiveDesc: '球拍移速+12%', arch: 'thunder' },
+            { id: 'gravity', name: '🪐 黑洞重力', desc: '黑洞強吸對手球拍+落地零彈跳貼地滾', passiveName: '引力井', passiveDesc: '甜區半徑+12%', arch: 'gravity' },
+            { id: 'sonic',   name: '💨 音速疾風', desc: '過網炸開音爆環·球速翻倍銳角變向', passiveName: '疾風', passiveDesc: '揮拍速度+15%', arch: 'sonic' },
+            { id: 'ghost',   name: '🌀 次元幽靈', desc: '分裂4顆實體球與落點·落地前真假互換', passiveName: '幻影', passiveDesc: 'AI預判誤差+15%', arch: 'ghost' },
+            { id: 'prism',   name: '🛡️ 稜鏡力場', desc: '張開全息盾牆自動攔截並必殺反彈', passiveName: '稜鏡', passiveDesc: '破防硬直-50%', arch: 'prism' },
+            { id: 'chrono',  name: '⏳ 時滯領域', desc: '空中定格0.2秒打亂節奏+敵方慢動作', passiveName: '時之沙', passiveDesc: '能量獲取+15%', arch: 'chrono' },
+            { id: 'leech',   name: '🩸 熵能汲取', desc: '射出猩紅鎖鏈狂抽敵方35%能量歸己', passiveName: '吸取', passiveDesc: '每擊偷取4%能量', arch: 'leech' },
+            { id: 'mirror',  name: '🪞 鏡像複製', desc: '網前展開魔鏡·折射左右對稱雙球齊發', passiveName: '鏡映', passiveDesc: '融合威力+15%', arch: 'mirror' },
+            { id: 'laser',   name: '💎 相位雷射', desc: '紅外線瞄準鎖定·3倍極速直線光束貫穿', passiveName: '精準', passiveDesc: '甜區判定+10%', arch: 'laser' },
+            { id: 'void',    name: '🌑 虛空相位', desc: '過網後球與落點完全隱形·拍前突襲現形', passiveName: '虛無', passiveDesc: 'AI預判誤差+18%', arch: 'void' },
+            { id: 'frost',   name: '❄️ 絕對冰霜', desc: '凍結路面打滑失控+立起3根冰柱折射球', passiveName: '冰晶', passiveDesc: '冰面減速達-65%', arch: 'frost' },
+            { id: 'toxin',   name: '☠️ 劇毒腐蝕', desc: '三連毒沼噴發·中毒使敵方走位左右顛倒', passiveName: '毒素', passiveDesc: '毒池+50%·2層顛倒', arch: 'toxin' },
+            { id: 'cyclone', name: '🌪️ 氣旋龍捲', desc: '空中狂暴S型蛇行+龍捲風吹飛敵方球拍', passiveName: '螺旋', passiveDesc: '旋球曲率+20%', arch: 'cyclone' },
+            { id: 'aqua',    name: '🌊 潮汐水能', desc: '激流急墜壓低彈跳+深海巨浪減速60%', passiveName: '潮汐', passiveDesc: '水窪範圍+35%', arch: 'aqua' },
+            { id: 'nova',    name: '💫 新星爆發', desc: '化為2.4倍太陽球·落地三連核爆震開對手', passiveName: '星核', passiveDesc: '擊球球速+12%', arch: 'nova' },
+            { id: 'web',     name: '🕸️ 相位蛛網', desc: '落地蛛絲黏球瞬間急停+綁死對手0.9秒', passiveName: '黏絲', passiveDesc: '蛛網持續+50%', arch: 'web' },
+            { id: 'oracle',  name: '🔮 預言棱鏡', desc: '天眼鎖定死角·彈跳後自動拐彎避開敵拍', passiveName: '預見', passiveDesc: '滿能標示對手空檔', arch: 'oracle' },
+            { id: 'gambler', name: '🎲 命運賭徒', desc: '頭頂擲出3D骰子·擲出6點返還100%滿能量', passiveName: '豪賭', passiveDesc: '對拉>5拍能量+50%', arch: 'gambler' },
+            { id: 'twin',    name: '👥 雙子分身', desc: '召喚AI全息分身球拍自動協防救球', passiveName: '雙生', passiveDesc: '分身擋球+25%能量', arch: 'twin' },
+            { id: 'rewind',  name: '⏪ 時光倒流', desc: '飛抵敵拍前瞬間倒帶回球網並改射空檔', passiveName: '回檔', passiveDesc: '每局免費1次漏球回溯', arch: 'rewind' },
+            { id: 'thief',   name: '🔮 技能竊取', desc: '射出怪盜飛牌奪取敵方技能與能量並二階反擊', passiveName: '妙手', passiveDesc: '每3擊自動偷被動', arch: 'thief' },
+            { id: 'yinyang', name: '🌗 陰陽切換', desc: '展開太極陣·陰之型磁吸球路/陽之型強破防', passiveName: '共濟', passiveDesc: '連切3次下球必Tier3', arch: 'yinyang' }
         ];
 
         const SKILL_META = {};
@@ -609,6 +615,15 @@
         let twinClone = { active: false, x: 0, y: 42, z: 410, timer: 0, cooldown: 0, orbX: null };
         let rewindState = { active: false, timer: 0, freeUsed: false };
         let quantumPortal = { active: false, inX: 0, outX: 0, timer: 0, teleported: false };
+        // 新增：實質技能視覺狀態器（吸血鎖鏈、魔鏡牆、雷射光束、3D賭徒骰子、太極八卦陣、冰晶柱）
+        let skillVisuals = {
+            leechBeam: null,      // { fromX, fromZ, toX, toZ, timer }
+            mirrorWallTimer: 0,   // 網前次元魔鏡
+            laserBeam: null,      // { x1, y1, z1, x2, y2, z2, timer, color }
+            diceRoll: null,       // { val: 6, timer: 0, x: 0, y: 0, z: 0 }
+            taijiTimer: 0,        // 太極八卦陣顯示計時
+            icePillars: []        // [{ x, z, r, timer }]
+        };
 
         function hasPassive(id) {
             return cfgSkill === id || stolenPassives.includes(id);
@@ -656,7 +671,7 @@
             }
             if (stage === 'cast') {
                 return {
-                    fusionPowerMult: hasPassive('mirror') ? 1.12 : 1.0
+                    fusionPowerMult: hasPassive('mirror') ? 1.15 : 1.0
                 };
             }
             return {};
@@ -890,7 +905,6 @@
         const ctx = canvas.getContext('2d');
         const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
         let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
-        // 截圖黃金沉浸參數：拉近相機距離 (z: 660)、降低俯視高度 (y: 220)、提高地平線 (horiz: 0.25)
         const CAM = { z: 660, y: 220, horiz: 0.25, focal: 540 };
 
         function resizeCanvas() {
@@ -903,20 +917,17 @@
 
             const isPortrait = viewH > viewW;
             if (isPortrait) {
-                // 手機豎屏：精準計算焦距，使球桌近端 (z=370) 寬度永遠佔螢幕寬度 90%，絕不撐爆或過遠
                 CAM.z = 680;
                 CAM.y = 265;
                 CAM.horiz = 0.28;
-                const rZNear = CAM.z - T_L; // 310
+                const rZNear = CAM.z - T_L;
                 CAM.focal = (viewW * 0.90 / (T_W * 2)) * rZNear;
             } else if (viewW < 960) {
-                // 手機橫屏 / 平板
                 CAM.z = 660;
                 CAM.y = 215;
                 CAM.horiz = 0.23;
                 CAM.focal = Math.min(viewW * 0.44, viewH * 0.68);
             } else {
-                // 電腦端：100% 對齊目標截圖的近景沉浸比例
                 CAM.z = 660;
                 CAM.y = 220;
                 CAM.horiz = 0.25;
@@ -928,7 +939,6 @@
 
         function project(x, y, z) {
             const rZ = Math.max(90, CAM.z - z);
-            // 移除原本破壞透視的 Math.min(1.15) 硬鎖，還原真實近大遠小沉浸感
             const scale = CAM.focal / rZ;
             return {
                 x: viewW * 0.5 + x * scale,
@@ -943,7 +953,7 @@
             normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
             hard:   { name: 'NEURAL INSANE', speed: 16.8, flightFrames: 29, spread: 0.86, saveRate: 0.86, clashRate: 0.85, learnRate: 1.0 }
         };
-        const AI_SKILL_POOL = ['fire', 'thunder', 'gravity', 'sonic', 'ghost', 'leech', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova', 'web', 'quantum'];
+        const AI_SKILL_POOL = ['fire', 'thunder', 'gravity', 'sonic', 'ghost', 'leech', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova', 'web', 'quantum', 'chrono', 'mirror', 'oracle', 'gambler', 'rewind'];
         let aiTactic = 'attack';
 
         const aiMemory = {
@@ -993,13 +1003,13 @@
         const pPaddle = {
             x: 0, y: 42, z: 385, rx: 44, ry: 44, vx: 0, vy: 0, vz: 0, tilt: 0,
             swingTimer: 0, swingMax: 0.30, hasHitThisSwing: false,
-            stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0,
+            stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, reverseTimer: 0, iceSlideVx: 0,
             inStrikeZone: false, wantLob: false, prechargedSkill: null
         };
 
         const aPaddle = {
             x: 0, y: 42, z: -415, rx: 42, ry: 42, tilt: 0,
-            swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0
+            swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, reverseTimer: 0, iceSlideVx: 0
         };
 
         const ball = {
@@ -1010,14 +1020,31 @@
             targetX: 0, targetZ: 0, showLandingRing: false, fakeRingOffsetX: 0,
             state: null, secondaryArch: null, tier: 0, voidTimer: 0, cycloneWave: false, trail: [],
             ghostOffsets: [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
+            ghostSwapped: false,
+            thunderZigs: 0,
+            sonicBoomDone: false,
+            chronoFreezeTimer: 0,
+            chronoFrozenDone: false,
+            rewindTrickArm: false,
+            rewindTrickDone: false,
+            oracleHoming: false,
+            gamblerOutcome: 0,
+            mirrorTwin: null,
             lightningBolts: [], orbitalAngle: 0
         };
 
         let particles = [], shockwaves = [], lightPillars = [], speedLines = [], shatterShards = [];
 
+        // 檢查當前球是否帶有某元素屬性（支援單技能與雙元素融合技同時生效）
+        function hasBallArch(targetArch) {
+            if (!ball.state) return false;
+            const m = SKILL_META[ball.state];
+            return (m && m.arch === targetArch) || ball.secondaryArch === targetArch;
+        }
+
         // ================= 100% 必過網、必上台且絕不卡桌的拋物線引擎 =================
         function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false) {
-            const frames = Math.max(14, isLob ? 52 : flightFrames);
+            const frames = Math.max(13, isLob ? 52 : flightFrames);
             const safeX = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, targetX));
             const safeZ = targetZ < 0 ? Math.max(-T_L * 0.88, Math.min(-125, targetZ)) : Math.min(T_L * 0.88, Math.max(125, targetZ));
 
@@ -1026,6 +1053,10 @@
             ball.lob = isLob;
             ball.bounceCountOnSide = 0;
             ball.flightTimer = 0;
+            ball.ghostSwapped = false;
+            ball.sonicBoomDone = false;
+            ball.chronoFrozenDone = false;
+            ball.chronoFreezeTimer = 0;
 
             const effG = (isLob ? -0.48 : -0.42) + ball.ay;
             ball.vx = (safeX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
@@ -1037,7 +1068,7 @@
             const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
             if (framesToNet > 0 && framesToNet < frames) {
                 const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
-                const minClear = isLob ? NET_H + 85 : NET_H + 18;
+                const minClear = isLob ? NET_H + 85 : (hasBallArch('laser') ? NET_H + 8 : NET_H + 18);
                 if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
             }
 
@@ -1045,7 +1076,7 @@
             ball.targetZ = safeZ;
             ball.bouncedOnTarget = false;
             ball.showLandingRing = true;
-            ball.fakeRingOffsetX = (ball.state && ball.spinType === 'dead') ? 55 : 0;
+            ball.fakeRingOffsetX = (ball.state && (ball.spinType === 'dead' || hasBallArch('ghost'))) ? 65 : 0;
         }
 
         // ================= 電腦左鍵揮拍 + 手機全螢幕單指/雙指手勢系統 =================
@@ -1090,7 +1121,7 @@
         window.addEventListener('touchstart', e => {
             if (!gameRunning || isPaused) return;
             const t = e.target;
-            if (t && (t.tagName === 'BUTTON' || (t.closest && t.closest('button')))) return;
+            if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('.touch-scroll'))))) return;
             isTouchMode = true;
             sfx.init();
 
@@ -1131,6 +1162,8 @@
 
         window.addEventListener('touchmove', e => {
             if (!gameRunning || isPaused) return;
+            const t = e.target;
+            if (t && t.closest && t.closest('.touch-scroll')) return;
 
             if (e.touches.length >= 2 && twoFingerStart && !twoFingerStart.handled) {
                 const t0 = e.touches[0], t1 = e.touches[1];
@@ -1295,11 +1328,18 @@
 
             if (cfgSkill === 'twin') {
                 twinClone.active = true;
-                twinClone.timer = 3.5;
+                twinClone.timer = 4.5;
                 twinClone.cooldown = 0;
-                twinClone.x = -pPaddle.x * 0.5;
+                twinClone.x = -pPaddle.x * 0.6;
             }
-            if (cfgSkill === 'thief') stealOpponentPassive(aiMemory.lastAiSkill || 'fire');
+            if (cfgSkill === 'thief') {
+                const stolen = aiMemory.lastAiSkill || 'fire';
+                stealOpponentPassive(stolen);
+                const drain = Math.min(mana.a, 35);
+                mana.a -= drain;
+                mana.p = Math.min(100, mana.p + drain);
+                skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.75, color: '#a855f7' };
+            }
             if (cfgSkill === 'yinyang') toggleYinYangForm();
 
             updateHUD();
@@ -1321,12 +1361,13 @@
         function toggleYinYangForm() {
             yinYangMode = yinYangMode === 'yin' ? 'yang' : 'yin';
             yinYangSwitches++;
+            skillVisuals.taijiTimer = 2.6;
             if (yinYangSwitches >= 3) {
                 yinYangSwitches = 0;
                 forceNextTier3 = true;
                 triggerAnimeCutIn('center', '☯️ 陰陽共濟！太極覺醒', '下一球強制升階 Tier 3 終極神技！', '#f97316');
             } else {
-                showSideToast('left', yinYangMode === 'yin' ? '🌑 陰之型 (大甜區)' : '☀️ 陽之型 (強破防)', '形態切換', 'text-white');
+                showSideToast('left', yinYangMode === 'yin' ? '🌑 陰之型 (磁吸球路+大甜區)' : '☀️ 陽之型 (烈陽強破防震飛)', '太極形態切換', 'text-white');
             }
             updateContextBarUI();
         }
@@ -1337,7 +1378,7 @@
                 if (stolenPassives.length >= 3) stolenPassives.shift();
                 stolenPassives.push(targetSkillId);
             }
-            showSideToast('left', `🔮 竊取【${SKILL_META[targetSkillId].passiveName}】`, SKILL_META[targetSkillId].passiveDesc, 'text-purple-300');
+            showSideToast('left', `🔮 竊取【${SKILL_META[targetSkillId].passiveName}】+35%能量`, SKILL_META[targetSkillId].passiveDesc, 'text-purple-300');
             updateContextBarUI();
         }
 
@@ -1345,10 +1386,10 @@
             const bar = document.getElementById('hud-context-bar');
             if (cfgSkill === 'yinyang') {
                 bar.classList.remove('hidden');
-                bar.innerText = yinYangMode === 'yin' ? '🌑 陰：甜區+40% 能量+30%' : '☀️ 陽：球速+25% 破防+50%';
+                bar.innerText = yinYangMode === 'yin' ? '🌑 陰：磁吸來球·甜區+40%' : '☀️ 陽：球速+25%·強破防震飛';
             } else if (cfgSkill === 'gambler' && gamblerBet > 0) {
                 bar.classList.remove('hidden');
-                bar.innerText = `🎲 已押注 ${gamblerBet}%：下次融合必中空檔`;
+                bar.innerText = `🎲 已押注 ${gamblerBet}%：下次擊球擲出命運骰子`;
             } else if (stolenPassives.length > 0) {
                 bar.classList.remove('hidden');
                 bar.innerText = `🔮 已偷：${stolenPassives.map(id => SKILL_META[id]?.passiveName).join('/')}`;
@@ -1363,7 +1404,6 @@
             const pMod = applyPassive(cfgSkill, 'paddle');
             const bMod = applyPassive(cfgSkill, 'bounce');
 
-            // 根據滑鼠/觸控的垂直位置，動態映射球拍的前後縱深 Z (可自由前壓至球網前 z=145 或退後至底線後 z=445)
             const netScreenY = project(0, 0, 0).y;
             const nearScreenY = project(0, 0, T_L).y;
             const normScreenY = Math.max(-0.15, Math.min(1.25, (mouse.y - netScreenY) / Math.max(80, nearScreenY - netScreenY)));
@@ -1386,47 +1426,62 @@
             }
 
             let fieldSlow = 1.0;
+            let onIceField = false;
             let inOracleCircle = false;
             lingeringFields.forEach(f => {
                 if (f.z > 0 && Math.hypot(pPaddle.x - f.x, pPaddle.z - f.z) < f.r * 1.25) {
-                    if (f.type === 'gravity') pPaddle.x += (f.x - pPaddle.x) * 0.065;
-                    if (f.type === 'cyclone') pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 7.5;
-                    if (f.type === 'frost') fieldSlow = bMod.frostSlowMult;
-                    if (f.type === 'aqua') fieldSlow = 0.45;
+                    if (f.type === 'gravity') pPaddle.x += (f.x - pPaddle.x) * 0.085;
+                    if (f.type === 'cyclone') pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 9.5;
+                    if (f.type === 'frost') { fieldSlow = bMod.frostSlowMult; onIceField = true; }
+                    if (f.type === 'aqua') fieldSlow = 0.40;
                     if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.55;
                     if (f.type === 'web' && !f.triggered) {
                         f.triggered = true;
-                        pPaddle.webRootTimer = 0.65;
-                        showSideToast('right', '🕸️ 蛛網束縛!', '短暫定身 0.65 秒', 'text-slate-300');
+                        pPaddle.webRootTimer = 0.85;
+                        showSideToast('right', '🕸️ 蛛網束縛!', '被蛛絲綁定 0.85 秒', 'text-slate-300');
                     }
                     if (f.type === 'nova' && !f.triggered) {
                         f.triggered = true;
-                        pPaddle.stunTimer = 0.35;
+                        pPaddle.stunTimer = 0.45;
+                        pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 75;
                     }
                     if (f.type === 'oracle') inOracleCircle = true;
                     if (f.type === 'toxin') {
-                        pPaddle.poisonStacks += dt * 1.3;
+                        pPaddle.poisonStacks += dt * 1.6;
                         if (pPaddle.poisonStacks >= bMod.toxinStackReq) {
                             pPaddle.poisonStacks = 0;
-                            pPaddle.stunTimer = 0.85;
+                            pPaddle.reverseTimer = 1.2;
                             vibrate([80, 30, 80]);
-                            showSideToast('right', '☠️ 劇毒麻痺!', '移速降低', 'text-lime-400');
+                            showSideToast('right', '☠️ 神經劇毒發作!', '短暫走位方向顛倒', 'text-lime-400');
                         }
                     }
                 }
             });
 
+            if (pPaddle.reverseTimer > 0) pPaddle.reverseTimer -= dt;
+
             const followRate = Math.min(0.95, (pPaddle.stunTimer > 0 ? 0.25 : 0.88) * pMod.moveSpeedMult * fieldSlow);
             const nextZ = pPaddle.z + (targetZ - pPaddle.z) * followRate;
 
-            // 在當前球拍 Z 平面反解 X 與 Y，確保球拍在螢幕上 100% 跟隨滑鼠/手指自由移動
             const pRef = project(0, pPaddle.y, nextZ);
             const scale = pRef.scale || 1;
-            const worldX = (mouse.x - viewW * 0.5) / scale;
+            let rawWorldX = (mouse.x - viewW * 0.5) / scale;
+            if (pPaddle.reverseTimer > 0) rawWorldX = -rawWorldX;
             const worldY = CAM.y - (mouse.y - viewH * CAM.horiz) / scale;
 
-            const nextX = pPaddle.x + (worldX - pPaddle.x) * followRate;
+            let nextX = pPaddle.x + (rawWorldX - pPaddle.x) * followRate;
+            if (onIceField) {
+                pPaddle.iceSlideVx = pPaddle.iceSlideVx * 0.92 + (rawWorldX - pPaddle.x) * 0.12;
+                nextX = pPaddle.x + pPaddle.iceSlideVx;
+            } else {
+                pPaddle.iceSlideVx = 0;
+            }
             const nextY = pPaddle.y + (worldY - pPaddle.y) * followRate;
+
+            // 陰陽切換【陰之型】：磁吸飛向玩家的球
+            if (cfgSkill === 'yinyang' && yinYangMode === 'yin' && ball.vz > 0 && ball.z > 120) {
+                ball.x += (pPaddle.x - ball.x) * 0.055;
+            }
 
             pPaddle.vx = (nextX - pPaddle.x) / Math.max(0.01, dt * 60);
             pPaddle.vy = (nextY - pPaddle.y) / Math.max(0.01, dt * 60);
@@ -1478,7 +1533,7 @@
             }
         }
 
-        // ================= 玩家回球、滑動品質判定、技能聯動與量子躍遷 =================
+        // ================= 玩家回球、24 大技能實質特技觸發與雙元素融合 =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
@@ -1511,32 +1566,43 @@
                         triggerAnimeCutIn('left', `超能聯動！${pairInfo.name}`, '雙技能配對共鳴觸發！', '#fde047');
                         if (pairInfo.effect === 'nextPower') resonancePowerBoost = true;
                         if (pairInfo.effect === 'fastFlight') resonanceFastFlight = true;
-                        if (pairInfo.effect === 'instantMana') mana.p = Math.min(100, mana.p + 20);
-                        if (pairInfo.effect === 'autoClone') prismShield.player = 2.2;
-                        if (pairInfo.effect === 'freezeAi') aPaddle.stunTimer = 1.2;
+                        if (pairInfo.effect === 'instantMana') mana.p = Math.min(100, mana.p + 25);
+                        if (pairInfo.effect === 'autoClone') prismShield.player = 2.6;
+                        if (pairInfo.effect === 'freezeAi') aPaddle.stunTimer = 1.3;
                         if (pairInfo.effect === 'ignoreAiPred') ignoreNextAiPred = true;
-                        if (pairInfo.effect === 'globalIce') lingeringFields.push({ x: 0, z: -220, r: 190, type: 'frost', timer: 1.5, color: '#38bdf8' });
+                        if (pairInfo.effect === 'globalIce') lingeringFields.push({ x: 0, z: -220, r: 195, type: 'frost', timer: 2.2, color: '#38bdf8' });
                         if (pairInfo.effect === 'superBreak') resonancePowerBoost = true;
-                        if (pairInfo.effect === 'poisonWeb') aPaddle.poisonStacks = 2;
-                        if (pairInfo.effect === 'oracleCopy') { oracleVisionTimer = 3.0; activeSkill = aiMemory.lastAiSkill || activeSkill; }
+                        if (pairInfo.effect === 'poisonWeb') { aPaddle.poisonStacks = 2; aPaddle.webRootTimer = 0.7; }
+                        if (pairInfo.effect === 'oracleCopy') { oracleVisionTimer = 3.5; activeSkill = aiMemory.lastAiSkill || activeSkill; }
                         if (pairInfo.effect === 'drain40') { const d = Math.min(mana.a, 40); mana.a -= d; mana.p = Math.min(100, mana.p + d); }
-                        if (pairInfo.effect === 'doubleBoom') shake = 28;
-                        if (pairInfo.effect === 'oracleTime') { chronoTimer = 1.8; oracleVisionTimer = 3.0; }
+                        if (pairInfo.effect === 'doubleBoom') shake = 30;
+                        if (pairInfo.effect === 'oracleTime') { chronoTimer = 2.2; oracleVisionTimer = 3.5; }
                         if (pairInfo.effect === 'forceTier3') forceNextTier3 = true;
-                        if (pairInfo.effect === 'fakeRings') ball.fakeRingOffsetX = 85;
-                        if (pairInfo.effect === 'vortexPull') lingeringFields.push({ x: 0, z: -250, r: 95, type: 'gravity', timer: 2.5, color: '#9333ea' });
+                        if (pairInfo.effect === 'fakeRings') ball.fakeRingOffsetX = 95;
+                        if (pairInfo.effect === 'vortexPull') lingeringFields.push({ x: 0, z: -250, r: 110, type: 'gravity', timer: 2.8, color: '#9333ea' });
                     }
                 }
                 lastPlayerCastSkill = activeSkill;
             }
 
-            if (activeSkill === 'mirror') activeSkill = ball.state || aiMemory.lastAiSkill || 'fire';
+            // 鏡像與怪盜主動特技：複製敵方技能並升階
+            let usedMirrorSkill = false;
+            if (activeSkill === 'mirror') {
+                usedMirrorSkill = true;
+                skillVisuals.mirrorWallTimer = 2.2;
+                activeSkill = ball.state || aiMemory.lastAiSkill || 'laser';
+            } else if (activeSkill === 'thief') {
+                const stolen = ball.state || aiMemory.lastAiSkill || 'fire';
+                const fSteal = getFusedSkill(stolen, 'thief', 'topspin');
+                activeSkill = fSteal.id;
+                forceNextTier3 = true;
+            }
 
             const swipeSpeed = Math.hypot(pPaddle.vx, pPaddle.vy, pPaddle.vz * 0.4);
             const hasActiveSwipe = !isTouchMode || swipeSpeed >= 2.0;
             const dist = Math.hypot(ball.x - pPaddle.x, (ball.y - Math.max(25, pPaddle.y)) * 0.75);
             const sweetThreshold = (chronoTimer > 0 ? 74 : 58) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1);
-            const isSweetSpot = guaranteedPerfect || (hasActiveSwipe && dist <= sweetThreshold);
+            const isSweetSpot = guaranteedPerfect || (pPaddle.oracleBoost > 1) || (hasActiveSwipe && dist <= sweetThreshold);
             guaranteedPerfect = false;
             if (isSweetSpot) vibrate(20);
 
@@ -1606,7 +1672,7 @@
                     screenFlashAlpha = 0.82;
                     resonanceActive = true;
 
-                    triggerAnimeCutIn('center', `次元突破！${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}超能融合神技降臨！`, fMeta.color);
+                    triggerAnimeCutIn('center', `次元突破！${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}雙重屬性超能融合降臨！`, fMeta.color);
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 12, maxR: 260, color: fMeta.color, alpha: 1.0 });
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 30, maxR: 180, color: '#ffffff', alpha: 1.0 });
                     lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 50, alpha: 1.0 });
@@ -1634,22 +1700,28 @@
                     sfx.fusionClash();
                     triggerAnimeCutIn('center', `極限超載！${fRes.displayName}`, '同系連擊 3 次觸發終極形態！', SKILL_META[nextSkillState].color);
                 } else {
-                    sfx.skillCast(SKILL_META[activeSkill].arch);
-                    triggerAnimeCutIn('left', `領域展開！${SKILL_META[activeSkill].name.slice(3)}`, `LV.${skillLevel} 超能釋放 · 威力 ×${LV_MULT[skillLevel - 1]}`, SKILL_META[activeSkill].color);
+                    const sm = SKILL_META[activeSkill] || SKILL_META[cfgSkill];
+                    sfx.skillCast(sm.arch);
+                    triggerAnimeCutIn('left', `領域展開！${sm.name.slice(3)}`, `LV.${skillLevel} 超能釋放 · 威力 ×${LV_MULT[skillLevel - 1]}`, sm.color);
                 }
 
-                screenFlashColor = SKILL_META[activeSkill].color;
+                const sm = SKILL_META[nextSkillState] || SKILL_META[cfgSkill];
+                screenFlashColor = sm.color;
                 screenFlashAlpha = 0.52;
                 shake = 22;
                 if (skillLevel >= 4) aPaddle.stunTimer += 0.3;
 
-                if (activeSkill === 'prism') prismShield.player = 2.8 * LV_MULT[skillLevel - 1];
-                else if (activeSkill === 'chrono') chronoTimer = 1.8 * LV_MULT[skillLevel - 1];
-                else if (activeSkill === 'oracle') oracleVisionTimer = 3.2;
-                else if (activeSkill === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 230, color: '#fbbf24', alpha: 1.0 });
+                if (activeSkill === 'prism') prismShield.player = 3.2 * LV_MULT[skillLevel - 1];
+                else if (activeSkill === 'chrono') chronoTimer = 2.4 * LV_MULT[skillLevel - 1];
+                else if (activeSkill === 'oracle') {
+                    oracleVisionTimer = 3.6;
+                    lingeringFields.push({ x: pPaddle.x, z: pPaddle.z - 20, r: 65, type: 'oracle', timer: 3.5, color: '#ec4899' });
+                }
+                else if (activeSkill === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 250, color: '#fbbf24', alpha: 1.0 });
                 else if (activeSkill === 'leech') {
-                    const st = Math.min(mana.a, 32 * LV_MULT[skillLevel - 1]);
+                    const st = Math.min(mana.a, 35 * LV_MULT[skillLevel - 1]);
                     mana.a -= st; mana.p = Math.min(100, mana.p + st);
+                    skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.85, color: '#f43f5e' };
                 }
                 hitStopTimer = 0.055;
             }
@@ -1662,54 +1734,108 @@
             ball.spinY = spinAccY;
             ball.lastHitBy = 'player';
             ball.cycloneWave = false;
+            ball.thunderZigs = 0;
+            ball.rewindTrickArm = false;
+            ball.rewindTrickDone = false;
+            ball.oracleHoming = false;
+            ball.gamblerOutcome = 0;
+            ball.mirrorTwin = null;
             rallyCount++;
-
-            const arch = SKILL_META[ball.state]?.arch;
-            if (arch === 'laser' || arch === 'web') {
-                spinAccX = 0; spinAccY = 0; ball.spinX = 0;
-            } else if (arch === 'sonic') {
-                spinAccX = (spinAccX >= 0 ? 1 : -1) * 0.35;
-                ball.spinX = spinAccX;
-            } else if (arch === 'cyclone') {
-                ball.cycloneWave = true;
-            } else if (arch === 'aqua') {
-                spinAccY = -0.18;
-            } else if (arch === 'void') {
-                ball.voidTimer = 1.6;
-            }
 
             let aimX = (ball.x - pPaddle.x) * 1.25 + pPaddle.vx * 8.8 + pPaddle.x * 0.35;
             let targetX = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, aimX));
-            if (gamblerBet > 0) {
+            let targetZ = spinType === 'dead' ? -150 : -265;
+            let flightFrames = isSweetSpot ? 27 : (hasActiveSwipe ? 31 : 37);
+
+            // --- 24 大技能實質物理特技初始化 ---
+            if (hasBallArch('laser')) {
+                spinAccX = 0; spinAccY = 0; ball.spinX = 0;
                 targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
+                skillVisuals.laserBeam = { x1: ball.x, y1: ball.y, z1: ball.z, x2: targetX, y2: 0, z2: targetZ, timer: 0.65, color: '#00f2fe' };
+            }
+            if (hasBallArch('web')) {
+                spinAccX = 0; spinAccY = 0; ball.spinX = 0;
+            }
+            if (hasBallArch('sonic')) {
+                spinAccX = (spinAccX >= 0 ? 1 : -1) * 0.36;
+                ball.spinX = spinAccX;
+            }
+            if (hasBallArch('cyclone')) {
+                ball.cycloneWave = true;
+            }
+            if (hasBallArch('aqua')) {
+                spinAccY = -0.22;
+            }
+            if (hasBallArch('void')) {
+                ball.voidTimer = 1.8;
+            }
+            if (hasBallArch('thunder')) {
+                ball.thunderZigs = ball.tier >= 2 ? 4 : 3;
+            }
+            if (hasBallArch('rewind')) {
+                ball.rewindTrickArm = true;
+                ball.rewindTrickDone = false;
+            }
+            if (hasBallArch('oracle')) {
+                targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
+                ball.oracleHoming = true;
+                oracleVisionTimer = 3.5;
+            }
+            if (hasBallArch('mirror') || usedMirrorSkill) {
+                skillVisuals.mirrorWallTimer = 2.0;
+                ball.mirrorTwin = { x: -ball.x, y: ball.y, z: ball.z };
+            }
+            if (hasBallArch('leech')) {
+                const st = Math.min(mana.a, 30);
+                mana.a -= st; mana.p = Math.min(100, mana.p + st);
+                skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.85, color: '#f43f5e' };
+            }
+            if (hasBallArch('yinyang')) {
+                skillVisuals.taijiTimer = 2.5;
+                if (yinYangMode === 'yang') aPaddle.knockbackZ = -65;
+            }
+            if (hasBallArch('gambler') || gamblerBet > 0) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                skillVisuals.diceRoll = { val: roll, timer: 1.5 };
+                ball.gamblerOutcome = roll;
                 gamblerBet = 0;
                 updateContextBarUI();
+                if (roll === 6) {
+                    mana.p = 100;
+                    ball.tier = 3;
+                    targetX = aPaddle.x > 0 ? -T_W * 0.80 : T_W * 0.80;
+                    triggerAnimeCutIn('center', '🎰 777 JACKPOT! 皇家大滿貫', '擲出 6 點極限大獎！能量 100% 全額返還！', '#fde047');
+                } else if (roll >= 3) {
+                    mana.p = Math.min(100, mana.p + 50);
+                    targetX = aPaddle.x > 0 ? -T_W * 0.76 : T_W * 0.76;
+                    showSideToast('left', `🎲 擲出 ${roll} 點！【豪賭重砲】`, '球速飆升 + 返還 50% 能量', 'text-amber-300');
+                } else {
+                    showSideToast('left', `🎲 擲出 ${roll} 點！【詐唬詭球】`, '落地急停變速騙招！', 'text-amber-200');
+                }
             }
-
-            if (arch === 'quantum') {
+            if (hasBallArch('quantum')) {
                 quantumPortal.active = true;
                 quantumPortal.inX = ball.x * 0.4;
-                quantumPortal.outX = aPaddle.x > 0 ? -T_W * 0.72 : T_W * 0.72;
-                quantumPortal.timer = 2.0;
+                quantumPortal.outX = aPaddle.x > 0 ? -T_W * 0.74 : T_W * 0.74;
+                quantumPortal.timer = 2.2;
                 quantumPortal.teleported = false;
                 targetX = quantumPortal.outX;
             }
 
-            let targetZ = spinType === 'dead' ? -150 : -265;
-            let flightFrames = isSweetSpot ? 27 : (hasActiveSwipe ? 31 : 37);
             aiMemory.recordPlayerShot(targetX);
 
             const lvSpeedFactor = skillLevel >= 2 ? 0.90 : 1.0;
-            if (ball.tier >= 2) flightFrames = Math.round(18 * lvSpeedFactor * rMod.flightFrameMult / cMod.fusionPowerMult);
-            else if (ball.state) flightFrames = Math.round((ball.state === 'frost' ? 25 : 21) * lvSpeedFactor * rMod.flightFrameMult);
+            if (hasBallArch('laser')) flightFrames = 14;
+            else if (ball.tier >= 2) flightFrames = Math.round(18 * lvSpeedFactor * rMod.flightFrameMult / cMod.fusionPowerMult);
+            else if (ball.state) flightFrames = Math.round((hasBallArch('frost') ? 24 : 20) * lvSpeedFactor * rMod.flightFrameMult);
             else flightFrames = Math.round(flightFrames * rMod.flightFrameMult);
 
-            if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.8); resonanceFastFlight = false; }
+            if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.78); resonanceFastFlight = false; }
 
             if (ball.state) {
                 const m = SKILL_META[ball.state] || SKILL_META.fire;
                 spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 55 : 35, 9);
-                if (m.arch === 'thunder' || m.arch === 'laser' || ball.secondaryArch === 'thunder') {
+                if (hasBallArch('thunder') || hasBallArch('laser')) {
                     createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.glow);
                 }
                 spawnSpeedLines(m.color);
@@ -1758,41 +1884,58 @@
 
             const prof = AI_PROFILES[cfgDiff];
             const aiMod = applyPassive(cfgSkill, 'ai');
-            const timeScale = chronoTimer > 0 ? 0.58 : 1.0;
+            const timeScale = chronoTimer > 0 ? 0.35 : 1.0;
 
             if (aPaddle.stunTimer > 0) aPaddle.stunTimer -= dt;
+            if (aPaddle.reverseTimer > 0) aPaddle.reverseTimer -= dt;
             if (aPaddle.webRootTimer > 0) { aPaddle.webRootTimer -= dt; return; }
             if (aPaddle.knockbackZ < 0) aPaddle.knockbackZ = Math.min(0, aPaddle.knockbackZ + dt * 110);
 
             if (ball.vz < 0) {
                 let desiredX = ball.x + ball.vx * 8 + aiMemory.predictedX * 0.25 * aiMod.aiErrorMult;
-                const arch = SKILL_META[ball.state]?.arch;
 
-                if (arch === 'ghost' || arch === 'void' || arch === 'cyclone' || arch === 'quantum' || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
-                    const confuse = (cfgDiff === 'hard' ? 0.38 : 0.78) * aiMod.aiErrorMult;
-                    desiredX += Math.sin(ball.z * 0.055) * 95 * confuse;
+                if (hasBallArch('ghost') || hasBallArch('void') || hasBallArch('cyclone') || hasBallArch('quantum') || hasBallArch('mirror') || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
+                    const confuse = (cfgDiff === 'hard' ? 0.42 : 0.82) * aiMod.aiErrorMult;
+                    desiredX += Math.sin(ball.z * 0.055) * 105 * confuse;
                 }
 
                 let fieldSlow = 1.0;
+                let onIce = false;
                 lingeringFields.forEach(f => {
-                    if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.35) {
-                        if (f.type === 'gravity') desiredX = desiredX * 0.35 + f.x * 0.65;
-                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 9.0;
-                        if (f.type === 'frost') fieldSlow = 0.42;
-                        if (f.type === 'aqua') fieldSlow = 0.40;
+                    if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.4) {
+                        if (f.type === 'gravity') desiredX = f.x;
+                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 11.0;
+                        if (f.type === 'frost') { fieldSlow = 0.38; onIce = true; }
+                        if (f.type === 'aqua') fieldSlow = 0.38;
                         if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.48;
-                        if (f.type === 'web' && !f.triggered) { f.triggered = true; aPaddle.webRootTimer = 0.8; }
-                        if (f.type === 'nova' && !f.triggered) { f.triggered = true; aPaddle.stunTimer = 0.4; }
+                        if (f.type === 'web' && !f.triggered) { f.triggered = true; aPaddle.webRootTimer = 0.90; }
+                        if (f.type === 'nova' && !f.triggered) {
+                            f.triggered = true;
+                            aPaddle.stunTimer = 0.5;
+                            aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 85;
+                        }
                         if (f.type === 'toxin') {
-                            aPaddle.poisonStacks += dt * 1.4;
-                            if (aPaddle.poisonStacks >= 2.5) { aPaddle.poisonStacks = 0; aPaddle.stunTimer = 1.0; }
+                            aPaddle.poisonStacks += dt * 1.8;
+                            if (aPaddle.poisonStacks >= 2.0) {
+                                aPaddle.poisonStacks = 0;
+                                aPaddle.reverseTimer = 1.1;
+                                mana.a = Math.max(0, mana.a - 15);
+                            }
                         }
                     }
                 });
 
+                if (aPaddle.reverseTimer > 0) desiredX = -desiredX;
+
                 const dx = desiredX - aPaddle.x;
-                const moveStep = prof.speed * (aPaddle.stunTimer > 0 ? 0.38 : 1.0) * fieldSlow * timeScale;
-                aPaddle.x += Math.sign(dx) * Math.min(Math.abs(dx), moveStep);
+                const moveStep = prof.speed * (aPaddle.stunTimer > 0 ? 0.25 : 1.0) * fieldSlow * timeScale;
+                if (onIce) {
+                    aPaddle.iceSlideVx = aPaddle.iceSlideVx * 0.92 + Math.sign(dx) * moveStep * 0.18;
+                    aPaddle.x += aPaddle.iceSlideVx;
+                } else {
+                    aPaddle.iceSlideVx = 0;
+                    aPaddle.x += Math.sign(dx) * Math.min(Math.abs(dx), moveStep);
+                }
                 aPaddle.y += (Math.max(20, ball.y) - aPaddle.y) * 0.25;
                 aPaddle.tilt = Math.max(-0.38, Math.min(0.38, -dx * 0.015));
 
@@ -1800,11 +1943,11 @@
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
                     let reach = aPaddle.rx * (cfgDiff === 'hard' ? 2.45 : 1.85);
 
-                    const breakBonus = LV_BREAK[skillLevel - 1] + (arch === 'nova' ? 0.40 : 0) + (resonancePowerBoost ? 0.50 : 0) + (cfgSkill === 'yinyang' && yinYangMode === 'yang' ? 0.50 : 0);
+                    const breakBonus = LV_BREAK[skillLevel - 1] + (hasBallArch('nova') ? 0.42 : 0) + (resonancePowerBoost ? 0.50 : 0) + (cfgSkill === 'yinyang' && yinYangMode === 'yang' ? 0.50 : 0);
                     resonancePowerBoost = false;
                     ignoreNextAiPred = false;
 
-                    if (aPaddle.stunTimer > 0 || aPaddle.knockbackZ < -15) reach *= 0.42;
+                    if (aPaddle.stunTimer > 0 || aPaddle.knockbackZ < -15) reach *= 0.38;
                     if (ball.tier >= 1 && Math.random() > Math.max(0.12, prof.saveRate - breakBonus)) {
                         reach *= 0.22;
                     }
@@ -1824,6 +1967,9 @@
             ball.lastHitBy = 'ai';
             aPaddle.swingTimer = 0.25;
             ball.cycloneWave = false;
+            ball.oracleHoming = false;
+            ball.rewindTrickArm = false;
+            ball.mirrorTwin = null;
             rallyCount++;
 
             const incomingSkill = ball.state;
@@ -1860,14 +2006,17 @@
                 const sMeta = SKILL_META[aiNextSkill];
                 sfx.skillCast(sMeta.arch);
                 shake = 16;
-                if (aiNextSkill === 'leech') mana.p = Math.max(0, mana.p - 25);
+                if (aiNextSkill === 'leech') {
+                    mana.p = Math.max(0, mana.p - 28);
+                    skillVisuals.leechBeam = { fromX: pPaddle.x, fromZ: pPaddle.z, toX: aPaddle.x, toZ: aPaddle.z, timer: 0.75, color: '#f43f5e' };
+                }
                 if (aiNextSkill === 'void') ball.voidTimer = 1.6;
                 if (aiNextSkill === 'cyclone') ball.cycloneWave = true;
+                if (aiNextSkill === 'thunder') ball.thunderZigs = 3;
                 triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '雙指輕點可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
             } else {
-                const arch = SKILL_META[incomingSkill]?.arch;
-                if (arch === 'fire') aPaddle.knockbackZ = -48;
-                if (arch === 'thunder') aPaddle.stunTimer = 0.95;
+                if (hasBallArch('fire')) aPaddle.knockbackZ = -58;
+                if (hasBallArch('thunder')) aPaddle.stunTimer = 0.90;
                 sfx.hit(false, 'flat');
                 spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 16, 4.5);
             }
@@ -1917,8 +2066,22 @@
             rewindState.active = false;
         }
 
-        // ================= 物理步進、量子躍遷傳送與防卡桌死循環保護 =================
+        // ================= 物理步進、24 技能空中實質特技與防卡桌保護 =================
         function stepBallPhysics(simSpeed, dt = 0.016) {
+            // ⏳ 時滯領域：過網瞬間空中時間定格 0.18 秒
+            if (ball.chronoFreezeTimer > 0) {
+                ball.chronoFreezeTimer -= dt;
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 1, 2);
+                return;
+            }
+            if ((hasBallArch('chrono') || chronoTimer > 1.2) && !ball.chronoFrozenDone && Math.abs(ball.z) < 22) {
+                ball.chronoFrozenDone = true;
+                ball.chronoFreezeTimer = 0.18;
+                sfx.skillCast('chrono');
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 120, color: '#fde047', alpha: 1.0 });
+                return;
+            }
+
             ball.flightTimer += dt;
             if (Math.abs(ball.vz) < 6.8) {
                 ball.vz = Math.sign(ball.vz || -1) * 6.8;
@@ -1927,12 +2090,67 @@
             ball.vx += ball.ax * simSpeed;
             ball.x += ball.vx * simSpeed;
             if (ball.cycloneWave && !ball.bouncedOnTarget) {
-                ball.x += Math.cos(ball.z * 0.038) * 4.2 * simSpeed;
+                ball.x += Math.cos(ball.z * 0.042) * 5.2 * simSpeed;
             }
             ball.y += ball.vy * simSpeed;
             ball.z += ball.vz * simSpeed;
             ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * simSpeed;
 
+            // 🪞 鏡像對稱分身球同步推進
+            if (ball.mirrorTwin) {
+                ball.mirrorTwin.x = -ball.x;
+                ball.mirrorTwin.y = ball.y;
+                ball.mirrorTwin.z = ball.z;
+            }
+
+            // 💨 音速疾風：過網瞬間炸開馬赫音爆雲環 + 球速翻倍銳角變向
+            if (hasBallArch('sonic') && !ball.sonicBoomDone && Math.abs(ball.z) <= 22) {
+                ball.sonicBoomDone = true;
+                sfx.skillCast('sonic');
+                shockwaves.push({ x: ball.x, y: ball.y, z: 0, r: 12, maxR: 145, color: '#10b981', alpha: 1.0 });
+                ball.vz *= 1.38;
+                const sharpTurn = (ball.x > 0 ? -1 : 1) * 4.2;
+                ball.vx += sharpTurn;
+                ball.targetX = Math.max(-T_W * 0.84, Math.min(T_W * 0.84, ball.targetX + sharpTurn * 10));
+            }
+
+            // ⏪ 時光倒流（主動技）：飛抵敵拍前瞬間倒帶回球網並改射另一側死角
+            if (ball.rewindTrickArm && !ball.rewindTrickDone && ball.vz < 0 && ball.z <= -195) {
+                ball.rewindTrickDone = true;
+                sfx.skillCast('chrono');
+                createLightningChain(ball.x, ball.y, ball.z, 0, 68, -15, '#3b82f6');
+                ball.x = 0;
+                ball.y = 68;
+                ball.z = -15;
+                const openCorner = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
+                launchBall3DSpin(openCorner, -275, 17, (openCorner > 0 ? 0.25 : -0.25), -0.12, false);
+                showSideToast('left', '⏪ 時空倒帶奇襲！', '球路回溯改射死角', 'text-blue-300');
+                return;
+            }
+
+            // 🌀 次元幽靈：落地前真球與分身互換位置
+            if (hasBallArch('ghost') && !ball.ghostSwapped && !ball.bouncedOnTarget && ball.y <= 24 && Math.abs(ball.z) > 120) {
+                ball.ghostSwapped = true;
+                const pick = ball.ghostOffsets[Math.floor(Math.random() * 3)];
+                if (pick) {
+                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 22, 6);
+                    ball.x = Math.max(-T_W * 0.84, Math.min(T_W * 0.84, ball.x + pick.x * 0.85));
+                    ball.targetX = ball.x;
+                    spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 22, 6);
+                }
+            }
+
+            // ❄️ 冰晶柱碰撞折射
+            skillVisuals.icePillars.forEach(pil => {
+                if (!pil.hit && Math.hypot(ball.x - pil.x, ball.z - pil.z) < pil.r + 18 && ball.y < 55) {
+                    pil.hit = true;
+                    sfx.skillCast('frost');
+                    spawnParticles(pil.x, 20, pil.z, '#38bdf8', 25, 7, 'hex');
+                    ball.vx = (ball.x > 0 ? -1 : 1) * 5.8;
+                }
+            });
+
+            // ⚛️ 量子躍遷蟲洞傳送
             if (quantumPortal.active && !quantumPortal.teleported && ball.vz < 0 && ball.z <= 25) {
                 quantumPortal.teleported = true;
                 sfx.skillCast('quantum');
@@ -1942,6 +2160,13 @@
                 ball.vx = 0;
                 spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 35, 9);
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#f59e0b', alpha: 1.0 });
+            }
+
+            // 🔮 預言棱鏡：彈跳後自動拐彎避開敵方球拍
+            if (ball.oracleHoming && ball.bouncedOnTarget && ball.vz < 0) {
+                const awayDir = Math.sign(ball.x - aPaddle.x || 1);
+                ball.vx += awayDir * 0.32 * simSpeed;
+                ball.x = Math.max(-T_W * 0.90, Math.min(T_W * 0.90, ball.x));
             }
 
             const onTableX = Math.abs(ball.x) <= T_W + 30;
@@ -1967,11 +2192,29 @@
                 quantumPortal.timer -= rawDt;
                 if (quantumPortal.timer <= 0) quantumPortal.active = false;
             }
+            if (skillVisuals.mirrorWallTimer > 0) skillVisuals.mirrorWallTimer -= rawDt;
+            if (skillVisuals.taijiTimer > 0) skillVisuals.taijiTimer -= rawDt;
+            if (skillVisuals.leechBeam) {
+                skillVisuals.leechBeam.timer -= rawDt;
+                if (skillVisuals.leechBeam.timer <= 0) skillVisuals.leechBeam = null;
+            }
+            if (skillVisuals.laserBeam) {
+                skillVisuals.laserBeam.timer -= rawDt;
+                if (skillVisuals.laserBeam.timer <= 0) skillVisuals.laserBeam = null;
+            }
+            if (skillVisuals.diceRoll) {
+                skillVisuals.diceRoll.timer -= rawDt;
+                if (skillVisuals.diceRoll.timer <= 0) skillVisuals.diceRoll = null;
+            }
+            for (let i = skillVisuals.icePillars.length - 1; i >= 0; i--) {
+                skillVisuals.icePillars[i].timer -= rawDt;
+                if (skillVisuals.icePillars[i].timer <= 0) skillVisuals.icePillars.splice(i, 1);
+            }
 
             if (twinClone.active) {
                 twinClone.timer -= rawDt;
                 if (twinClone.cooldown > 0) twinClone.cooldown -= rawDt;
-                twinClone.x += (ball.x - twinClone.x) * 0.22;
+                twinClone.x += (ball.x - twinClone.x) * 0.25;
                 if (twinClone.timer <= 0) {
                     twinClone.active = false;
                     twinClone.orbX = twinClone.x;
@@ -1989,7 +2232,7 @@
                 }
             }
 
-            const simSpeed = chronoTimer > 0 ? 0.60 : 1.0;
+            const simSpeed = chronoTimer > 0 ? 0.55 : 1.0;
 
             if (gameRunning && !isPaused) {
                 updatePlayerPaddle(rawDt);
@@ -2013,8 +2256,8 @@
                         triggerRewindRestore();
                     }
 
-                    if (twinClone.active && twinClone.cooldown <= 0 && ball.vz > 0 && ball.z >= 365 && ball.z <= 430 && Math.abs(ball.x - twinClone.x) < 75 && Math.abs(ball.x - pPaddle.x) > 65) {
-                        twinClone.cooldown = 1.5;
+                    if (twinClone.active && twinClone.cooldown <= 0 && ball.vz > 0 && ball.z >= 340 && ball.z <= 440 && Math.abs(ball.x - twinClone.x) < 85 && Math.abs(ball.x - pPaddle.x) > 65) {
+                        twinClone.cooldown = 1.2;
                         twinClone.active = false;
                         twinClone.orbX = twinClone.x;
                         mana.p = Math.min(100, mana.p + 25);
@@ -2024,7 +2267,7 @@
                         executePlayerReturn(false);
                     }
 
-                    if (prismShield.player > 0 && ball.vz > 0 && ball.z >= 365 && ball.z <= 430) {
+                    if (prismShield.player > 0 && ball.vz > 0 && ball.z >= 355 && ball.z <= 435) {
                         prismShield.player = 0;
                         sfx.fusionClash();
                         triggerAnimeCutIn('left', '🛡️ 稜鏡反射！PRISM REFLECT', '全息盾牆自動反彈必殺！', '#22d3ee');
@@ -2033,10 +2276,10 @@
 
                     lingeringFields.forEach(f => {
                         if (Math.hypot(ball.x - f.x, ball.z - f.z) < f.r) {
-                            if (f.type === 'fire') ball.vz *= 1.015;
+                            if (f.type === 'fire') ball.vz *= 1.02;
                             if (f.type === 'frost') ball.vz *= 0.94;
-                            if (f.type === 'aqua') ball.vz *= 0.92;
-                            if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.4;
+                            if (f.type === 'aqua') ball.vz *= 0.91;
+                            if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.55;
                         }
                     });
 
@@ -2064,33 +2307,41 @@
         function updateActiveSkillFlight(dt) {
             if (!ball.state) return;
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
-            const arch = meta.arch;
 
-            if (arch === 'fire' || ball.secondaryArch === 'fire') {
+            if (hasBallArch('fire')) {
                 spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'circle');
             }
-            if (arch === 'frost' || ball.secondaryArch === 'frost') {
+            if (hasBallArch('frost')) {
                 spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
             }
-            if (arch === 'gravity' || arch === 'void') {
-                if (Math.random() < 0.4) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 42, maxR: 6, color: '#a855f7', alpha: 0.85 });
+            if (hasBallArch('gravity') || hasBallArch('void')) {
+                if (Math.random() < 0.45) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 44, maxR: 6, color: '#a855f7', alpha: 0.85 });
                 }
             }
-            if (arch === 'ghost') {
-                const w = Math.sin(ball.z * 0.045) * (ball.tier >= 2 ? 68 : 48);
+            if (hasBallArch('ghost')) {
+                const w = Math.sin(ball.z * 0.045) * (ball.tier >= 2 ? 78 : 58);
                 ball.ghostOffsets[0] = { x: w, y: Math.cos(ball.z * 0.05) * 16 };
                 ball.ghostOffsets[1] = { x: -w, y: -Math.cos(ball.z * 0.05) * 16 };
-                ball.ghostOffsets[2] = { x: Math.cos(ball.z * 0.04) * 58, y: Math.sin(ball.z * 0.05) * 18 };
+                ball.ghostOffsets[2] = { x: Math.cos(ball.z * 0.04) * 66, y: Math.sin(ball.z * 0.05) * 18 };
             }
-            if ((arch === 'thunder' || ball.secondaryArch === 'thunder') && gameMode === 'ai' && Math.random() < (ball.tier >= 2 ? 0.48 : 0.32)) {
-                const oldX = ball.x;
-                const shift = (Math.random() - 0.5) * (ball.tier >= 2 ? 52 : 34);
-                ball.x = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + shift));
-                createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 2, '#facc15');
+            // ⚡ 雷霆瞬影：保證觸發 3~4 次超明顯的 Z 字直角閃電折躍
+            if (hasBallArch('thunder') && gameMode === 'ai' && ball.thunderZigs > 0 && !ball.bouncedOnTarget) {
+                const zigZones = [120, 0, -110, -200];
+                const nextZone = zigZones[3 - ball.thunderZigs] ?? 0;
+                if ((ball.vz < 0 && ball.z <= nextZone) || (ball.vz > 0 && ball.z >= -nextZone)) {
+                    ball.thunderZigs--;
+                    const oldX = ball.x;
+                    const shift = (ball.x > 0 ? -1 : 1) * (65 + Math.random() * 45);
+                    ball.x = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + shift));
+                    ball.targetX = ball.x;
+                    sfx.skillCast('thunder');
+                    createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 1.5, '#facc15');
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 6, maxR: 55, color: '#facc15', alpha: 0.9 });
+                }
             }
-            if (arch === 'sonic' || arch === 'cyclone' || arch === 'quantum' || ball.tier === 3) {
-                if (Math.random() < 0.4) {
+            if (hasBallArch('sonic') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.tier === 3) {
+                if (Math.random() < 0.42) {
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 85 : 54, color: meta.color, alpha: 0.85 });
                 }
             }
@@ -2102,6 +2353,7 @@
             ball.bouncedOnTarget = true;
             ball.bounceCountOnSide++;
             ball.showLandingRing = false;
+            ball.mirrorTwin = null;
 
             ball.vx += ball.ax * 8.5;
             ball.ax = 0; ball.ay = 0;
@@ -2127,53 +2379,110 @@
 
             if (ball.state) {
                 const meta = SKILL_META[ball.state] || SKILL_META.fire;
-                const arch = meta.arch;
                 const lvRadMult = LV_RADIUS[skillLevel - 1];
-                let fieldR = (ball.tier >= 2 ? 72 : 52) * lvRadMult;
+                let fieldR = (ball.tier >= 2 ? 76 : 56) * lvRadMult;
 
                 sfx.bounce(true);
                 shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.6, color: meta.color, alpha: 0.95, isFlat: true });
-                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 42 : 24, 8, arch === 'frost' ? 'hex' : 'circle');
+                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 45 : 26, 8, hasBallArch('frost') ? 'hex' : 'circle');
 
                 if (ball.tier >= 2) {
-                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 42, alpha: 1.0 });
+                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 44, alpha: 1.0 });
                     shake = ball.tier === 3 ? 24 : 16;
                 } else {
                     shake = 10;
                 }
 
-                const spawnField = (type, r, timer, color) => {
-                    lingeringFields.push({ x: ball.x, z: ball.z, r, type, timer, color });
-                    if (skillLevel >= 3 && ball.lastHitBy === 'player') {
-                        lingeringFields.push({ x: -ball.x * 0.6, z: ball.z * 0.85, r: r * 0.5, type, timer: timer * 0.8, color });
-                    }
+                const spawnField = (type, r, timer, color, customX = ball.x, customZ = ball.z) => {
+                    lingeringFields.push({ x: customX, z: customZ, r, type, timer, color });
                 };
 
-                if (arch === 'gravity') { ball.vy *= 0.55; spawnField('gravity', fieldR, 2.2, '#9333ea'); }
-                else if (arch === 'fire') { ball.vz *= 1.15; spawnField('fire', fieldR, 2.2, '#ff3b00'); }
-                else if (arch === 'thunder') {
-                    if (ball.state === 'sky_thunder') createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
-                    spawnField('thunder', fieldR, 2.2, '#facc15');
+                // --- 落地瞬間各屬性實質物理效果（融合技可同時觸發雙屬性！） ---
+                if (hasBallArch('gravity')) {
+                    // 🪐 黑洞重力：落地幾乎零彈跳（貼地滑行滾球）+ 強引力黑洞
+                    ball.vy = 1.1;
+                    ball.vz *= 1.25;
+                    spawnField('gravity', fieldR * 1.2, 2.6, '#9333ea');
                 }
-                else if (arch === 'sonic') { ball.vz *= 1.26; }
-                else if (arch === 'laser') { ball.vy *= 0.5; ball.vz *= 1.3; spawnField('laser', 40 * lvRadMult, 1.4, '#00f2fe'); }
-                else if (arch === 'frost') { spawnField('frost', 85 * lvRadMult, 2.4, '#38bdf8'); }
-                else if (arch === 'toxin') { spawnField('toxin', 65 * lvRadMult, 3.0 * bMod.toxinDurMult, '#84cc16'); }
-                else if (arch === 'cyclone') { spawnField('cyclone', 68 * lvRadMult, 2.5, '#8b5cf6'); }
-                else if (arch === 'aqua') { ball.vz *= 0.90; spawnField('aqua', 90 * lvRadMult * bMod.aquaRadMult, 3.0, '#0ea5e9'); }
-                else if (arch === 'web') { spawnField('web', 75 * lvRadMult, 3.5 * bMod.webDurMult, '#cbd5e1'); }
-                else if (arch === 'nova') {
-                    spawnField('nova', 60 * lvRadMult, 1.5, '#f59e0b');
+                if (hasBallArch('fire')) {
+                    // 🔥 熾焰重扣：沖天火柱 + 球速二次暴增 1.38 倍
+                    ball.vz *= 1.38;
+                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ff3b00', r: 38, alpha: 1.0 });
+                    spawnField('fire', fieldR, 2.4, '#ff3b00');
+                }
+                if (hasBallArch('thunder')) {
+                    // ⚡ 雷霆瞬影：天降落雷 + 麻痺電網
+                    createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
+                    spawnField('thunder', fieldR, 2.4, '#facc15');
+                    if (ball.z < 0 && Math.abs(aPaddle.x - ball.x) < 110) aPaddle.stunTimer = 0.75;
+                    if (ball.z > 0 && Math.abs(pPaddle.x - ball.x) < 110) pPaddle.stunTimer = 0.65;
+                }
+                if (hasBallArch('sonic')) {
+                    ball.vz *= 1.32;
+                }
+                if (hasBallArch('laser')) {
+                    ball.vy = 1.6;
+                    ball.vz *= 1.35;
+                    spawnField('laser', 42 * lvRadMult, 1.5, '#00f2fe');
+                }
+                if (hasBallArch('frost')) {
+                    // ❄️ 絕對冰霜：冰封路面 + 升起 3 根立體冰晶柱
+                    spawnField('frost', 95 * lvRadMult, 2.8, '#38bdf8');
+                    skillVisuals.icePillars = [
+                        { x: ball.x - 55, z: ball.z * 0.7, r: 18, timer: 2.8, hit: false },
+                        { x: ball.x,      z: ball.z * 0.85, r: 20, timer: 2.8, hit: false },
+                        { x: ball.x + 55, z: ball.z * 0.7, r: 18, timer: 2.8, hit: false }
+                    ];
+                }
+                if (hasBallArch('toxin')) {
+                    // ☠️ 劇毒腐蝕：三連毒沼同時噴發
+                    [-65, 0, 65].forEach(ox => {
+                        spawnField('toxin', 52 * lvRadMult, 3.2 * bMod.toxinDurMult, '#84cc16', Math.max(-T_W * 0.8, Math.min(T_W * 0.8, ball.x + ox)), ball.z);
+                    });
+                }
+                if (hasBallArch('cyclone')) {
+                    spawnField('cyclone', 76 * lvRadMult, 2.6, '#8b5cf6');
+                }
+                if (hasBallArch('aqua')) {
+                    ball.vy *= 0.52;
+                    ball.vz *= 0.88;
+                    spawnField('aqua', 96 * lvRadMult * bMod.aquaRadMult, 3.2, '#0ea5e9');
+                }
+                if (hasBallArch('web')) {
+                    // 🕸️ 相位蛛網：落地瞬間黏球急停 + 綁定對手
+                    ball.vx *= 0.18;
+                    ball.vz *= 0.48;
+                    ball.vy = 2.4;
+                    spawnField('web', 82 * lvRadMult, 3.5 * bMod.webDurMult, '#cbd5e1');
+                    if (ball.z < 0) aPaddle.webRootTimer = 0.85;
+                    else pPaddle.webRootTimer = 0.75;
+                }
+                if (hasBallArch('nova')) {
+                    // 💫 新星爆發：三連環超新星爆炸 + 強行震開球拍
+                    spawnField('nova', 72 * lvRadMult, 1.8, '#f59e0b');
+                    if (ball.z < 0) aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 85;
                     const bx = ball.x, bz = ball.z;
-                    setTimeout(() => {
-                        sfx.bounce(true);
-                        shockwaves.push({ x: bx, y: 2, z: bz, r: 10, maxR: 140, color: '#fde047', alpha: 1.0, isFlat: true });
-                    }, 180);
+                    [160, 320].forEach((delay, idx) => {
+                        setTimeout(() => {
+                            sfx.bounce(true);
+                            shockwaves.push({ x: bx, y: 2, z: bz, r: 12, maxR: 155 + idx * 45, color: '#fde047', alpha: 1.0, isFlat: true });
+                            lightPillars.push({ x: bx + (idx === 0 ? -40 : 40), z: bz, color: '#f59e0b', r: 30, alpha: 0.9 });
+                        }, delay);
+                    });
                 }
-                else if (arch === 'oracle' || arch === 'quantum') { spawnField('oracle', 55 * lvRadMult, 3.0, meta.color); }
-                else if (arch === 'void') { ball.voidTimer = 1.6; }
+                if (hasBallArch('oracle') || hasBallArch('quantum')) {
+                    spawnField('oracle', 58 * lvRadMult, 3.0, meta.color);
+                }
+                if (hasBallArch('gambler') && ball.gamblerOutcome > 0 && ball.gamblerOutcome <= 2) {
+                    // 🎲 賭徒 1~2 點：落地詐唬急停
+                    ball.vz *= 0.50;
+                    ball.vy = 2.6;
+                }
+                if (hasBallArch('void')) {
+                    ball.voidTimer = 1.6;
+                }
 
-                while (lingeringFields.length > 6) lingeringFields.shift();
+                while (lingeringFields.length > 8) lingeringFields.shift();
             } else {
                 sfx.bounce(false);
                 shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 5, maxR: 38, color: '#00f2fe', alpha: 0.75, isFlat: true });
@@ -2185,6 +2494,7 @@
             if (roundWaitTimer > 0) return;
             roundWaitTimer = 1;
             ball.showLandingRing = false;
+            ball.mirrorTwin = null;
             resonanceActive = false;
 
             const playerMissed = (ball.z > 0);
@@ -2242,6 +2552,7 @@
             rewindState.freeUsed = false;
             mana = { p: 100, a: 40 };
             lingeringFields = [];
+            skillVisuals.icePillars = [];
             prismShield = { player: 0, ai: 0 };
 
             document.getElementById('score-player').innerText = '0';
@@ -2270,6 +2581,7 @@
             ball.state = null; ball.secondaryArch = null; ball.tier = 0; ball.spinType = 'flat';
             ball.spinX = 0; ball.spinY = 0; ball.ax = 0; ball.ay = 0;
             ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false;
+            ball.mirrorTwin = null; ball.oracleHoming = false; ball.rewindTrickArm = false;
             ball.bounceCountOnSide = 0; ball.flightTimer = 0;
             ball.trail = [];
             updateRoundHUD();
@@ -2322,7 +2634,7 @@
             }
         }
 
-        // ================= 特效、量子蟲洞與 Tier 2/3 符文球體渲染 =================
+        // ================= 特效、24 技能專屬視覺場景與符文球體渲染 =================
         function spawnParticles(x, y, z, color, count, speedScale = 5, shape = 'circle') {
             for (let i = 0; i < count; i++) {
                 const ang = Math.random() * Math.PI * 2;
@@ -2402,6 +2714,7 @@
             drawTableLegs3D();
             drawTableSurface3D();
             drawNet3D();
+            drawSpecialSkillConstructs3D();
             drawQuantumPortals3D();
             drawPrismShieldWall();
             drawBallShadow3D();
@@ -2429,7 +2742,6 @@
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, hy, viewW, viewH - hy);
 
-            // 1:1 還原截圖中的縱橫透視地板網格
             ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.14)' : 'rgba(0, 242, 254, 0.08)';
             ctx.lineWidth = 1;
             for (let x = -1200; x <= 1200; x += 120) {
@@ -2469,14 +2781,12 @@
             ctx.beginPath(); ctx.moveTo(sNL.x, sNL.y); ctx.lineTo(sNR.x, sNR.y); ctx.lineTo(sFR.x, sFR.y); ctx.lineTo(sFL.x, sFL.y); ctx.closePath();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.55)'; ctx.fill();
 
-            // 遠端桌腳
             [[-legX, farZ], [legX, farZ]].forEach(([lx, lz]) => {
                 const top = project(lx, -15, lz), bot = project(lx, FLOOR_Y, lz);
                 ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.lineTo(bot.x, bot.y);
                 ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(14, 10 * top.scale); ctx.stroke();
             });
 
-            // 近端立體桌腳與橫樑、斜撐桿（1:1 還原截圖結構）
             const nLTop = project(-legX, -18, nearZ), nLBot = project(-legX, FLOOR_Y, nearZ);
             const nRTop = project(legX, -18, nearZ), nRBot = project(legX, FLOOR_Y, nearZ);
             const barL = project(-legX, FLOOR_Y * 0.55, nearZ), barR = project(legX, FLOOR_Y * 0.55, nearZ);
@@ -2524,47 +2834,185 @@
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pNRB.x, pNRB.y); ctx.lineTo(pNLB.x, pNLB.y); ctx.closePath();
             ctx.fillStyle = '#09152e'; ctx.fill(); ctx.strokeStyle = '#00f2fe'; ctx.lineWidth = 1.5; ctx.stroke();
 
+            // ⏳ 時滯領域：桌面巨型金色時鐘結界
+            if (chronoTimer > 0) {
+                const pc = project(0, 1, 0);
+                const rx = Math.min(95, 110 * pc.scale);
+                ctx.save(); ctx.translate(pc.x, pc.y);
+                ctx.beginPath(); ctx.ellipse(0, 0, rx, rx * 0.45, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5; ctx.stroke();
+                const ang = performance.now() * 0.006;
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(ang) * rx * 0.8, Math.sin(ang) * rx * 0.35);
+                ctx.moveTo(0, 0); ctx.lineTo(Math.cos(ang * 0.2) * rx * 0.5, Math.sin(ang * 0.2) * rx * 0.22);
+                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3; ctx.stroke();
+                ctx.restore();
+            }
+
+            // 🌗 陰陽太極八卦陣
+            if (skillVisuals.taijiTimer > 0 || cfgSkill === 'yinyang') {
+                const pt = project(0, 1, 160);
+                const rx = Math.min(68, 75 * pt.scale);
+                ctx.save(); ctx.translate(pt.x, pt.y);
+                ctx.globalAlpha = skillVisuals.taijiTimer > 0 ? 0.65 : 0.25;
+                ctx.beginPath(); ctx.ellipse(0, 0, rx, rx * 0.45, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = yinYangMode === 'yin' ? '#38bdf8' : '#f97316';
+                ctx.lineWidth = 3; ctx.setLineDash([12, 6]); ctx.stroke();
+                ctx.restore();
+            }
+
+            // 場地殘留領域（黑洞漩渦、八角蛛網、劇毒酸池、火海、冰面）
             lingeringFields.forEach(f => {
                 const pf = project(f.x, 1, f.z);
                 if (pf.vis) {
-                    const rx = Math.min(62, f.r * pf.scale), ry = rx * 0.45;
+                    const rx = Math.min(64, f.r * pf.scale), ry = rx * 0.45;
                     ctx.save(); ctx.translate(pf.x, pf.y);
                     ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
                     ctx.fillStyle = f.color; ctx.globalAlpha = 0.35; ctx.fill();
-                    ctx.strokeStyle = f.color; ctx.globalAlpha = 0.9;
-                    ctx.lineWidth = 2.5; ctx.setLineDash([8, 6]); ctx.stroke();
+                    ctx.strokeStyle = f.color; ctx.globalAlpha = 0.95;
+                    ctx.lineWidth = 2.5;
+                    if (f.type === 'web') {
+                        ctx.stroke();
+                        for (let k = 0; k < 4; k++) {
+                            const a = (k * Math.PI) / 4;
+                            ctx.beginPath();
+                            ctx.moveTo(-Math.cos(a) * rx, -Math.sin(a) * ry);
+                            ctx.lineTo(Math.cos(a) * rx, Math.sin(a) * ry);
+                            ctx.stroke();
+                        }
+                    } else {
+                        ctx.setLineDash([8, 6]); ctx.stroke();
+                    }
                     ctx.restore();
                 }
             });
 
+            // 🔮 預言天眼準星
             if ((hasPassive('oracle') && mana.p >= 100) || oracleVisionTimer > 0) {
-                const openX = aPaddle.x > 0 ? -T_W * 0.62 : T_W * 0.62;
+                const openX = aPaddle.x > 0 ? -T_W * 0.65 : T_W * 0.65;
                 const pO = project(openX, 1, -270);
                 if (pO.vis) {
                     const rx = Math.min(36, 32 * pO.scale);
                     ctx.save();
                     ctx.beginPath(); ctx.ellipse(pO.x, pO.y, rx, rx * 0.5, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.setLineDash([6, 4]);
-                    ctx.stroke(); ctx.restore();
+                    ctx.strokeStyle = '#ec4899'; ctx.lineWidth = 3; ctx.setLineDash([6, 4]);
+                    ctx.stroke();
+                    ctx.beginPath(); ctx.arc(pO.x, pO.y, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fbcfe8'; ctx.fill();
+                    ctx.restore();
                 }
             }
 
-            if (ball.showLandingRing) {
-                const dispX = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.targetX + ball.fakeRingOffsetX));
-                const pTarget = project(dispX, 0, ball.targetZ);
-                if (pTarget.vis) {
-                    const sMeta = ball.state ? SKILL_META[ball.state] : null;
-                    const ringColor = sMeta ? sMeta.color : (ball.vz < 0 ? '#fbbf24' : '#00f2fe');
-                    const pulse = 0.78 + 0.22 * Math.sin(performance.now() * 0.018);
-                    const ringR = Math.min(36, 26 * pTarget.scale * pulse);
+            // 落點預警光圈（🌑 虛空球在過網隱形期間連落點圈也一併隱藏；🌀 幽靈球與 🪞 鏡像球顯示多重落點圈！）
+            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            if (ball.showLandingRing && !isVoidHidden) {
+                const sMeta = ball.state ? SKILL_META[ball.state] : null;
+                const ringColor = sMeta ? sMeta.color : (ball.vz < 0 ? '#fbbf24' : '#00f2fe');
+                const pulse = 0.78 + 0.22 * Math.sin(performance.now() * 0.018);
 
+                const drawRingAt = (tx, tz, col) => {
+                    const pT = project(Math.max(-T_W * 0.88, Math.min(T_W * 0.88, tx)), 0, tz);
+                    if (!pT.vis) return;
+                    const ringR = Math.min(36, 26 * pT.scale * pulse);
                     ctx.save();
-                    ctx.beginPath(); ctx.ellipse(pTarget.x, pTarget.y, ringR * 1.3, ringR * 0.6, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = ringColor; ctx.lineWidth = 2.8;
-                    ctx.shadowColor = ringColor; ctx.shadowBlur = 12; ctx.stroke();
-
-                    ctx.beginPath(); ctx.arc(pTarget.x, pTarget.y, 4, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.ellipse(pT.x, pT.y, ringR * 1.3, ringR * 0.6, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = col; ctx.lineWidth = 2.8;
+                    ctx.shadowColor = col; ctx.shadowBlur = 12; ctx.stroke();
+                    ctx.beginPath(); ctx.arc(pT.x, pT.y, 4, 0, Math.PI * 2);
                     ctx.fillStyle = '#fff'; ctx.fill();
+                    ctx.restore();
+                };
+
+                drawRingAt(ball.targetX, ball.targetZ, ringColor);
+                if (ball.mirrorTwin) drawRingAt(-ball.targetX, ball.targetZ, '#38bdf8');
+                if (hasBallArch('ghost')) {
+                    drawRingAt(ball.targetX - 75, ball.targetZ, '#e879f9');
+                    drawRingAt(ball.targetX + 75, ball.targetZ, '#38bdf8');
+                }
+            }
+        }
+
+        // 繪製 24 技能專屬 3D 實體構造物（吸血鎖鏈、雷射光束、網前魔鏡、冰晶柱、賭徒 3D 骰子）
+        function drawSpecialSkillConstructs3D() {
+            // 1. ❄️ 絕對冰霜：立體冰晶柱
+            skillVisuals.icePillars.forEach(pil => {
+                const pb = project(pil.x, 0, pil.z), pt = project(pil.x, 52, pil.z);
+                if (pb.vis && pt.vis) {
+                    const w = Math.min(22, 18 * pb.scale);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(pb.x - w, pb.y);
+                    ctx.lineTo(pt.x, pt.y);
+                    ctx.lineTo(pb.x + w, pb.y);
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.65)';
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.fill(); ctx.stroke();
+                    ctx.restore();
+                }
+            });
+
+            // 2. 🪞 鏡像複製：球網上方銀白次元魔鏡
+            if (skillVisuals.mirrorWallTimer > 0) {
+                const mL = project(-T_W * 0.75, 0, 0), mR = project(T_W * 0.75, 0, 0);
+                const mTR = project(T_W * 0.75, 85, 0), mTL = project(-T_W * 0.75, 85, 0);
+                ctx.save();
+                ctx.beginPath(); ctx.moveTo(mL.x, mL.y); ctx.lineTo(mR.x, mR.y); ctx.lineTo(mTR.x, mTR.y); ctx.lineTo(mTL.x, mTL.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(248, 250, 252, 0.25)';
+                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3;
+                ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 18;
+                ctx.fill(); ctx.stroke();
+                ctx.restore();
+            }
+
+            // 3. 🩸 熵能汲取 / 🔮 技能竊取：能量抽取鎖鏈
+            if (skillVisuals.leechBeam) {
+                const lb = skillVisuals.leechBeam;
+                const p1 = project(lb.fromX, 35, lb.fromZ), p2 = project(lb.toX, 35, lb.toZ);
+                if (p1.vis && p2.vis) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.quadraticCurveTo((p1.x + p2.x) * 0.5 + Math.sin(performance.now() * 0.03) * 35, (p1.y + p2.y) * 0.5 - 40, p2.x, p2.y);
+                    ctx.strokeStyle = lb.color;
+                    ctx.lineWidth = 5;
+                    ctx.shadowColor = lb.color; ctx.shadowBlur = 18;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // 4. 💎 相位雷射：貫穿全場的鎖定光束
+            if (skillVisuals.laserBeam) {
+                const l = skillVisuals.laserBeam;
+                const p1 = project(l.x1, l.y1, l.z1), p2 = project(l.x2, l.y2, l.z2);
+                if (p1.vis && p2.vis) {
+                    ctx.save();
+                    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 6 * (l.timer / 0.65);
+                    ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 20;
+                    ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // 5. 🎲 命運賭徒：球體上方跳動的 3D 霓虹骰子
+            if (skillVisuals.diceRoll) {
+                const pb = project(ball.x, ball.y + 42, ball.z);
+                if (pb.vis) {
+                    ctx.save();
+                    ctx.translate(pb.x, pb.y);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.strokeStyle = '#fde047';
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = '#fde047'; ctx.shadowBlur = 16;
+                    ctx.beginPath(); ctx.roundRect(-20, -20, 40, 40, 8); ctx.fill(); ctx.stroke();
+                    ctx.fillStyle = '#fde047';
+                    ctx.font = '900 20px Orbitron, sans-serif';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(skillVisuals.diceRoll.val === 6 ? '777' : `🎲${skillVisuals.diceRoll.val}`, 0, 1);
                     ctx.restore();
                 }
             }
@@ -2646,7 +3094,7 @@
             ctx.fillRect(-r * 0.16, r * 0.7, r * 0.32, r * 0.65);
 
             ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
-            ctx.fillStyle = aPaddle.stunTimer > 0 ? '#fde047' : '#e11d48';
+            ctx.fillStyle = aPaddle.reverseTimer > 0 ? '#84cc16' : (aPaddle.stunTimer > 0 ? '#fde047' : '#e11d48');
             ctx.strokeStyle = '#fda4af'; ctx.lineWidth = 2.5;
             ctx.shadowColor = '#f43f5e'; ctx.shadowBlur = 14;
             ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
@@ -2721,9 +3169,7 @@
             if (!pp.vis) return;
 
             const sMeta = SKILL_META[pPaddle.prechargedSkill || cfgSkill];
-            const paddleColor = sMeta.color;
             const paddleGlow = sMeta.glow;
-            // 手機豎屏限制最大球拍半徑 42px，電腦端支援截圖同款飽滿近景尺寸 (最大 64px)
             const maxPaddleR = viewW < 600 ? 42 : 64;
             const r = Math.min(maxPaddleR, pPaddle.rx * pp.scale);
 
@@ -2739,7 +3185,6 @@
             const swingAngle = pPaddle.swingTimer > 0 ? -Math.sin(swingRatio * Math.PI) * 0.45 : 0;
             ctx.rotate(pPaddle.tilt + swingAngle);
 
-            // 1. 截圖同款木質手柄 + 賽博青色邊框
             ctx.fillStyle = '#92400e';
             ctx.strokeStyle = '#00f2fe';
             ctx.lineWidth = 1.8;
@@ -2747,7 +3192,6 @@
             ctx.roundRect(-r * 0.17, r * 0.72, r * 0.34, r * 0.70, 4);
             ctx.fill(); ctx.stroke();
 
-            // 2. 截圖同款深色專業膠皮拍面 + 滿能量金光外環
             const rimColor = (mana.p >= 100 || pPaddle.prechargedSkill) ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : '#00f2fe');
             ctx.beginPath();
             ctx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
@@ -2760,7 +3204,6 @@
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // 3. 內層膠皮反光與專屬幾何陣紋
             ctx.beginPath();
             ctx.ellipse(0, 0, r * 0.82, r * 0.76, 0, 0, Math.PI * 2);
             ctx.fillStyle = pPaddle.swingTimer > 0 ? 'rgba(0, 242, 254, 0.32)' : 'rgba(30, 41, 59, 0.68)';
@@ -2768,7 +3211,6 @@
 
             drawPaddlePattern(ctx, sMeta.arch, r);
 
-            // 4. 拍柄處顯示等級
             ctx.fillStyle = paddleGlow;
             ctx.font = `900 ${Math.min(11, Math.max(8, Math.round(r * 0.22)))}px Orbitron, sans-serif`;
             ctx.textAlign = 'center';
@@ -2778,6 +3220,8 @@
         }
 
         function drawBallShadow3D() {
+            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            if (isVoidHidden) return;
             const onTable = Math.abs(ball.x) <= T_W && Math.abs(ball.z) <= T_L;
             const shadowY = onTable ? 0 : FLOOR_Y;
             const pSh = project(ball.x, shadowY, ball.z);
@@ -2793,12 +3237,14 @@
             if (!pb.vis) return;
 
             const sMeta = ball.state ? SKILL_META[ball.state] : null;
-            if ((sMeta && sMeta.arch === 'void') || ball.voidTimer > 0) {
-                if (Math.sin(performance.now() * 0.038) > 0.35) return;
-            }
+            // 🌑 虛空相位：過網後 100% 完全隱形，直到抵達對手拍前才突襲現形
+            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            if (isVoidHidden) return;
 
-            const pulseScale = 1.0 + (ball.state ? 0.15 * Math.sin(performance.now() * 0.028) : 0);
-            const br = Math.min(18, Math.max(5, ball.r * pb.scale * pulseScale));
+            // 💫 新星爆發：球體膨脹為 2.2 倍巨型烈陽球
+            const novaMult = hasBallArch('nova') ? 2.15 : 1.0;
+            const pulseScale = (1.0 + (ball.state ? 0.15 * Math.sin(performance.now() * 0.028) : 0)) * novaMult;
+            const br = Math.min(28, Math.max(5, ball.r * pb.scale * pulseScale));
 
             const spinColors = { topspin: '#ff5500', backspin: '#38bdf8', sidespin: '#10b981', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
             const trailColor = sMeta ? sMeta.color : (spinColors[ball.spinType] || '#00f2fe');
@@ -2814,13 +3260,13 @@
                         const ratio = i / ball.trail.length;
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
-                        if (sMeta && (sMeta.arch === 'thunder' || ball.secondaryArch === 'thunder')) {
-                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 10, p1.y + (Math.random() - 0.5) * 10);
+                        if (hasBallArch('thunder')) {
+                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 12, p1.y + (Math.random() - 0.5) * 12);
                         } else {
                             ctx.lineTo(p1.x, p1.y);
                         }
                         ctx.strokeStyle = trailColor;
-                        ctx.lineWidth = br * wMult * ratio;
+                        ctx.lineWidth = Math.min(26, br * wMult * ratio);
                         ctx.globalAlpha = ratio * 0.9;
                         ctx.shadowColor = trailColor;
                         ctx.shadowBlur = 20;
@@ -2830,7 +3276,7 @@
                         ctx.moveTo(p0.x, p0.y);
                         ctx.lineTo(p1.x, p1.y);
                         ctx.strokeStyle = ball.tier >= 2 ? secColor : '#ffffff';
-                        ctx.lineWidth = br * 0.85 * ratio;
+                        ctx.lineWidth = Math.min(10, br * 0.85 * ratio);
                         ctx.globalAlpha = ratio * 0.95;
                         ctx.stroke();
                     }
@@ -2838,14 +3284,26 @@
                 ctx.restore();
             }
 
-            if (sMeta && sMeta.arch === 'ghost') {
-                const cnt = ball.tier >= 2 ? 3 : 2;
-                for (let idx = 0; idx < cnt; idx++) {
+            // 🪞 鏡像對稱雙球渲染
+            if (ball.mirrorTwin) {
+                const pm = project(ball.mirrorTwin.x, ball.mirrorTwin.y, ball.mirrorTwin.z);
+                if (pm.vis) {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(pm.x, pm.y, br * 0.95, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f8fafc'; ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 20;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // 🌀 次元幽靈：4 顆實體分身球同時飛行
+            if (hasBallArch('ghost')) {
+                for (let idx = 0; idx < 3; idx++) {
                     const off = ball.ghostOffsets[idx];
                     const pg = project(ball.x + off.x, ball.y + off.y, ball.z);
                     if (pg.vis) {
                         ctx.beginPath(); ctx.arc(pg.x, pg.y, br * 0.95, 0, Math.PI * 2);
-                        ctx.fillStyle = idx % 2 === 0 ? 'rgba(232, 121, 249, 0.85)' : 'rgba(56, 189, 248, 0.85)';
+                        ctx.fillStyle = idx % 2 === 0 ? 'rgba(232, 121, 249, 0.9)' : 'rgba(56, 189, 248, 0.9)';
                         ctx.fill();
                     }
                 }
@@ -3160,10 +3618,6 @@
             document.getElementById('in-game-hud').classList.remove('hidden');
             document.getElementById('bottom-overdrive-hud').classList.remove('hidden');
 
-            const hint = document.getElementById('controls-onboarding');
-            hint.style.opacity = '1';
-            setTimeout(() => { hint.style.opacity = '0'; }, 5500);
-
             const sMeta = SKILL_META[cfgSkill];
             document.getElementById('hud-skill-emoji').innerText = sMeta.name.slice(0, 2);
             document.getElementById('hud-skill-name-short').innerText = sMeta.name.slice(3);
@@ -3194,12 +3648,16 @@
             resonanceActive = false; chronoTimer = 0; oracleVisionTimer = 0;
             prismShield = { player: 0, ai: 0 };
             lingeringFields = [];
+            skillVisuals.icePillars = [];
+            skillVisuals.leechBeam = null;
+            skillVisuals.laserBeam = null;
+            skillVisuals.diceRoll = null;
             stolenPassives = []; gamblerBet = 0; yinYangSwitches = 0;
             twinClone.active = false; twinClone.cooldown = 0; twinClone.orbX = null;
             rewindState.active = false; rewindState.freeUsed = false;
             quantumPortal.active = false;
-            pPaddle.poisonStacks = 0; pPaddle.webRootTimer = 0; pPaddle.prechargedSkill = null;
-            aPaddle.poisonStacks = 0; aPaddle.webRootTimer = 0;
+            pPaddle.poisonStacks = 0; pPaddle.webRootTimer = 0; pPaddle.reverseTimer = 0; pPaddle.prechargedSkill = null;
+            aPaddle.poisonStacks = 0; aPaddle.webRootTimer = 0; aPaddle.reverseTimer = 0;
 
             document.getElementById('hud-skill-lv').innerText = 'LV.1';
             document.getElementById('score-player').innerText = '0';
