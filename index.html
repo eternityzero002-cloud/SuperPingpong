@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER PONG 2077 - 電競超能街機終極版</title>
+    <title>CYBER PONG 2077 - 24超能×全屏手勢×電競街機終極版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { user-select: none; -webkit-user-select: none; touch-action: none; box-sizing: border-box; }
         html, body {
-            width: 100vw;
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-            background-color: #03040a;
-            overflow: hidden;
-            overscroll-behavior: none;
-            font-family: 'Noto Sans TC', 'Orbitron', sans-serif;
-            color: #fff;
+            width: 100vw; height: 100dvh; margin: 0; padding: 0;
+            background-color: #03040a; overflow: hidden; overscroll-behavior: none;
+            font-family: 'Noto Sans TC', 'Orbitron', sans-serif; color: #fff;
         }
         .cyber-font { font-family: 'Orbitron', 'Noto Sans TC', sans-serif; }
         .cyber-panel {
-            background: rgba(8, 14, 30, 0.88);
+            background: rgba(8, 14, 30, 0.86);
             border: 1px solid rgba(0, 242, 254, 0.45);
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.18);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.16);
             backdrop-filter: blur(8px);
         }
         .cyber-btn {
@@ -39,41 +33,19 @@
             transform: translateY(-1px);
         }
         .cyber-btn:active { transform: scale(0.95); }
-
-        @keyframes manaPulse {
-            0%, 100% { box-shadow: 0 0 10px #00f2fe; }
-            50% { box-shadow: 0 0 26px #fde047, inset 0 0 12px #fff; }
+        @keyframes overdrivePulse {
+            0%, 100% { box-shadow: 0 0 12px #00f2fe, inset 0 0 8px #00f2fe; border-color: #00f2fe; }
+            50% { box-shadow: 0 0 28px #fde047, 0 0 45px #ec4899, inset 0 0 14px #fff; border-color: #fde047; }
         }
-        .mana-ready { animation: manaPulse 0.65s infinite ease-in-out; }
-
-        @keyframes strikePulse {
-            0%, 100% { transform: scale(1.08); box-shadow: 0 0 25px #ef4444, inset 0 0 15px #fde047; }
-            50% { transform: scale(1.16); box-shadow: 0 0 42px #fde047, inset 0 0 24px #fff; }
-        }
-        .btn-strike-now { animation: strikePulse 0.38s infinite ease-in-out; }
-
+        .overdrive-ready { animation: overdrivePulse 0.6s infinite ease-in-out; }
         @keyframes evolveBounce {
-            0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 15px #f59e0b, 0 0 30px #fde047; }
-            50% { transform: scale(1.12) translateY(-3px); box-shadow: 0 0 28px #fde047, 0 0 45px #ffffff; }
+            0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 18px #f59e0b, 0 0 32px #fde047; }
+            50% { transform: scale(1.08) translateY(-3px); box-shadow: 0 0 30px #fde047, 0 0 50px #ffffff; }
         }
         .evolve-mega-btn { animation: evolveBounce 0.55s infinite ease-in-out; }
-
-        /* 參考圖 2：電競動漫風斜切 Cut-in 橫幅 */
-        .cutin-slash-left {
-            clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
-            transform: skewX(-12deg);
-        }
-        .cutin-slash-right {
-            clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
-            transform: skewX(-12deg);
-        }
-        .cutin-text-shadow {
-            text-shadow: 0 4px 0 #000, 0 0 22px currentColor, 0 0 40px currentColor;
-        }
-        .safe-bottom-right {
-            bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-            right: calc(env(safe-area-inset-right, 0px) + 16px);
-        }
+        .cutin-slash-left { clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%); transform: skewX(-12deg); }
+        .cutin-slash-right { clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%); transform: skewX(-12deg); }
+        .cutin-text-shadow { text-shadow: 0 3px 0 #000, 0 0 18px currentColor; }
     </style>
 </head>
 <body class="w-screen h-[100dvh] flex flex-col relative select-none">
@@ -81,34 +53,25 @@
     <div id="game-container" class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#03050c]">
         <canvas id="gameCanvas" class="block w-full h-full cursor-none"></canvas>
 
-        <!-- ================= 頂部極簡街機 HUD ================= -->
+        <!-- 頂部極簡街機 HUD -->
         <div id="in-game-hud" class="absolute top-2.5 inset-x-2.5 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
-            
-            <!-- 左上：技能圖示 + 能量條 + 超顯眼金色升級大按鈕 -->
             <div class="flex flex-col gap-1.5">
-                <div class="cyber-panel px-2.5 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
+                <div class="cyber-panel px-3 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
                     <div id="hud-skill-icon-box" class="w-8 h-8 rounded-lg bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-base shadow-md">
-                        <span id="hud-skill-emoji">🔥</span>
+                        <span id="hud-skill-emoji">⚛️</span>
                     </div>
-                    <span id="hud-passive-star" class="text-amber-300 text-xs font-black opacity-0 transition-opacity duration-200">✦</span>
-                    <span id="hud-skill-lv" class="cyber-font text-xs font-black text-amber-300">LV.1</span>
-                    <div class="w-20 sm:w-32 bg-slate-950 h-3 rounded-full overflow-hidden border border-cyan-500/50 p-[1px]">
-                        <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-400 to-amber-300 rounded-full transition-all duration-150" style="width:100%"></div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-1">
+                            <span id="hud-skill-name-short" class="text-xs font-black text-cyan-300">量子躍遷</span>
+                            <span id="hud-passive-star" class="text-amber-300 text-xs font-black opacity-0 transition-opacity duration-200">✦</span>
+                        </div>
+                        <span id="hud-skill-lv" class="cyber-font text-[10px] font-black text-amber-300">LV.1</span>
                     </div>
-                    <span id="hud-mana" class="cyber-font text-xs font-black text-cyan-300 min-w-[34px] text-right">100%</span>
                 </div>
-
-                <!-- 需求四：極度顯眼的金色閃爍升級大按鈕 -->
-                <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
-                    <span>⬆️ 點擊超能進化</span>
-                    <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-1.5 py-0.2 rounded text-[10px]">LV.2</span>
-                </button>
-
-                <!-- 新體系情境小條 -->
                 <div id="hud-context-bar" class="hidden cyber-panel px-2.5 py-1 rounded-lg text-[10px] font-bold text-amber-200 flex items-center gap-2 pointer-events-auto"></div>
             </div>
 
-            <!-- 中央：比分板 -->
+            <!-- 中央比分板 -->
             <div class="cyber-panel px-4 sm:px-6 py-1 rounded-2xl flex flex-col items-center">
                 <div class="flex items-center gap-2.5 text-2xl sm:text-3xl font-black cyber-font leading-none">
                     <span id="serve-dot-p" class="text-xs text-amber-300">🏓</span>
@@ -123,11 +86,34 @@
                 </div>
             </div>
 
-            <!-- 右上：精簡系統按鈕 -->
+            <!-- 右上系統按鈕 -->
             <div class="flex items-center gap-1.5 pointer-events-auto">
                 <button onclick="toggleInfoDrawer()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="技能資訊">⚙️</button>
                 <button onclick="togglePause()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="暫停">⏸️</button>
                 <button onclick="exitToMenu()" class="cyber-panel hover:bg-rose-600/40 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm text-rose-300 border border-rose-500/50" title="退出">🚪</button>
+            </div>
+        </div>
+
+        <!-- 底部中央：超顯眼獨立「超能力必殺能量槽」與進化大按鈕 -->
+        <div id="bottom-overdrive-hud" class="fixed bottom-3 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-4">
+            <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
+                <span>⬆️ 能量全滿！點擊或【雙指下滑 / E鍵】進化至</span>
+                <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full text-xs">LV.2</span>
+            </button>
+
+            <div onclick="castSkill()" id="overdrive-bar-container" class="pointer-events-auto cursor-pointer cyber-panel w-full max-w-md px-3.5 py-1.5 rounded-2xl border-2 border-cyan-400/60 transition-all duration-200">
+                <div class="flex justify-between items-center text-[11px] font-black mb-1">
+                    <span id="overdrive-status-text" class="text-cyan-300 tracking-wider">⚡ 超能核心蓄力中 (80%可反制融合 / 100%必殺)</span>
+                    <span id="hud-mana" class="cyber-font text-amber-300 text-xs">100%</span>
+                </div>
+                <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden border border-white/20 p-[1px] relative">
+                    <div class="absolute left-[80%] top-0 bottom-0 w-[2px] bg-white/70 z-10" title="80% 反制融合門檻"></div>
+                    <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-amber-300 rounded-full transition-all duration-150" style="width:100%"></div>
+                </div>
+            </div>
+
+            <div id="controls-onboarding" class="text-[11px] text-slate-200 bg-black/80 px-4 py-1 rounded-full border border-cyan-500/30 transition-opacity duration-700 text-center">
+                💻 <b>電腦</b>：滑鼠全向移動 · 左鍵揮拍旋球 · 右鍵高球 · 空白鍵必殺 · E鍵進化 ｜ 📱 <b>手機</b>：單指全向滑動 · <b>雙指輕點必殺</b> · 雙指上滑高球 · 雙指下滑進化
             </div>
         </div>
 
@@ -145,48 +131,26 @@
             <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
         </div>
 
-        <!-- ================= 需求四：參考圖 2 電競級動漫斜切大字 Cut-in 播報系統 ================= -->
-        <!-- 左側玩家大招 / 聯動斜切 Cut-in -->
-        <div id="left-toast" class="fixed left-0 top-[20%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-16">
-            <div class="cutin-slash-left bg-gradient-to-r from-slate-950 via-cyan-950/95 to-blue-900/80 border-y-2 border-l-8 border-cyan-400 pl-4 pr-12 py-2.5 shadow-[0_0_35px_rgba(0,242,254,0.65)]">
-                <div id="left-toast-sub" class="text-[10px] sm:text-xs font-black text-amber-300 tracking-widest uppercase italic">⚡ CYBER OVERDRIVE</div>
-                <div id="left-toast-title" class="text-xl sm:text-3xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider">次元突破！</div>
+        <!-- 電競級動漫斜切 Cut-in 播報系統（半透明不擋球路） -->
+        <div id="left-toast" class="fixed left-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-12 max-w-[68vw] sm:max-w-md">
+            <div class="cutin-slash-left bg-gradient-to-r from-slate-950/90 via-cyan-950/85 to-transparent border-y-2 border-l-8 border-cyan-400 pl-3.5 pr-8 py-2 shadow-[0_0_25px_rgba(0,242,254,0.5)] backdrop-blur-sm">
+                <div id="left-toast-sub" class="text-[9px] sm:text-[11px] font-black text-amber-300 tracking-widest uppercase italic truncate">⚡ CYBER OVERDRIVE</div>
+                <div id="left-toast-title" class="text-base sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">次元突破！</div>
             </div>
         </div>
 
-        <!-- 右側對手大招斜切 Cut-in -->
-        <div id="right-toast" class="fixed right-0 top-[20%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-16 text-right">
-            <div class="cutin-slash-right bg-gradient-to-l from-slate-950 via-rose-950/95 to-pink-900/80 border-y-2 border-r-8 border-pink-500 pr-4 pl-12 py-2.5 shadow-[0_0_35px_rgba(236,72,153,0.65)]">
-                <div id="right-toast-sub" class="text-[10px] sm:text-xs font-black text-pink-300 tracking-widest uppercase italic">⚠️ RIVAL UNLEASHED</div>
-                <div id="right-toast-title" class="text-xl sm:text-3xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider">敵方必殺！</div>
+        <div id="right-toast" class="fixed right-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-12 text-right max-w-[68vw] sm:max-w-md">
+            <div class="cutin-slash-right bg-gradient-to-l from-slate-950/90 via-rose-950/85 to-transparent border-y-2 border-r-8 border-pink-500 pr-3.5 pl-8 py-2 shadow-[0_0_25px_rgba(236,72,153,0.5)] backdrop-blur-sm">
+                <div id="right-toast-sub" class="text-[9px] sm:text-[11px] font-black text-pink-300 tracking-widest uppercase italic truncate">⚠️ RIVAL UNLEASHED</div>
+                <div id="right-toast-title" class="text-base sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">敵方必殺！</div>
             </div>
         </div>
 
-        <!-- 頂部中央高空巨幅融合 / 進化橫幅 (位於球網上方高空，絕不擋球路) -->
-        <div id="top-toast" class="fixed top-[11%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-75 px-3">
-            <div class="cutin-slash-left bg-gradient-to-r from-amber-500/25 via-slate-950/95 to-fuchsia-600/25 border-y-2 border-x-4 border-amber-400 px-8 py-2 shadow-[0_0_45px_rgba(251,191,36,0.75)] text-center">
-                <div id="top-toast-title" class="text-lg sm:text-2xl font-black cyber-font italic text-amber-300 cutin-text-shadow tracking-wider"></div>
-                <div id="top-toast-sub" class="text-[11px] sm:text-xs font-bold text-white tracking-widest uppercase mt-0.5"></div>
+        <div id="top-toast" class="fixed top-[10%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-75 px-3">
+            <div class="cutin-slash-left bg-gradient-to-r from-amber-500/30 via-slate-950/90 to-fuchsia-600/30 border-y-2 border-x-4 border-amber-400 px-6 py-1.5 shadow-[0_0_35px_rgba(251,191,36,0.65)] text-center backdrop-blur-sm">
+                <div id="top-toast-title" class="text-base sm:text-xl font-black cyber-font italic text-amber-300 cutin-text-shadow tracking-wider"></div>
+                <div id="top-toast-sub" class="text-[10px] sm:text-xs font-bold text-white tracking-widest uppercase"></div>
             </div>
-        </div>
-
-        <!-- 桌面開局 5 秒操作提示 -->
-        <div id="desktop-onboarding" class="hidden md:flex fixed bottom-4 inset-x-0 justify-center z-20 pointer-events-none transition-opacity duration-700">
-            <div class="bg-black/80 px-5 py-1.5 rounded-full border border-cyan-500/40 text-xs text-slate-200 shadow-lg">
-                🏓 <b>滑鼠移動</b>：走位（自動揮拍） ｜ <b>左鍵滑動</b>：強勢抽球與旋球 ｜ <b>右鍵</b>：高球 ｜ <b>空白鍵</b>：釋放超能必殺 ｜ <b>E鍵</b>：進化技能
-            </div>
-        </div>
-
-        <!-- 手機端右下垂直雙按鈕 (不擋球台，左半屏全區自由拖曳) -->
-        <div id="mobile-controls" class="fixed safe-bottom-right z-20 flex flex-col items-center gap-3 pointer-events-none hidden">
-            <button onclick="triggerLobShot()" class="pointer-events-auto w-[56px] h-[56px] rounded-2xl cyber-panel active:scale-90 flex flex-col items-center justify-center border border-indigo-400/80 shadow-lg">
-                <span class="text-base">🎈</span>
-                <span class="text-[9px] text-indigo-200 font-bold">高球</span>
-            </button>
-            <button onclick="castSkill()" id="btn-mobile-skill" class="pointer-events-auto w-[86px] h-[86px] rounded-3xl cyber-panel active:scale-90 flex flex-col items-center justify-center border-2 border-slate-500 shadow-2xl transition-all">
-                <span id="btn-skill-emoji" class="text-2xl">⚡</span>
-                <span id="btn-skill-label" class="text-[10px] font-black text-slate-300 mt-0.5">蓄力中</span>
-            </button>
         </div>
 
         <!-- 暫停選單 -->
@@ -209,7 +173,7 @@
                         <h1 class="text-xl sm:text-3xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-500">
                             CYBER PONG 2077 : HYPER ARCADE
                         </h1>
-                        <p class="text-slate-300 text-[11px]">極致爽快街機對決 · 一鍵開球零失誤 · 23大超能×167種融合神技 · 電競級全屏播報</p>
+                        <p class="text-slate-300 text-[11px]">街機沉浸視角 · 全向自由球拍 · 24大超能(含⚛️量子躍遷) · 180+種融合神技</p>
                     </div>
                     <div class="flex bg-slate-900/90 p-1 rounded-xl border border-cyan-500/40">
                         <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500 text-slate-950 transition">🤖 單機 AI</button>
@@ -217,7 +181,6 @@
                     </div>
                 </div>
 
-                <!-- 難度選擇 -->
                 <div id="ai-setup-section" class="mb-2.5">
                     <div class="text-[11px] font-bold text-cyan-400 mb-1 uppercase tracking-wider">1. 選擇 AI 難度 (11分制 × 3局2勝)</div>
                     <div class="grid grid-cols-3 gap-2">
@@ -233,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- P2P 聯機設定 -->
                 <div id="p2p-setup-section" class="hidden mb-2.5 p-3 rounded-xl bg-slate-950/90 border border-pink-500/40">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="flex flex-col gap-1.5">
@@ -256,9 +218,8 @@
                     </div>
                 </div>
 
-                <!-- 23 大技能選擇 -->
                 <div class="mb-3">
-                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (23 選 1 · 每個技能具備鮮明元素特效與常駐被動)</div>
+                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (24 選 1 · 新增【⚛️ 量子躍遷】蟲洞傳送門特技！)</div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[42vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
                 </div>
 
@@ -289,7 +250,7 @@
     </div>
 
     <script>
-        // ================= 一、23 大基礎技能與 167 種融合矩陣 =================
+        // ================= 一、24 大基礎技能（含原創第 24 技能：⚛️ 量子躍遷）與融合矩陣 =================
         const ARCH_STYLE = {
             fire:    { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400' },
             thunder: { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300' },
@@ -313,10 +274,12 @@
             twin:    { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300' },
             rewind:  { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300' },
             thief:   { color: '#a855f7', glow: '#f3e8ff', textCls: 'text-purple-300' },
-            yinyang: { color: '#f8fafc', glow: '#f97316', textCls: 'text-white' }
+            yinyang: { color: '#f8fafc', glow: '#f97316', textCls: 'text-white' },
+            quantum: { color: '#00f2fe', glow: '#f59e0b', textCls: 'text-cyan-300' }
         };
 
         const BASE_SKILLS = [
+            { id: 'quantum', name: '⚛️ 量子躍遷', desc: '開啟雙色蟲洞瞬間傳送球路', passiveName: '疊加態', passiveDesc: '擊球+6%能量且相位偏移', arch: 'quantum' },
             { id: 'fire',    name: '🔥 熾焰重扣', desc: '濃煙烈焰球·留加速火帶', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量', arch: 'fire' },
             { id: 'thunder', name: '⚡ 雷霆瞬影', desc: '閃電折線瞬移·留麻痺網', passiveName: '疾電', passiveDesc: '球拍移速+10%', arch: 'thunder' },
             { id: 'gravity', name: '🪐 黑洞重力', desc: '紫色引力漩渦·拉扯對手', passiveName: '引力井', passiveDesc: '甜區半徑+10%', arch: 'gravity' },
@@ -371,6 +334,7 @@
             ['rewind+rewind', 'eternal_loop', '⏪ 永恆輪迴', 'rewind'],
             ['thief+thief', 'phantom_heist', '🃏 怪盜神威', 'thief'],
             ['yinyang+yinyang', 'chaos_taiji', '☯️ 混沌太極', 'yinyang'],
+            ['quantum+quantum', 'quantum_cat', '🌌 薛丁格坍縮態', 'quantum'],
             ['fire+thunder', 'plasma', '💥 雷炎裁決', 'thunder'],
             ['fire+gravity', 'magma_core', '🌋 熔岩核心', 'gravity'],
             ['fire+sonic', 'flare_dash', '🔥 烈焰音爆閃', 'sonic'],
@@ -514,7 +478,12 @@
             ['thief+ghost',    'invisible_thief',   '🔮👻 無形盜賊',   'ghost'],
             ['yinyang+oracle', 'taiji_prophecy',    '🌗🔮 太極預言',   'yinyang'],
             ['yinyang+fire',   'yang_blaze',        '🌗🔥 陽炎爆發',   'fire'],
-            ['yinyang+frost',  'yin_freeze',        '🌗❄️ 陰寒凍結',   'frost']
+            ['yinyang+frost',  'yin_freeze',        '🌗❄️ 陰寒凍結',   'frost'],
+            ['quantum+fire',    'quantum_flare',    '⚛️🔥 耀斑星門',   'quantum'],
+            ['quantum+thunder', 'quantum_bolt',     '⚛️⚡ 閃電折躍',   'quantum'],
+            ['quantum+gravity', 'wormhole',         '⚛️🕳️ 蟲洞奇點',   'quantum'],
+            ['quantum+chrono',  'paradox',          '⚛️⏳ 時空悖論',   'quantum'],
+            ['quantum+laser',   'tachyon_beam',     '⚛️💎 超光速粒子炮', 'quantum']
         ];
 
         const FUSION_TABLE = {};
@@ -558,7 +527,8 @@
             ghost: 'phantom_army', prism: 'mirror_maze', chrono: 'time_stop', leech: 'energy_siphon',
             mirror: 'infinite_mirror', laser: 'prism_matrix', void: 'void_devour', frost: 'absolute_zero',
             toxin: 'plague', cyclone: 'mega_tornado', aqua: 'tsunami', nova: 'supernova', web: 'cocoon', oracle: 'fate_seal',
-            gambler: 'jackpot_burst', twin: 'legion_clone', rewind: 'eternal_loop', thief: 'phantom_heist', yinyang: 'chaos_taiji'
+            gambler: 'jackpot_burst', twin: 'legion_clone', rewind: 'eternal_loop', thief: 'phantom_heist', yinyang: 'chaos_taiji',
+            quantum: 'quantum_cat'
         };
 
         function getFusedSkill(incoming, counter, spinType = 'flat') {
@@ -587,7 +557,7 @@
             fire: 'leech', leech: 'gravity', gravity: 'thunder', thunder: 'chrono',
             laser: 'void', void: 'frost', frost: 'toxin', toxin: 'laser',
             cyclone: 'aqua', aqua: 'nova', nova: 'web', web: 'oracle', oracle: 'cyclone',
-            gambler: 'twin', twin: 'rewind', rewind: 'thief', thief: 'yinyang', yinyang: 'gambler'
+            gambler: 'twin', twin: 'rewind', rewind: 'thief', thief: 'yinyang', yinyang: 'quantum', quantum: 'gambler'
         };
 
         const RESONANCE_PAIRS = {
@@ -636,8 +606,9 @@
         let yinYangMode = 'yin';
         let yinYangSwitches = 0;
         let gamblerBet = 0;
-        let twinClone = { active: false, x: 0, y: 42, z: 410, timer: 0, orbX: null };
+        let twinClone = { active: false, x: 0, y: 42, z: 410, timer: 0, cooldown: 0, orbX: null };
         let rewindState = { active: false, timer: 0, freeUsed: false };
+        let quantumPortal = { active: false, inX: 0, outX: 0, timer: 0, teleported: false };
 
         function hasPassive(id) {
             return cfgSkill === id || stolenPassives.includes(id);
@@ -655,14 +626,14 @@
                 };
             }
             if (stage === 'return') {
-                if (['fire', 'chrono', 'leech', 'cyclone', 'nova', 'gambler'].some(hasPassive)) flashPassiveHUD();
+                if (['fire', 'chrono', 'leech', 'cyclone', 'nova', 'gambler', 'quantum'].some(hasPassive)) flashPassiveHUD();
                 let manaMult = hasPassive('chrono') ? 1.15 : 1.0;
                 if (hasPassive('gambler') && rallyCount > 5) manaMult *= 1.50;
                 if (cfgSkill === 'yinyang' && yinYangMode === 'yin') manaMult *= 1.30;
                 let frameMult = hasPassive('nova') ? 0.90 : 1.0;
                 if (cfgSkill === 'yinyang') frameMult *= (yinYangMode === 'yin' ? 1.10 : 0.80);
                 return {
-                    flatManaBonus: hasPassive('fire') ? 6 : 0,
+                    flatManaBonus: (hasPassive('fire') ? 5 : 0) + (hasPassive('quantum') ? 6 : 0),
                     manaGainMult:  manaMult,
                     leechSteal:    hasPassive('leech') ? 4 : 0,
                     spinCurveMult: hasPassive('cyclone') ? 1.20 : 1.0,
@@ -693,7 +664,7 @@
 
         let gameMode = 'ai';
         let cfgDiff = 'normal';
-        let cfgSkill = 'fire';
+        let cfgSkill = 'quantum';
 
         function renderSkillGrid() {
             const container = document.getElementById('skill-grid-container');
@@ -868,9 +839,29 @@
                     this.playTone('triangle', 460, 140, 0.11, 0.42, 0, ball.x);
                 }
             }
-            skillCast() {
-                this.playTone('sawtooth', 360, 90, 0.35, 0.55);
-                this.playTone('sine', 720, 1440, 0.28, 0.4, 0.03);
+            skillCast(arch = 'fire') {
+                if (arch === 'fire' || arch === 'nova') {
+                    this.playTone('sawtooth', 220, 42, 0.42, 0.6);
+                    this.playTone('square', 440, 85, 0.32, 0.4, 0.03);
+                } else if (arch === 'thunder' || arch === 'laser') {
+                    this.playTone('sawtooth', 1680, 220, 0.16, 0.55);
+                    this.playTone('square', 1240, 160, 0.22, 0.45, 0.04);
+                } else if (arch === 'frost' || arch === 'aqua' || arch === 'prism') {
+                    this.playTone('sine', 1046.5, 2093, 0.22, 0.45);
+                    this.playTone('triangle', 1567.98, 3135.96, 0.25, 0.35, 0.05);
+                } else if (arch === 'gravity' || arch === 'void') {
+                    this.playTone('sine', 150, 35, 0.5, 0.65);
+                    this.playTone('sawtooth', 95, 28, 0.45, 0.45, 0.04);
+                } else if (arch === 'quantum') {
+                    this.playTone('sine', 440, 1760, 0.18, 0.5);
+                    this.playTone('triangle', 1760, 440, 0.22, 0.45, 0.08);
+                } else {
+                    this.playTone('triangle', 340, 1360, 0.26, 0.5);
+                    this.playTone('sine', 680, 1360, 0.25, 0.38, 0.03);
+                }
+            }
+            failBuzz() {
+                this.playTone('sawtooth', 140, 75, 0.18, 0.45);
             }
             fusionClash() {
                 [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((f, i) => {
@@ -894,12 +885,13 @@
             document.getElementById('btn-sound').innerText = sfx.muted ? '🔇 音效：關閉' : '🔊 音效：開啟';
         }
 
-        // ================= 需求一：手機端 2.5D 俯視相機與嚴格尺寸上限修復 =================
+        // ================= 相機與投影：1:1 還原截圖沉浸近景視角 + 手機完美自適應 =================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
         let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
-        const CAM = { z: 740, y: 315, horiz: 0.15 };
+        // 截圖黃金沉浸參數：拉近相機距離 (z: 660)、降低俯視高度 (y: 220)、提高地平線 (horiz: 0.25)
+        const CAM = { z: 660, y: 220, horiz: 0.25, focal: 540 };
 
         function resizeCanvas() {
             viewW = window.innerWidth;
@@ -909,42 +901,49 @@
             canvas.height = viewH * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            const isMobile = viewW < 900 || ('ontouchstart' in window);
             const isPortrait = viewH > viewW;
-            if (!isMobile) {
-                CAM.z = 740; CAM.y = 315; CAM.horiz = 0.15;
-            } else if (isPortrait) {
-                // 關鍵修復：拉遠相機 Z 軸至 860、提高 Y 至 390，徹底杜絕近端除以零導致球拍與紅圈放大數十倍的 Bug！
-                CAM.z = 860; CAM.y = 390; CAM.horiz = 0.20;
+            if (isPortrait) {
+                // 手機豎屏：精準計算焦距，使球桌近端 (z=370) 寬度永遠佔螢幕寬度 90%，絕不撐爆或過遠
+                CAM.z = 680;
+                CAM.y = 265;
+                CAM.horiz = 0.28;
+                const rZNear = CAM.z - T_L; // 310
+                CAM.focal = (viewW * 0.90 / (T_W * 2)) * rZNear;
+            } else if (viewW < 960) {
+                // 手機橫屏 / 平板
+                CAM.z = 660;
+                CAM.y = 215;
+                CAM.horiz = 0.23;
+                CAM.focal = Math.min(viewW * 0.44, viewH * 0.68);
             } else {
-                CAM.z = 760; CAM.y = 330; CAM.horiz = 0.15;
+                // 電腦端：100% 對齊目標截圖的近景沉浸比例
+                CAM.z = 660;
+                CAM.y = 220;
+                CAM.horiz = 0.25;
+                CAM.focal = Math.min(viewW * 0.46, viewH * 0.72);
             }
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         function project(x, y, z) {
-            // 保證 rZ 永遠 >= 220，絕不產生無限大縮放
-            const rZ = Math.max(220, CAM.z - z);
-            const isPortrait = viewH > viewW;
-            const focal = isPortrait ? Math.min(viewW * 0.85, viewH * 0.50) : Math.min(viewW * 0.60, viewH * 0.66);
-            // 強制限制 scale 最大上限
-            const scale = Math.min(isPortrait ? 0.90 : 1.18, focal / rZ);
+            const rZ = Math.max(90, CAM.z - z);
+            // 移除原本破壞透視的 Math.min(1.15) 硬鎖，還原真實近大遠小沉浸感
+            const scale = CAM.focal / rZ;
             return {
                 x: viewW * 0.5 + x * scale,
                 y: viewH * CAM.horiz + (CAM.y - y) * scale,
                 scale,
-                vis: true
+                vis: z < CAM.z - 60
             };
         }
-
-        // ================= AI 難度與學習型記憶 =================
+// ================= AI 難度與學習型記憶 =================
         const AI_PROFILES = {
             easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
             normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
             hard:   { name: 'NEURAL INSANE', speed: 16.8, flightFrames: 29, spread: 0.86, saveRate: 0.86, clashRate: 0.85, learnRate: 1.0 }
         };
-        const AI_SKILL_POOL = ['fire', 'thunder', 'gravity', 'sonic', 'ghost', 'leech', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova', 'web'];
+        const AI_SKILL_POOL = ['fire', 'thunder', 'gravity', 'sonic', 'ghost', 'leech', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova', 'web', 'quantum'];
         let aiTactic = 'attack';
 
         const aiMemory = {
@@ -975,9 +974,6 @@
         let rallyCount = 0, shake = 0, screenFlashAlpha = 0, screenFlashColor = '#00f2fe';
         let hitStopTimer = 0, roundWaitTimer = 0;
 
-        // Canvas 動漫斜切大字 Cut-in 狀態
-        let canvasCutIn = { active: false, title: '', sub: '', color: '#00f2fe', timer: 0, maxTimer: 0.95 };
-
         let matchState = {
             round: 1, playerRounds: 0, aiRounds: 0,
             roundScores: { p: 0, a: 0 }, history: [],
@@ -992,16 +988,17 @@
         let resonanceActive = false, chronoTimer = 0, oracleVisionTimer = 0;
         let prismShield = { player: 0, ai: 0 };
         let lingeringFields = [];
+        let gestureRipples = [];
 
         const pPaddle = {
-            x: 0, y: 42, z: 425, rx: 42, ry: 42, vx: 0, vy: 0, tilt: 0,
+            x: 0, y: 42, z: 385, rx: 44, ry: 44, vx: 0, vy: 0, vz: 0, tilt: 0,
             swingTimer: 0, swingMax: 0.30, hasHitThisSwing: false,
             stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0,
             inStrikeZone: false, wantLob: false, prechargedSkill: null
         };
 
         const aPaddle = {
-            x: 0, y: 42, z: -425, rx: 40, ry: 40, tilt: 0,
+            x: 0, y: 42, z: -415, rx: 42, ry: 42, tilt: 0,
             swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0
         };
 
@@ -1009,6 +1006,7 @@
             x: 0, y: 65, z: 240, vx: 0, vy: 0, vz: 0, ax: 0, ay: 0,
             spinX: 0, spinY: 0, spinType: 'flat', lob: false, r: 9.5, g: -0.42,
             lastHitBy: 'player', bouncedOnTarget: false,
+            bounceCountOnSide: 0, flightTimer: 0,
             targetX: 0, targetZ: 0, showLandingRing: false, fakeRingOffsetX: 0,
             state: null, secondaryArch: null, tier: 0, voidTimer: 0, cycloneWave: false, trail: [],
             ghostOffsets: [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
@@ -1017,24 +1015,25 @@
 
         let particles = [], shockwaves = [], lightPillars = [], speedLines = [], shatterShards = [];
 
-        // ================= 需求二 & 五：100% 必過網、必上台的誇張旋球拋物線引擎 =================
+        // ================= 100% 必過網、必上台且絕不卡桌的拋物線引擎 =================
         function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false) {
-            const frames = Math.max(14, isLob ? 54 : flightFrames);
-            // 安全鎖定落點 100% 在球台範圍內，絕不出界失誤！
+            const frames = Math.max(14, isLob ? 52 : flightFrames);
             const safeX = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, targetX));
-            const safeZ = targetZ < 0 ? Math.max(-T_L * 0.88, Math.min(-110, targetZ)) : Math.min(T_L * 0.88, Math.max(110, targetZ));
+            const safeZ = targetZ < 0 ? Math.max(-T_L * 0.88, Math.min(-125, targetZ)) : Math.min(T_L * 0.88, Math.max(125, targetZ));
 
             ball.ax = spinAccX;
             ball.ay = spinAccY;
             ball.lob = isLob;
+            ball.bounceCountOnSide = 0;
+            ball.flightTimer = 0;
 
             const effG = (isLob ? -0.48 : -0.42) + ball.ay;
-            // 自動補償橫向旋球加速度 ax，讓球在空中畫出誇張 C 字型大弧線後依然 100% 精準落在 safeX！
             ball.vx = (safeX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
             ball.vz = (safeZ - ball.z) / frames;
+            if (Math.abs(ball.vz) < 6.8) ball.vz = Math.sign(ball.vz || -1) * 6.8;
+
             ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
 
-            // 100% 確保過網高度充裕，絕不掛網！
             const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
             if (framesToNet > 0 && framesToNet < frames) {
                 const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
@@ -1049,13 +1048,20 @@
             ball.fakeRingOffsetX = (ball.state && ball.spinType === 'dead') ? 55 : 0;
         }
 
-        // ================= 輸入監聽（左半屏滑動走位 + 自動揮拍 + 一鍵開球） =================
-        const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.74 };
+        // ================= 電腦左鍵揮拍 + 手機全螢幕單指/雙指手勢系統 =================
+        const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.72 };
+        let singleTouchStart = null;
+        let twoFingerStart = null;
+        let twoFingerLongPressTimer = null;
 
-        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
 
         window.addEventListener('mousedown', e => {
             if (!gameRunning || isPaused) return;
+            isTouchMode = false;
             sfx.init();
             if (rewindState.active) {
                 if (e.button === 2) triggerRewindRestore();
@@ -1086,35 +1092,111 @@
             const t = e.target;
             if (t && (t.tagName === 'BUTTON' || (t.closest && t.closest('button')))) return;
             isTouchMode = true;
-            document.getElementById('mobile-controls').classList.remove('hidden');
             sfx.init();
-
-            const touch = e.touches[0];
-            if (!touch) return;
 
             if (rewindState.active) {
                 triggerRewindRestore();
                 return;
             }
 
-            mouse.x = touch.clientX;
-            mouse.y = touch.clientY - 28;
+            if (e.touches.length >= 2) {
+                const t0 = e.touches[0], t1 = e.touches[1];
+                const midX = (t0.clientX + t1.clientX) * 0.5;
+                const midY = (t0.clientY + t1.clientY) * 0.5;
+                twoFingerStart = {
+                    x0: t0.clientX, y0: t0.clientY,
+                    x1: t1.clientX, y1: t1.clientY,
+                    midX, midY, time: Date.now(), handled: false
+                };
+                clearTimeout(twoFingerLongPressTimer);
+                twoFingerLongPressTimer = setTimeout(() => {
+                    if (twoFingerStart && !twoFingerStart.handled) {
+                        twoFingerStart.handled = true;
+                        evolvePlayerSkill();
+                    }
+                }, 550);
+                return;
+            }
 
-            // 一鍵點擊開球
+            const touch = e.touches[0];
+            if (!touch) return;
+            singleTouchStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+            mouse.x = touch.clientX;
+            mouse.y = touch.clientY - 24;
+
             if (matchState.waitingForServe && matchState.currentServer === 'player') {
                 executePlayerServe();
             }
         }, { passive: false });
 
         window.addEventListener('touchmove', e => {
-            if (!e.touches[0]) return;
+            if (!gameRunning || isPaused) return;
+
+            if (e.touches.length >= 2 && twoFingerStart && !twoFingerStart.handled) {
+                const t0 = e.touches[0], t1 = e.touches[1];
+                const midY = (t0.clientY + t1.clientY) * 0.5;
+                const dy = midY - twoFingerStart.midY;
+                if (dy > 45) {
+                    twoFingerStart.handled = true;
+                    clearTimeout(twoFingerLongPressTimer);
+                    evolvePlayerSkill();
+                } else if (dy < -45) {
+                    twoFingerStart.handled = true;
+                    clearTimeout(twoFingerLongPressTimer);
+                    triggerLobShot();
+                }
+                return;
+            }
+
             const touch = e.touches[0];
+            if (!touch) return;
             mouse.x = touch.clientX;
-            mouse.y = touch.clientY - 28;
+            mouse.y = touch.clientY - 24;
+
             if (matchState.waitingForServe && matchState.currentServer === 'player') {
                 executePlayerServe();
             }
         }, { passive: false });
+
+        window.addEventListener('touchend', e => {
+            clearTimeout(twoFingerLongPressTimer);
+            if (twoFingerStart) {
+                if (!twoFingerStart.handled && (Date.now() - twoFingerStart.time < 420)) {
+                    twoFingerStart.handled = true;
+                    triggerTwoFingerSkillGesture(twoFingerStart.x0, twoFingerStart.y0, twoFingerStart.x1, twoFingerStart.y1);
+                }
+                if (e.touches.length < 2) twoFingerStart = null;
+                return;
+            }
+
+            if (singleTouchStart && e.changedTouches[0]) {
+                const dy = e.changedTouches[0].clientY - singleTouchStart.y;
+                const dt = Date.now() - singleTouchStart.time;
+                if (dy < -95 && dt < 260) {
+                    pPaddle.wantLob = true;
+                }
+            }
+            singleTouchStart = null;
+        }, { passive: false });
+
+        function triggerTwoFingerSkillGesture(x0, y0, x1, y1) {
+            const incomingEnemySkill = (ball.vz > 0 && ball.state !== null);
+            const reqMana = incomingEnemySkill ? 80 : 100;
+            const sMeta = SKILL_META[cfgSkill];
+
+            if (mana.p < reqMana && !(cfgSkill === 'yinyang')) {
+                sfx.failBuzz();
+                vibrate([40, 40]);
+                gestureRipples.push({ x: x0, y: y0, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
+                gestureRipples.push({ x: x1, y: y1, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
+                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動超能力`, 'text-rose-400', 850);
+                return;
+            }
+
+            gestureRipples.push({ x: x0, y: y0, r: 12, maxR: 110, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
+            gestureRipples.push({ x: x1, y: y1, r: 12, maxR: 110, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
+            castSkill(true);
+        }
 
         function triggerLobShot() {
             if (!gameRunning || isPaused) return;
@@ -1137,7 +1219,7 @@
             checkPlayerHitBall(false);
         }
 
-        // ================= 需求四：超能進化 LV.1~5 與全屏碎裂特效 =================
+        // ================= 超能進化 LV.1~5 與全屏碎裂特效 =================
         function spawnShatterEffect(color) {
             for (let i = 0; i < 28; i++) {
                 const ang = Math.random() * Math.PI * 2;
@@ -1161,16 +1243,16 @@
             mana.p = 0;
             skillLevel++;
             roundsEvolvedThisRound++;
-            vibrate([60, 40, 100]);
+            vibrate([80, 40, 120]);
 
             const stars = skillLevel === 5 ? '★★★' : (skillLevel >= 3 ? '★★' : '★');
             document.getElementById('hud-skill-lv').innerText = `LV.${skillLevel}${stars}`;
 
             const sMeta = SKILL_META[cfgSkill];
             sfx.levelUp();
-            shake = 26;
+            shake = 28;
             screenFlashColor = '#fde047';
-            screenFlashAlpha = 0.65;
+            screenFlashAlpha = 0.7;
             spawnShatterEffect(sMeta.color);
             spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 45, 9);
             updateHUD();
@@ -1178,12 +1260,12 @@
             triggerAnimeCutIn('center', `LEVEL UP! 超能進化 LV.${skillLevel}`, `${sMeta.name} · 威力×${LV_MULT[skillLevel - 1]} 範圍×${LV_RADIUS[skillLevel - 1]}`, '#fde047');
         }
 
-        function castSkill() {
+        function castSkill(fromGesture = false) {
             if (!gameRunning || isPaused) return;
 
-            if (pPaddle.prechargedSkill) {
+            if (pPaddle.prechargedSkill && !fromGesture) {
                 pPaddle.prechargedSkill = null;
-                showSideToast('left', '已取消上膛', 'SKILL CANCELLED', 'text-slate-400');
+                showSideToast('left', '已取消必殺待命', 'SKILL CANCELLED', 'text-slate-400');
                 updateHUD();
                 return;
             }
@@ -1197,11 +1279,12 @@
             const reqMana = incomingEnemySkill ? 80 : 100;
 
             if (mana.p < reqMana) {
-                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動`, 'text-slate-400');
+                sfx.failBuzz();
+                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動`, 'text-rose-400');
                 return;
             }
 
-            vibrate(50);
+            vibrate(55);
 
             if (cfgSkill === 'gambler') {
                 gamblerBet = 50;
@@ -1212,7 +1295,8 @@
 
             if (cfgSkill === 'twin') {
                 twinClone.active = true;
-                twinClone.timer = 3.2;
+                twinClone.timer = 3.5;
+                twinClone.cooldown = 0;
                 twinClone.x = -pPaddle.x * 0.5;
             }
             if (cfgSkill === 'thief') stealOpponentPassive(aiMemory.lastAiSkill || 'fire');
@@ -1220,7 +1304,7 @@
 
             updateHUD();
 
-            if (isBallHittableByPlayer(45)) {
+            if (isBallHittableByPlayer(55)) {
                 pPaddle.swingTimer = pPaddle.swingMax;
                 pPaddle.hasHitThisSwing = false;
                 executePlayerReturn(true);
@@ -1228,9 +1312,9 @@
             }
 
             pPaddle.prechargedSkill = cfgSkill;
-            sfx.skillCast();
             const sMeta = SKILL_META[cfgSkill];
-            triggerAnimeCutIn('left', `必殺上膛！${sMeta.name.slice(3)}`, '球進範圍自動轟出！', sMeta.color);
+            sfx.skillCast(sMeta.arch);
+            triggerAnimeCutIn('left', `超能必殺發動！${sMeta.name.slice(3)}`, '球抵達瞬間將自動轟出必殺！', sMeta.color);
             updateHUD();
         }
 
@@ -1274,14 +1358,16 @@
             }
         }
 
-        // ================= 玩家球拍更新與全自動揮拍輔助 =================
+        // ================= 玩家球拍更新：支援 X / Y / Z 全向自由移動與精準跟手 =================
         function updatePlayerPaddle(dt) {
             const pMod = applyPassive(cfgSkill, 'paddle');
             const bMod = applyPassive(cfgSkill, 'bounce');
-            const pRef = project(0, pPaddle.y, pPaddle.z);
-            const scale = pRef.scale || 1;
-            const worldX = (mouse.x - viewW * 0.5) / scale;
-            const worldY = CAM.y - (mouse.y - viewH * CAM.horiz) / scale;
+
+            // 根據滑鼠/觸控的垂直位置，動態映射球拍的前後縱深 Z (可自由前壓至球網前 z=145 或退後至底線後 z=445)
+            const netScreenY = project(0, 0, 0).y;
+            const nearScreenY = project(0, 0, T_L).y;
+            const normScreenY = Math.max(-0.15, Math.min(1.25, (mouse.y - netScreenY) / Math.max(80, nearScreenY - netScreenY)));
+            const targetZ = Math.max(140, Math.min(450, 150 + normScreenY * 265));
 
             if (twinClone.orbX !== null && Math.abs(pPaddle.x - twinClone.orbX) < 60) {
                 twinClone.orbX = null;
@@ -1291,9 +1377,11 @@
 
             if (pPaddle.webRootTimer > 0) {
                 pPaddle.webRootTimer -= dt;
-                pPaddle.vx = 0; pPaddle.vy = 0;
+                pPaddle.vx = 0; pPaddle.vy = 0; pPaddle.vz = 0;
                 pPaddle.inStrikeZone = isBallHittableByPlayer();
-                if (pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= 315) triggerPlayerSwing();
+                if ((isTouchMode || pPaddle.prechargedSkill) && pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= pPaddle.z - 95) {
+                    triggerPlayerSwing();
+                }
                 return;
             }
 
@@ -1329,57 +1417,68 @@
             });
 
             const followRate = Math.min(0.95, (pPaddle.stunTimer > 0 ? 0.25 : 0.88) * pMod.moveSpeedMult * fieldSlow);
+            const nextZ = pPaddle.z + (targetZ - pPaddle.z) * followRate;
+
+            // 在當前球拍 Z 平面反解 X 與 Y，確保球拍在螢幕上 100% 跟隨滑鼠/手指自由移動
+            const pRef = project(0, pPaddle.y, nextZ);
+            const scale = pRef.scale || 1;
+            const worldX = (mouse.x - viewW * 0.5) / scale;
+            const worldY = CAM.y - (mouse.y - viewH * CAM.horiz) / scale;
+
             const nextX = pPaddle.x + (worldX - pPaddle.x) * followRate;
             const nextY = pPaddle.y + (worldY - pPaddle.y) * followRate;
 
             pPaddle.vx = (nextX - pPaddle.x) / Math.max(0.01, dt * 60);
             pPaddle.vy = (nextY - pPaddle.y) / Math.max(0.01, dt * 60);
+            pPaddle.vz = (nextZ - pPaddle.z) / Math.max(0.01, dt * 60);
 
-            pPaddle.x = Math.max(-T_W * 1.65, Math.min(T_W * 1.65, nextX));
-            pPaddle.y = Math.max(12, Math.min(135, nextY));
+            pPaddle.x = Math.max(-T_W * 1.75, Math.min(T_W * 1.75, nextX));
+            pPaddle.y = Math.max(-35, Math.min(185, nextY));
+            pPaddle.z = nextZ;
 
             if (pPaddle.stunTimer > 0) pPaddle.stunTimer -= dt;
             if (pPaddle.knockbackZ > 0) pPaddle.knockbackZ = Math.max(0, pPaddle.knockbackZ - dt * 110);
 
-            const targetTilt = Math.max(-0.45, Math.min(0.45, (pPaddle.x / T_W) * 0.22 + pPaddle.vx * 0.018));
+            const targetTilt = Math.max(-0.48, Math.min(0.48, (pPaddle.x / T_W) * 0.24 + pPaddle.vx * 0.018));
             pPaddle.tilt += (targetTilt - pPaddle.tilt) * 0.35;
 
             pPaddle.oracleBoost = inOracleCircle ? 1.5 : 1.0;
             pPaddle.inStrikeZone = isBallHittableByPlayer();
             updateHUD();
 
-            // 需求一 (3)：自動擊球優化——只要球進入擊球範圍且玩家走位到位，系統自動揮拍回擊！
-            if (pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= 310) {
+            if ((isTouchMode || pPaddle.prechargedSkill) && pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= pPaddle.z - 85) {
                 triggerPlayerSwing();
             }
         }
 
         function isBallHittableByPlayer(extraBonus = 0) {
-            if (ball.vz <= 0 || ball.z < 235 || ball.z > 515) return false;
+            if (ball.vz <= 0 || ball.z < 90 || ball.z > 540) return false;
             const pMod = applyPassive(cfgSkill, 'paddle');
-            const sideExpand = Math.abs(ball.x) > T_W * 0.38 ? 1.55 : 1.2;
+            const sideExpand = Math.abs(ball.x) > T_W * 0.38 ? 1.55 : 1.25;
             const dx3D = Math.abs(ball.x - pPaddle.x) / sideExpand;
-            const dy3D = Math.abs(ball.y - pPaddle.y) * 0.75;
-            const dist3D = Math.hypot(dx3D, dy3D);
-            const limit3D = ((chronoTimer > 0 ? 120 : 96) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1)) + extraBonus;
+            const dy3D = Math.abs(ball.y - Math.max(25, pPaddle.y)) * 0.72;
+            const dz3D = Math.abs(ball.z - pPaddle.z) * 0.55;
+            const dist3D = Math.hypot(dx3D, dy3D, dz3D);
+            const limit3D = ((chronoTimer > 0 ? 128 : 104) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1)) + extraBonus;
 
             const pb = project(ball.x, ball.y, ball.z);
             const pp = project(pPaddle.x, pPaddle.y, pPaddle.z);
             const distScreen = Math.hypot((pb.x - pp.x) / sideExpand, pb.y - pp.y);
-            const paddleScreenR = Math.min(48, pPaddle.rx * pp.scale) * 2.35 * pMod.sweetSpotMult + extraBonus;
+            const maxPaddlePx = viewW < 600 ? 40 : 56;
+            const paddleScreenR = Math.min(maxPaddlePx, pPaddle.rx * pp.scale) * 2.35 * pMod.sweetSpotMult + extraBonus;
 
-            return (dist3D <= limit3D || distScreen <= paddleScreenR);
+            return (dist3D <= limit3D || (Math.abs(ball.z - pPaddle.z) < 165 && distScreen <= paddleScreenR));
         }
 
         function checkPlayerHitBall(forceSkill = false) {
             if (pPaddle.swingTimer <= 0 || pPaddle.hasHitThisSwing) return;
             if (isBallHittableByPlayer(0)) {
-                pPaddle.x += (ball.x - pPaddle.x) * 0.48;
+                pPaddle.x += (ball.x - pPaddle.x) * 0.42;
                 executePlayerReturn(forceSkill || Boolean(pPaddle.prechargedSkill));
             }
         }
 
-        // ================= 玩家回球、技能聯動與旋球聯動 =================
+        // ================= 玩家回球、滑動品質判定、技能聯動與量子躍遷 =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
@@ -1433,42 +1532,46 @@
 
             if (activeSkill === 'mirror') activeSkill = ball.state || aiMemory.lastAiSkill || 'fire';
 
-            const dist = Math.hypot(ball.x - pPaddle.x, (ball.y - pPaddle.y) * 0.8);
-            const sweetThreshold = (chronoTimer > 0 ? 70 : 54) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1);
-            const isSweetSpot = guaranteedPerfect || (dist <= sweetThreshold);
+            const swipeSpeed = Math.hypot(pPaddle.vx, pPaddle.vy, pPaddle.vz * 0.4);
+            const hasActiveSwipe = !isTouchMode || swipeSpeed >= 2.0;
+            const dist = Math.hypot(ball.x - pPaddle.x, (ball.y - Math.max(25, pPaddle.y)) * 0.75);
+            const sweetThreshold = (chronoTimer > 0 ? 74 : 58) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1);
+            const isSweetSpot = guaranteedPerfect || (hasActiveSwipe && dist <= sweetThreshold);
             guaranteedPerfect = false;
             if (isSweetSpot) vibrate(20);
 
-            // 需求五：誇張化旋球弧線，讓 C 字側旋與急墜上旋肉眼清晰可見！
-            const swipeSpeed = Math.hypot(pPaddle.vx, pPaddle.vy);
             let spinType = 'flat', spinAccX = 0, spinAccY = 0;
             let isLob = pPaddle.wantLob;
             pPaddle.wantLob = false;
 
+            const verticalSwipe = pPaddle.vy - pPaddle.vz * 0.35;
             if (isLob) {
                 spinType = 'lob';
                 spinAccY = 0.08;
             } else if (swipeSpeed < 2.0) {
-                spinType = 'dead';
-            } else if (Math.abs(pPaddle.vy) > Math.abs(pPaddle.vx) * 1.2) {
-                if (pPaddle.vy > 0) {
+                spinType = 'flat';
+            } else if (Math.abs(verticalSwipe) > Math.abs(pPaddle.vx) * 1.15) {
+                if (verticalSwipe > 0) {
                     spinType = 'topspin';
-                    spinAccY = -0.18 * Math.min(1.5, swipeSpeed / 12); // 明顯急墜下沉
+                    spinAccY = -0.18 * Math.min(1.5, swipeSpeed / 12);
                 } else {
                     spinType = 'backspin';
                     spinAccY = 0.15 * Math.min(1.5, swipeSpeed / 12);
                 }
             } else {
                 spinType = 'sidespin';
-                // 大幅度 C 字型香蕉弧線
                 spinAccX = Math.sign(pPaddle.vx || (ball.x - pPaddle.x) || 1) * Math.min(0.36, Math.max(0.18, swipeSpeed * 0.02)) * rMod.spinCurveMult;
+            }
+
+            if (hasPassive('quantum') && spinType === 'flat') {
+                spinAccX = (Math.random() > 0.5 ? 1 : -1) * 0.14;
             }
 
             if (spinType === spinChain.type && spinType !== 'flat') spinChain.count++;
             else { spinChain.type = spinType; spinChain.count = 1; }
             if (spinChain.count >= 3) {
                 spinAccX *= 1.45; spinAccY *= 1.45;
-                const sNames = { topspin: '極致弧圈！烈焰下沉', backspin: '極致削球！深淵急停', sidespin: '極致側旋！雙重C字斬', lob: '極致高吊！蒼穹墜落', dead: '極致無轉！幻影死球' };
+                const sNames = { topspin: '極致弧圈！烈焰下沉', backspin: '極致削球！深淵急停', sidespin: '極致側旋！雙重C字斬', lob: '極致高吊！蒼穹墜落' };
                 triggerAnimeCutIn('left', sNames[spinType] || '旋球專精突破！', 'SPIN MASTERY x3 · 曲率放大 145%', '#34d399');
             }
 
@@ -1495,12 +1598,12 @@
                     nextTier = (fRes.isHardTier3 || isCounter || skillAwakened || effLv >= 5 || forceNextTier3) ? 3 : 2;
                     forceNextTier3 = false;
 
-                    vibrate([100, 50, 100]);
+                    vibrate([100, 50, 120]);
                     sfx.fusionClash();
-                    hitStopTimer = 0.095; // 大招對撞慢動作停頓 Hit-Stop
-                    shake = 32;
+                    hitStopTimer = 0.10;
+                    shake = 35;
                     screenFlashColor = fMeta.color;
-                    screenFlashAlpha = 0.72; // 全屏閃技能色
+                    screenFlashAlpha = 0.82;
                     resonanceActive = true;
 
                     triggerAnimeCutIn('center', `次元突破！${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}超能融合神技降臨！`, fMeta.color);
@@ -1508,7 +1611,7 @@
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 30, maxR: 180, color: '#ffffff', alpha: 1.0 });
                     lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 50, alpha: 1.0 });
                     spawnShatterEffect(fMeta.color);
-                } else if (!isSweetSpot && dist > 62) {
+                } else if (!isSweetSpot && dist > 64) {
                     sfx.guardBreak();
                     pPaddle.knockbackZ = 45;
                     pPaddle.stunTimer = 0.5 * pMod.stunDurationMult;
@@ -1531,13 +1634,13 @@
                     sfx.fusionClash();
                     triggerAnimeCutIn('center', `極限超載！${fRes.displayName}`, '同系連擊 3 次觸發終極形態！', SKILL_META[nextSkillState].color);
                 } else {
-                    sfx.skillCast();
+                    sfx.skillCast(SKILL_META[activeSkill].arch);
                     triggerAnimeCutIn('left', `領域展開！${SKILL_META[activeSkill].name.slice(3)}`, `LV.${skillLevel} 超能釋放 · 威力 ×${LV_MULT[skillLevel - 1]}`, SKILL_META[activeSkill].color);
                 }
 
                 screenFlashColor = SKILL_META[activeSkill].color;
-                screenFlashAlpha = 0.45;
-                shake = 20;
+                screenFlashAlpha = 0.52;
+                shake = 22;
                 if (skillLevel >= 4) aPaddle.stunTimer += 0.3;
 
                 if (activeSkill === 'prism') prismShield.player = 2.8 * LV_MULT[skillLevel - 1];
@@ -1548,7 +1651,7 @@
                     const st = Math.min(mana.a, 32 * LV_MULT[skillLevel - 1]);
                     mana.a -= st; mana.p = Math.min(100, mana.p + st);
                 }
-                hitStopTimer = 0.05;
+                hitStopTimer = 0.055;
             }
 
             ball.state = nextSkillState;
@@ -1583,8 +1686,17 @@
                 updateContextBarUI();
             }
 
+            if (arch === 'quantum') {
+                quantumPortal.active = true;
+                quantumPortal.inX = ball.x * 0.4;
+                quantumPortal.outX = aPaddle.x > 0 ? -T_W * 0.72 : T_W * 0.72;
+                quantumPortal.timer = 2.0;
+                quantumPortal.teleported = false;
+                targetX = quantumPortal.outX;
+            }
+
             let targetZ = spinType === 'dead' ? -150 : -265;
-            let flightFrames = isSweetSpot ? 28 : 33;
+            let flightFrames = isSweetSpot ? 27 : (hasActiveSwipe ? 31 : 37);
             aiMemory.recordPlayerShot(targetX);
 
             const lvSpeedFactor = skillLevel >= 2 ? 0.90 : 1.0;
@@ -1606,16 +1718,17 @@
                 shake = isSweetSpot ? 7 : 3;
                 if (isSweetSpot && spinType !== 'flat') {
                     const spinNames = { topspin: '🔥 極速上旋抽擊！', backspin: '❄️ 極寒削球急停！', sidespin: '🌪️ C字弧光側旋！', lob: '🎈 蒼穹高吊球！' };
-                    showSideToast('left', spinNames[spinType] || '⚡ PERFECT HIT!', '完美擊球 · 能量 +28%', 'text-cyan-300');
+                    showSideToast('left', spinNames[spinType] || '⚡ 強力旋球!', '滑動暴擊 · 能量 +28%', 'text-cyan-300');
                 }
-                spawnParticles(ball.x, ball.y, ball.z, isSweetSpot ? '#00f2fe' : '#fff', isSweetSpot ? 26 : 14, 5.5);
+                spawnParticles(ball.x, ball.y, ball.z, isSweetSpot ? '#00f2fe' : '#fff', isSweetSpot ? 26 : 12, 5.5);
                 const prevMana = mana.p;
-                const gain = (isSweetSpot ? 28 : 20) * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
+                const baseGain = isSweetSpot ? 28 : (hasActiveSwipe ? 20 : 12);
+                const gain = baseGain * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
                 mana.p = Math.min(100, mana.p + gain);
                 if (prevMana < 100 && mana.p >= 100) {
                     vibrate([30, 50, 30]);
                     sfx.levelUp();
-                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', '按空白鍵釋放必殺 · 或點擊金色按鈕進化！', '#fde047');
+                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', isTouchMode ? '雙指輕點放必殺 · 雙指下滑進化！' : '按空白鍵放必殺 · 按E鍵進化！', '#fde047');
                 }
             }
 
@@ -1634,7 +1747,7 @@
             }
         }
 
-        // ================= AI 走位與對撞 =================
+        // ================= AI 走位與 35% 機率主動高旋強攻 =================
         function updateAI(dt) {
             if (gameMode === 'p2p') {
                 aPaddle.x += (remotePaddleTarget.x - aPaddle.x) * 0.25;
@@ -1655,7 +1768,7 @@
                 let desiredX = ball.x + ball.vx * 8 + aiMemory.predictedX * 0.25 * aiMod.aiErrorMult;
                 const arch = SKILL_META[ball.state]?.arch;
 
-                if (arch === 'ghost' || arch === 'void' || arch === 'cyclone' || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
+                if (arch === 'ghost' || arch === 'void' || arch === 'cyclone' || arch === 'quantum' || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
                     const confuse = (cfgDiff === 'hard' ? 0.38 : 0.78) * aiMod.aiErrorMult;
                     desiredX += Math.sin(ball.z * 0.055) * 95 * confuse;
                 }
@@ -1729,14 +1842,14 @@
                 aiNextTier = fRes.isHardTier3 ? 3 : 2;
 
                 sfx.fusionClash();
-                hitStopTimer = 0.085;
-                shake = 26;
+                hitStopTimer = 0.10;
+                shake = 32;
                 const fMeta = SKILL_META[aiNextSkill] || SKILL_META.plasma;
                 screenFlashColor = fMeta.color;
-                screenFlashAlpha = 0.55;
+                screenFlashAlpha = 0.72;
                 resonanceActive = true;
 
-                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, '按空白鍵反制融合 · 或走位接球！', fMeta.color);
+                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, isTouchMode ? '雙指輕點反制融合！' : '按空白鍵反制融合！', fMeta.color);
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 210, color: fMeta.color, alpha: 1.0 });
                 lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 42, alpha: 1.0 });
             } else if (!incomingSkill && mana.a >= 100 && Math.random() < prof.clashRate) {
@@ -1744,13 +1857,13 @@
                 aiNextSkill = AI_SKILL_POOL[Math.floor(Math.random() * AI_SKILL_POOL.length)];
                 aiMemory.lastAiSkill = aiNextSkill;
                 aiNextTier = 1;
-                sfx.skillCast();
-                shake = 16;
                 const sMeta = SKILL_META[aiNextSkill];
+                sfx.skillCast(sMeta.arch);
+                shake = 16;
                 if (aiNextSkill === 'leech') mana.p = Math.max(0, mana.p - 25);
                 if (aiNextSkill === 'void') ball.voidTimer = 1.6;
                 if (aiNextSkill === 'cyclone') ball.cycloneWave = true;
-                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, '按空白鍵可觸發【雙重融合】！', sMeta.color);
+                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '雙指輕點可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
             } else {
                 const arch = SKILL_META[incomingSkill]?.arch;
                 if (arch === 'fire') aPaddle.knockbackZ = -48;
@@ -1769,9 +1882,20 @@
             let targetZ = 195 + Math.random() * 95;
             let flightFrames = prof.flightFrames;
 
-            let aiSpinX = (Math.random() - 0.5) * (cfgDiff === 'hard' ? 0.24 : 0.12);
-            let aiSpinY = (Math.random() - 0.5) * 0.12;
-            ball.spinType = Math.abs(aiSpinX) > 0.08 ? 'sidespin' : 'topspin';
+            let aiSpinX = 0, aiSpinY = 0;
+            if (Math.random() < 0.35) {
+                if (Math.random() < 0.6) {
+                    ball.spinType = 'sidespin';
+                    aiSpinX = targetSide * (cfgDiff === 'hard' ? 0.30 : 0.22);
+                } else {
+                    ball.spinType = 'topspin';
+                    aiSpinY = -0.16;
+                    flightFrames = Math.max(23, flightFrames - 4);
+                }
+            } else {
+                ball.spinType = 'flat';
+                aiSpinX = (Math.random() - 0.5) * 0.08;
+            }
             ball.spinX = aiSpinX;
             ball.spinY = aiSpinY;
 
@@ -1785,7 +1909,7 @@
             rewindState.active = false;
             sfx.fusionClash();
             triggerAnimeCutIn('center', '⏪ 時光倒流！TIME REWIND', '已回溯球路並自動反擊！', '#60a5fa');
-            ball.x = pPaddle.x; ball.y = 55; ball.z = 380;
+            ball.x = pPaddle.x; ball.y = 55; ball.z = pPaddle.z - 20;
             executePlayerReturn(false);
         }
 
@@ -1793,8 +1917,13 @@
             rewindState.active = false;
         }
 
-        // ================= 需求二 & 三：零阻擋物理步進與涇渭分明的元素飛行粒子 =================
-        function stepBallPhysics(simSpeed) {
+        // ================= 物理步進、量子躍遷傳送與防卡桌死循環保護 =================
+        function stepBallPhysics(simSpeed, dt = 0.016) {
+            ball.flightTimer += dt;
+            if (Math.abs(ball.vz) < 6.8) {
+                ball.vz = Math.sign(ball.vz || -1) * 6.8;
+            }
+
             ball.vx += ball.ax * simSpeed;
             ball.x += ball.vx * simSpeed;
             if (ball.cycloneWave && !ball.bouncedOnTarget) {
@@ -1803,6 +1932,17 @@
             ball.y += ball.vy * simSpeed;
             ball.z += ball.vz * simSpeed;
             ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * simSpeed;
+
+            if (quantumPortal.active && !quantumPortal.teleported && ball.vz < 0 && ball.z <= 25) {
+                quantumPortal.teleported = true;
+                sfx.skillCast('quantum');
+                spawnParticles(ball.x, ball.y, 0, '#00f2fe', 30, 8);
+                ball.x = quantumPortal.outX;
+                ball.z = -110;
+                ball.vx = 0;
+                spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 35, 9);
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#f59e0b', alpha: 1.0 });
+            }
 
             const onTableX = Math.abs(ball.x) <= T_W + 30;
             const onTableZ = Math.abs(ball.z) <= T_L + 30;
@@ -1823,13 +1963,14 @@
             if (oracleVisionTimer > 0) oracleVisionTimer = Math.max(0, oracleVisionTimer - rawDt);
             if (prismShield.player > 0) prismShield.player = Math.max(0, prismShield.player - rawDt);
             if (ball.voidTimer > 0) ball.voidTimer = Math.max(0, ball.voidTimer - rawDt);
-            if (canvasCutIn.active) {
-                canvasCutIn.timer -= rawDt;
-                if (canvasCutIn.timer <= 0) canvasCutIn.active = false;
+            if (quantumPortal.active) {
+                quantumPortal.timer -= rawDt;
+                if (quantumPortal.timer <= 0) quantumPortal.active = false;
             }
 
             if (twinClone.active) {
                 twinClone.timer -= rawDt;
+                if (twinClone.cooldown > 0) twinClone.cooldown -= rawDt;
                 twinClone.x += (ball.x - twinClone.x) * 0.22;
                 if (twinClone.timer <= 0) {
                     twinClone.active = false;
@@ -1864,7 +2005,7 @@
                 } else if (hitStopTimer > 0) {
                     hitStopTimer -= rawDt;
                 } else if (roundWaitTimer === 0 && !matchState.waitingForServe) {
-                    stepBallPhysics(simSpeed);
+                    stepBallPhysics(simSpeed, rawDt);
                     ball.orbitalAngle += rawDt * 16;
 
                     if (cfgSkill === 'rewind' && !rewindState.freeUsed && ball.vz > 0 && ball.z > 350 && Math.abs(ball.x - pPaddle.x) > 130) {
@@ -1872,12 +2013,14 @@
                         triggerRewindRestore();
                     }
 
-                    if (twinClone.active && ball.vz > 0 && ball.z >= 370 && ball.z <= 435 && Math.abs(ball.x - twinClone.x) < 80) {
+                    if (twinClone.active && twinClone.cooldown <= 0 && ball.vz > 0 && ball.z >= 365 && ball.z <= 430 && Math.abs(ball.x - twinClone.x) < 75 && Math.abs(ball.x - pPaddle.x) > 65) {
+                        twinClone.cooldown = 1.5;
                         twinClone.active = false;
                         twinClone.orbX = twinClone.x;
                         mana.p = Math.min(100, mana.p + 25);
                         sfx.fusionClash();
                         showSideToast('left', '👥 雙子分身救球!', '能量 +25%', 'text-teal-300');
+                        pPaddle.x = twinClone.x;
                         executePlayerReturn(false);
                     }
 
@@ -1891,8 +2034,8 @@
                     lingeringFields.forEach(f => {
                         if (Math.hypot(ball.x - f.x, ball.z - f.z) < f.r) {
                             if (f.type === 'fire') ball.vz *= 1.015;
-                            if (f.type === 'frost') ball.vz *= 0.92;
-                            if (f.type === 'aqua') ball.vz *= 0.88;
+                            if (f.type === 'frost') ball.vz *= 0.94;
+                            if (f.type === 'aqua') ball.vz *= 0.92;
                             if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.4;
                         }
                     });
@@ -1904,7 +2047,7 @@
                     updateActiveSkillFlight(rawDt);
                     updateAI(rawDt);
 
-                    if (ball.z > 575 || ball.z < -575 || ball.y < FLOOR_Y) {
+                    if (ball.z > 575 || ball.z < -575 || ball.y < FLOOR_Y || ball.bounceCountOnSide >= 2 || ball.flightTimer > 3.8) {
                         resolvePoint();
                     }
                 }
@@ -1918,22 +2061,18 @@
             requestAnimationFrame(loop);
         }
 
-        // 需求三 (1)：每個元素技能涇渭分明的專屬粒子（火濃煙、雷折線、冰六角雪花、重力漩渦）
         function updateActiveSkillFlight(dt) {
             if (!ball.state) return;
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
             const arch = meta.arch;
 
             if (arch === 'fire' || ball.secondaryArch === 'fire') {
-                // 火系：紅橙烈焰 + 濃煙粒子
                 spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'circle');
             }
             if (arch === 'frost' || ball.secondaryArch === 'frost') {
-                // 冰系：六角冰晶雪花粒子
                 spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
             }
             if (arch === 'gravity' || arch === 'void') {
-                // 重力/虛空：向內收縮的紫色暗物質環
                 if (Math.random() < 0.4) {
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 42, maxR: 6, color: '#a855f7', alpha: 0.85 });
                 }
@@ -1950,7 +2089,7 @@
                 ball.x = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + shift));
                 createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 2, '#facc15');
             }
-            if (arch === 'sonic' || arch === 'cyclone' || ball.tier === 3) {
+            if (arch === 'sonic' || arch === 'cyclone' || arch === 'quantum' || ball.tier === 3) {
                 if (Math.random() < 0.4) {
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 85 : 54, color: meta.color, alpha: 0.85 });
                 }
@@ -1961,6 +2100,7 @@
             const bMod = applyPassive(cfgSkill, 'bounce');
             ball.y = 0;
             ball.bouncedOnTarget = true;
+            ball.bounceCountOnSide++;
             ball.showLandingRing = false;
 
             ball.vx += ball.ax * 8.5;
@@ -1973,14 +2113,16 @@
             if (ball.spinType === 'topspin') {
                 ball.vz *= 1.25; ball.vy = -ball.vy * 0.68;
             } else if (ball.spinType === 'backspin') {
-                ball.vz *= (spinChain.count >= 3 ? 0.40 : 0.65);
+                ball.vz *= (spinChain.count >= 3 ? 0.55 : 0.72);
                 ball.vy = -ball.vy * 0.92;
             } else if (ball.spinType === 'lob') {
-                ball.vy = -ball.vy * 0.88; ball.vz *= 0.82;
+                ball.vy = -ball.vy * 0.88; ball.vz *= 0.85;
             } else {
                 ball.vy = -ball.vy * 0.82;
             }
 
+            if (Math.abs(ball.vz) < 7.2) ball.vz = Math.sign(ball.vz || 1) * 7.2;
+            ball.vy = Math.max(4.2, ball.vy);
             ball.vx = Math.max(-8.2, Math.min(8.2, ball.vx));
 
             if (ball.state) {
@@ -2007,18 +2149,18 @@
                     }
                 };
 
-                if (arch === 'gravity') { ball.vy *= 0.35; spawnField('gravity', fieldR, 2.2, '#9333ea'); }
+                if (arch === 'gravity') { ball.vy *= 0.55; spawnField('gravity', fieldR, 2.2, '#9333ea'); }
                 else if (arch === 'fire') { ball.vz *= 1.15; spawnField('fire', fieldR, 2.2, '#ff3b00'); }
                 else if (arch === 'thunder') {
                     if (ball.state === 'sky_thunder') createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
                     spawnField('thunder', fieldR, 2.2, '#facc15');
                 }
                 else if (arch === 'sonic') { ball.vz *= 1.26; }
-                else if (arch === 'laser') { ball.vy *= 0.2; ball.vz *= 1.3; spawnField('laser', 40 * lvRadMult, 1.4, '#00f2fe'); }
+                else if (arch === 'laser') { ball.vy *= 0.5; ball.vz *= 1.3; spawnField('laser', 40 * lvRadMult, 1.4, '#00f2fe'); }
                 else if (arch === 'frost') { spawnField('frost', 85 * lvRadMult, 2.4, '#38bdf8'); }
                 else if (arch === 'toxin') { spawnField('toxin', 65 * lvRadMult, 3.0 * bMod.toxinDurMult, '#84cc16'); }
                 else if (arch === 'cyclone') { spawnField('cyclone', 68 * lvRadMult, 2.5, '#8b5cf6'); }
-                else if (arch === 'aqua') { ball.vz *= 0.88; spawnField('aqua', 90 * lvRadMult * bMod.aquaRadMult, 3.0, '#0ea5e9'); }
+                else if (arch === 'aqua') { ball.vz *= 0.90; spawnField('aqua', 90 * lvRadMult * bMod.aquaRadMult, 3.0, '#0ea5e9'); }
                 else if (arch === 'web') { spawnField('web', 75 * lvRadMult, 3.5 * bMod.webDurMult, '#cbd5e1'); }
                 else if (arch === 'nova') {
                     spawnField('nova', 60 * lvRadMult, 1.5, '#f59e0b');
@@ -2028,7 +2170,7 @@
                         shockwaves.push({ x: bx, y: 2, z: bz, r: 10, maxR: 140, color: '#fde047', alpha: 1.0, isFlat: true });
                     }, 180);
                 }
-                else if (arch === 'oracle') { spawnField('oracle', 55 * lvRadMult, 3.0, '#ec4899'); }
+                else if (arch === 'oracle' || arch === 'quantum') { spawnField('oracle', 55 * lvRadMult, 3.0, meta.color); }
                 else if (arch === 'void') { ball.voidTimer = 1.6; }
 
                 while (lingeringFields.length > 6) lingeringFields.shift();
@@ -2038,14 +2180,14 @@
             }
         }
 
-        // ================= 需求二：正向爽快的計分與一鍵發球流程 =================
+        // ================= 計分與一鍵極速發球流程 =================
         function resolvePoint() {
             if (roundWaitTimer > 0) return;
             roundWaitTimer = 1;
             ball.showLandingRing = false;
             resonanceActive = false;
 
-            const playerMissed = (ball.z > 480 || (ball.z > 0 && ball.y < FLOOR_Y));
+            const playerMissed = (ball.z > 0);
             if (playerMissed) {
                 skillChainCount = 0;
                 if (gamblerBet > 0) { mana.p = 0; gamblerBet = 0; updateContextBarUI(); }
@@ -2089,7 +2231,7 @@
                     setTimeout(nextRound, 1300);
                 }
             } else {
-                setTimeout(prepareServe, 950);
+                setTimeout(prepareServe, 900);
             }
         }
 
@@ -2108,7 +2250,7 @@
             updateHUD();
 
             triggerAnimeCutIn('center', `⚡ ROUND ${matchState.round} START`, `總局分 ${matchState.playerRounds} - ${matchState.aiRounds} · 技能 LV.${skillLevel} 繼承！`, '#00f2fe');
-            setTimeout(prepareServe, 1250);
+            setTimeout(prepareServe, 1200);
         }
 
         function updateRoundHUD() {
@@ -2122,13 +2264,13 @@
             document.getElementById('hud-round-info').innerText = `R${matchState.round} · ${matchState.playerRounds}-${matchState.aiRounds}`;
         }
 
-        // 需求二 (1)：極簡一鍵開球（懸浮於己方半場，點擊或滑動即刻直接過網！）
         function prepareServe() {
             roundWaitTimer = 0;
             rallyCount = 0;
             ball.state = null; ball.secondaryArch = null; ball.tier = 0; ball.spinType = 'flat';
             ball.spinX = 0; ball.spinY = 0; ball.ax = 0; ball.ay = 0;
             ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false;
+            ball.bounceCountOnSide = 0; ball.flightTimer = 0;
             ball.trail = [];
             updateRoundHUD();
 
@@ -2136,12 +2278,9 @@
                 matchState.waitingForServe = true;
                 ball.x = pPaddle.x * 0.5;
                 ball.y = 55;
-                ball.z = 320;
+                ball.z = 285;
                 ball.vx = 0; ball.vy = 0; ball.vz = 0;
                 ball.showLandingRing = false;
-                setTimeout(() => {
-                    if (matchState.waitingForServe && gameRunning && !isPaused) executePlayerServe();
-                }, 900);
             } else if (gameMode === 'ai') {
                 matchState.waitingForServe = false;
                 ball.x = (Math.random() - 0.5) * 65;
@@ -2151,7 +2290,7 @@
                 ball.spinType = 'topspin';
                 const targetX = (Math.random() - 0.5) * T_W * 0.6;
                 const targetZ = 215 + Math.random() * 60;
-                launchBall3DSpin(targetX, targetZ, 38, 0, -0.08, false);
+                launchBall3DSpin(targetX, targetZ, 36, 0, -0.08, false);
                 sfx.bounce(false);
             }
         }
@@ -2161,14 +2300,14 @@
             matchState.waitingForServe = false;
             ball.x = pPaddle.x * 0.5;
             ball.y = 55;
-            ball.z = 320;
+            ball.z = 285;
             ball.lastHitBy = 'player';
             pPaddle.wantLob = false;
 
             ball.spinType = 'topspin';
             const targetX = Math.max(-T_W * 0.75, Math.min(T_W * 0.75, pPaddle.x * 0.5 + pPaddle.vx * 5));
             const targetZ = -255;
-            launchBall3DSpin(targetX, targetZ, 34, 0, -0.1, false);
+            launchBall3DSpin(targetX, targetZ, 33, 0, -0.1, false);
             sfx.hit(true, 'topspin');
             spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 18, 5);
 
@@ -2176,14 +2315,14 @@
                 sendP2P({
                     type: 'SERVE',
                     startX: ball.x, startY: ball.y, startZ: ball.z,
-                    targetX, targetZ, flightFrames: 34,
+                    targetX, targetZ, flightFrames: 33,
                     spinX: 0, spinY: -0.1, spinType: 'topspin', isLob: false,
                     ballState: null, ballTier: 0, timestamp: Date.now()
                 });
             }
         }
 
-        // ================= 需求三 & 四：高飽和度特效與 Canvas 電競斜切播報渲染 =================
+        // ================= 特效、量子蟲洞與 Tier 2/3 符文球體渲染 =================
         function spawnParticles(x, y, z, color, count, speedScale = 5, shape = 'circle') {
             for (let i = 0; i < count; i++) {
                 const ang = Math.random() * Math.PI * 2;
@@ -2226,6 +2365,10 @@
                 const sw = shockwaves[i]; sw.r += (sw.maxR - sw.r) * 0.24; sw.alpha -= dt * 2.1;
                 if (sw.alpha <= 0) shockwaves.splice(i, 1);
             }
+            for (let i = gestureRipples.length - 1; i >= 0; i--) {
+                const gr = gestureRipples[i]; gr.r += (gr.maxR - gr.r) * 0.22; gr.alpha -= dt * 2.0;
+                if (gr.alpha <= 0) gestureRipples.splice(i, 1);
+            }
             for (let i = lightPillars.length - 1; i >= 0; i--) {
                 lightPillars[i].alpha -= dt * 2.4;
                 if (lightPillars[i].alpha <= 0) lightPillars.splice(i, 1);
@@ -2259,13 +2402,14 @@
             drawTableLegs3D();
             drawTableSurface3D();
             drawNet3D();
+            drawQuantumPortals3D();
             drawPrismShieldWall();
             drawBallShadow3D();
             drawAllEffects();
             drawRibbonBall3D();
             drawTwinAndOrb3D();
             drawPlayerPaddle3D();
-            drawFlashAndCanvasCutIn();
+            drawFlashAndGestureRipples();
 
             ctx.restore();
         }
@@ -2285,11 +2429,16 @@
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, hy, viewW, viewH - hy);
 
-            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.15)' : 'rgba(0, 242, 254, 0.08)';
+            // 1:1 還原截圖中的縱橫透視地板網格
+            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.14)' : 'rgba(0, 242, 254, 0.08)';
             ctx.lineWidth = 1;
             for (let x = -1200; x <= 1200; x += 120) {
-                const pN = project(x, FLOOR_Y, 640), pF = project(x, FLOOR_Y, -750);
+                const pN = project(x, FLOOR_Y, 580), pF = project(x, FLOOR_Y, -750);
                 if (pN.vis && pF.vis) { ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y); ctx.stroke(); }
+            }
+            for (let z = -720; z <= 580; z += 110) {
+                const pL = project(-1200, FLOOR_Y, z), pR = project(1200, FLOOR_Y, z);
+                if (pL.vis && pR.vis) { ctx.beginPath(); ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); ctx.stroke(); }
             }
         }
 
@@ -2308,7 +2457,7 @@
                 if (bL.vis && bR.vis && tR.vis && tL.vis) {
                     ctx.beginPath(); ctx.moveTo(bL.x, bL.y); ctx.lineTo(bR.x, bR.y); ctx.lineTo(tR.x, tR.y); ctx.lineTo(tL.x, tL.y); ctx.closePath();
                     ctx.fillStyle = 'rgba(12, 26, 62, 0.85)'; ctx.fill();
-                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.38)'; ctx.lineWidth = 1.8; ctx.stroke();
+                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.42)'; ctx.lineWidth = 2; ctx.stroke();
                 }
             });
         }
@@ -2320,11 +2469,32 @@
             ctx.beginPath(); ctx.moveTo(sNL.x, sNL.y); ctx.lineTo(sNR.x, sNR.y); ctx.lineTo(sFR.x, sFR.y); ctx.lineTo(sFL.x, sFL.y); ctx.closePath();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.55)'; ctx.fill();
 
-            [[-legX, farZ], [legX, farZ], [-legX, nearZ], [legX, nearZ]].forEach(([lx, lz]) => {
-                const top = project(lx, -18, lz), bot = project(lx, FLOOR_Y, lz);
+            // 遠端桌腳
+            [[-legX, farZ], [legX, farZ]].forEach(([lx, lz]) => {
+                const top = project(lx, -15, lz), bot = project(lx, FLOOR_Y, lz);
                 ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.lineTo(bot.x, bot.y);
-                ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(14, 12 * top.scale); ctx.stroke();
+                ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(14, 10 * top.scale); ctx.stroke();
             });
+
+            // 近端立體桌腳與橫樑、斜撐桿（1:1 還原截圖結構）
+            const nLTop = project(-legX, -18, nearZ), nLBot = project(-legX, FLOOR_Y, nearZ);
+            const nRTop = project(legX, -18, nearZ), nRBot = project(legX, FLOOR_Y, nearZ);
+            const barL = project(-legX, FLOOR_Y * 0.55, nearZ), barR = project(legX, FLOOR_Y * 0.55, nearZ);
+
+            ctx.beginPath(); ctx.moveTo(barL.x, barL.y); ctx.lineTo(barR.x, barR.y);
+            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = Math.min(12, 8 * barL.scale); ctx.stroke();
+
+            const diagL = project(-legX * 0.55, -18, nearZ), diagR = project(legX * 0.55, -18, nearZ);
+            ctx.beginPath();
+            ctx.moveTo(barL.x, barL.y); ctx.lineTo(diagL.x, diagL.y);
+            ctx.moveTo(barR.x, barR.y); ctx.lineTo(diagR.x, diagR.y);
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = Math.min(6, 3 * barL.scale); ctx.stroke();
+
+            ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(20, 15 * nLTop.scale);
+            ctx.beginPath();
+            ctx.moveTo(nLTop.x, nLTop.y); ctx.lineTo(nLBot.x, nLBot.y);
+            ctx.moveTo(nRTop.x, nRTop.y); ctx.lineTo(nRBot.x, nRBot.y);
+            ctx.stroke();
         }
 
         function drawTableSurface3D() {
@@ -2333,7 +2503,7 @@
 
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pFR.x, pFR.y); ctx.lineTo(pFL.x, pFL.y); ctx.closePath();
             const tGrad = ctx.createLinearGradient(0, pFL.y, 0, pNL.y);
-            tGrad.addColorStop(0, '#0f2756'); tGrad.addColorStop(0.5, '#163b82'); tGrad.addColorStop(1, '#1d4ed8');
+            tGrad.addColorStop(0, '#0d224c'); tGrad.addColorStop(0.5, '#153878'); tGrad.addColorStop(1, '#194591');
             ctx.fillStyle = tGrad; ctx.fill();
 
             if (ball.state && SKILL_META[ball.state]) {
@@ -2350,15 +2520,14 @@
             ctx.beginPath(); ctx.moveTo(pCN.x, pCN.y); ctx.lineTo(pCF.x, pCF.y);
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.lineWidth = 2.5; ctx.stroke();
 
-            const pNLB = project(-T_W, -18, T_L), pNRB = project(T_W, -18, T_L);
+            const pNLB = project(-T_W, -20, T_L), pNRB = project(T_W, -20, T_L);
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pNRB.x, pNRB.y); ctx.lineTo(pNLB.x, pNLB.y); ctx.closePath();
             ctx.fillStyle = '#09152e'; ctx.fill(); ctx.strokeStyle = '#00f2fe'; ctx.lineWidth = 1.5; ctx.stroke();
 
-            // 繪製高飽和度地形場（嚴格限制最大像素半徑 Math.min(58, ...) 防止遮擋畫面！）
             lingeringFields.forEach(f => {
                 const pf = project(f.x, 1, f.z);
                 if (pf.vis) {
-                    const rx = Math.min(58, f.r * pf.scale), ry = rx * 0.45;
+                    const rx = Math.min(62, f.r * pf.scale), ry = rx * 0.45;
                     ctx.save(); ctx.translate(pf.x, pf.y);
                     ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
                     ctx.fillStyle = f.color; ctx.globalAlpha = 0.35; ctx.fill();
@@ -2372,7 +2541,7 @@
                 const openX = aPaddle.x > 0 ? -T_W * 0.62 : T_W * 0.62;
                 const pO = project(openX, 1, -270);
                 if (pO.vis) {
-                    const rx = Math.min(34, 32 * pO.scale);
+                    const rx = Math.min(36, 32 * pO.scale);
                     ctx.save();
                     ctx.beginPath(); ctx.ellipse(pO.x, pO.y, rx, rx * 0.5, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.setLineDash([6, 4]);
@@ -2380,7 +2549,6 @@
                 }
             }
 
-            // 預警光圈（嚴格限制最大像素半徑 Math.min(32, ...) 絕不再巨大化！）
             if (ball.showLandingRing) {
                 const dispX = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.targetX + ball.fakeRingOffsetX));
                 const pTarget = project(dispX, 0, ball.targetZ);
@@ -2388,10 +2556,10 @@
                     const sMeta = ball.state ? SKILL_META[ball.state] : null;
                     const ringColor = sMeta ? sMeta.color : (ball.vz < 0 ? '#fbbf24' : '#00f2fe');
                     const pulse = 0.78 + 0.22 * Math.sin(performance.now() * 0.018);
-                    const ringR = Math.min(32, 26 * pTarget.scale) * pulse;
+                    const ringR = Math.min(36, 26 * pTarget.scale * pulse);
 
                     ctx.save();
-                    ctx.beginPath(); ctx.ellipse(pTarget.x, pTarget.y, ringR * 1.4, ringR * 0.65, 0, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.ellipse(pTarget.x, pTarget.y, ringR * 1.3, ringR * 0.6, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = ringColor; ctx.lineWidth = 2.8;
                     ctx.shadowColor = ringColor; ctx.shadowBlur = 12; ctx.stroke();
 
@@ -2400,6 +2568,32 @@
                     ctx.restore();
                 }
             }
+        }
+
+        function drawQuantumPortals3D() {
+            if (!quantumPortal.active) return;
+            const pIn = project(quantumPortal.inX, 45, 25);
+            const pOut = project(quantumPortal.outX, 45, -110);
+            [
+                { p: pIn, c: '#00f2fe' },
+                { p: pOut, c: '#f59e0b' }
+            ].forEach(portal => {
+                if (portal.p.vis) {
+                    const rx = Math.min(38, 38 * portal.p.scale);
+                    ctx.save();
+                    ctx.translate(portal.p.x, portal.p.y);
+                    ctx.rotate(performance.now() * 0.008);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, rx, rx * 1.35, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = portal.c;
+                    ctx.lineWidth = 3.5;
+                    ctx.setLineDash([8, 5]);
+                    ctx.shadowColor = portal.c;
+                    ctx.shadowBlur = 18;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            });
         }
 
         function drawPrismShieldWall() {
@@ -2422,16 +2616,29 @@
             const nLT = project(-netW, NET_H, 0), nRT = project(netW, NET_H, 0);
 
             ctx.beginPath(); ctx.moveTo(nLB.x, nLB.y); ctx.lineTo(nRB.x, nRB.y); ctx.lineTo(nRT.x, nRT.y); ctx.lineTo(nLT.x, nLT.y); ctx.closePath();
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.52)'; ctx.fill();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)'; ctx.fill();
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+            ctx.lineWidth = 1;
+            for (let x = -T_W; x <= T_W; x += 20) {
+                const b = project(x, 0, 0), t = project(x, NET_H, 0);
+                ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+            }
 
             ctx.beginPath(); ctx.moveTo(nLT.x, nLT.y); ctx.lineTo(nRT.x, nRT.y);
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
+            ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 8; ctx.stroke(); ctx.shadowBlur = 0;
+
+            ctx.beginPath();
+            ctx.moveTo(nLB.x, nLB.y); ctx.lineTo(nLT.x, nLT.y);
+            ctx.moveTo(nRB.x, nRB.y); ctx.lineTo(nRT.x, nRT.y);
+            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 4.5; ctx.stroke();
         }
 
         function drawAiEntity() {
             const pa = project(aPaddle.x, aPaddle.y, aPaddle.z + aPaddle.knockbackZ);
             if (!pa.vis) return;
-            const r = Math.min(32, aPaddle.rx * pa.scale);
+            const r = Math.min(36, aPaddle.rx * pa.scale);
             ctx.save(); ctx.translate(pa.x, pa.y); ctx.rotate(aPaddle.tilt);
             if (aPaddle.swingTimer > 0) ctx.scale(1.2, 1.2);
 
@@ -2450,7 +2657,7 @@
             if (twinClone.active) {
                 const pt = project(twinClone.x, twinClone.y, twinClone.z);
                 if (pt.vis) {
-                    const r = Math.min(36, 36 * pt.scale);
+                    const r = Math.min(38, 36 * pt.scale);
                     ctx.save(); ctx.translate(pt.x, pt.y);
                     ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(20, 184, 166, 0.5)';
@@ -2463,7 +2670,7 @@
                 const po = project(twinClone.orbX, 25, 420);
                 if (po.vis) {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(po.x, po.y, Math.min(14, 14 * po.scale), 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.arc(po.x, po.y, Math.min(15, 14 * po.scale), 0, Math.PI * 2);
                     ctx.fillStyle = '#2dd4bf'; ctx.shadowColor = '#2dd4bf'; ctx.shadowBlur = 15;
                     ctx.fill();
                     ctx.restore();
@@ -2473,17 +2680,24 @@
 
         function drawPaddlePattern(ctx, arch, r) {
             ctx.save();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.48)';
-            ctx.lineWidth = Math.max(1.2, r * 0.06);
-            if (['fire', 'thunder', 'sonic', 'gambler'].includes(arch)) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
+            ctx.lineWidth = Math.max(1.2, r * 0.05);
+            if (arch === 'quantum') {
                 ctx.beginPath();
-                ctx.moveTo(-r * 0.3, -r * 0.55); ctx.lineTo(r * 0.15, -r * 0.05);
-                ctx.lineTo(-r * 0.15, r * 0.08); ctx.lineTo(r * 0.3, r * 0.55);
+                ctx.ellipse(0, 0, r * 0.62, r * 0.24, Math.PI / 4, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.ellipse(0, 0, r * 0.62, r * 0.24, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (['fire', 'thunder', 'sonic', 'gambler'].includes(arch)) {
+                ctx.beginPath();
+                ctx.moveTo(-r * 0.28, -r * 0.50); ctx.lineTo(r * 0.14, -r * 0.05);
+                ctx.lineTo(-r * 0.14, r * 0.08); ctx.lineTo(r * 0.28, r * 0.50);
                 ctx.stroke();
             } else if (['gravity', 'void', 'rewind'].includes(arch)) {
                 ctx.beginPath();
                 for (let a = 0; a < Math.PI * 3.5; a += 0.25) {
-                    const rad = (a / (Math.PI * 3.5)) * r * 0.68;
+                    const rad = (a / (Math.PI * 3.5)) * r * 0.64;
                     const px = Math.cos(a) * rad, py = Math.sin(a) * rad;
                     if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
                 }
@@ -2492,7 +2706,7 @@
                 ctx.beginPath();
                 for (let i = 0; i < 6; i++) {
                     const ang = (i * Math.PI) / 3;
-                    const px = Math.cos(ang) * r * 0.52, py = Math.sin(ang) * r * 0.52;
+                    const px = Math.cos(ang) * r * 0.50, py = Math.sin(ang) * r * 0.50;
                     if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
                 }
                 ctx.closePath(); ctx.stroke();
@@ -2500,78 +2714,65 @@
             ctx.restore();
         }
 
-        // 需求一 (2) & 四 (2)：限制玩家球拍最大像素半徑 Math.min(44, ...) 並加入滿能量電流/火焰環繞
         function drawPlayerPaddle3D() {
             const swingRatio = pPaddle.swingTimer / pPaddle.swingMax;
-            const lungeZ = pPaddle.swingTimer > 0 ? Math.sin(swingRatio * Math.PI) * 35 : 0;
+            const lungeZ = pPaddle.swingTimer > 0 ? Math.sin(swingRatio * Math.PI) * 42 : 0;
             const pp = project(pPaddle.x, pPaddle.y, pPaddle.z - lungeZ + pPaddle.knockbackZ);
             if (!pp.vis) return;
 
             const sMeta = SKILL_META[pPaddle.prechargedSkill || cfgSkill];
             const paddleColor = sMeta.color;
             const paddleGlow = sMeta.glow;
-            const isPortrait = viewH > viewW;
-            // 強制限制球拍像素半徑上限為 36~44px，徹底解決截圖 1 球拍巨大化問題！
-            const r = Math.min(isPortrait ? 36 : 44, pPaddle.rx * pp.scale);
+            // 手機豎屏限制最大球拍半徑 42px，電腦端支援截圖同款飽滿近景尺寸 (最大 64px)
+            const maxPaddleR = viewW < 600 ? 42 : 64;
+            const r = Math.min(maxPaddleR, pPaddle.rx * pp.scale);
 
             ctx.save();
             ctx.translate(pp.x, pp.y);
 
             if (pPaddle.inStrikeZone) {
-                ctx.beginPath(); ctx.arc(0, 0, r * 1.35, 0, Math.PI * 2);
+                ctx.beginPath(); ctx.arc(0, 0, r * 1.28, 0, Math.PI * 2);
                 ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 3; ctx.setLineDash([8, 5]);
                 ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 14; ctx.stroke(); ctx.setLineDash([]);
             }
 
-            // 滿能量或上膛時，球拍周圍環繞旋轉電弧/光環
-            if (mana.p >= 100 || pPaddle.prechargedSkill) {
-                ctx.save();
-                ctx.rotate(performance.now() * 0.008);
-                ctx.beginPath();
-                ctx.ellipse(0, 0, r * 1.28, r * 0.65, 0, 0, Math.PI * 2);
-                ctx.strokeStyle = '#fde047';
-                ctx.lineWidth = 2.5;
-                ctx.shadowColor = paddleColor;
-                ctx.shadowBlur = 16;
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            const swingAngle = pPaddle.swingTimer > 0 ? -Math.sin(swingRatio * Math.PI) * 0.48 : 0;
+            const swingAngle = pPaddle.swingTimer > 0 ? -Math.sin(swingRatio * Math.PI) * 0.45 : 0;
             ctx.rotate(pPaddle.tilt + swingAngle);
 
-            ctx.fillStyle = '#0f172a';
-            ctx.strokeStyle = paddleColor;
-            ctx.lineWidth = 2;
+            // 1. 截圖同款木質手柄 + 賽博青色邊框
+            ctx.fillStyle = '#92400e';
+            ctx.strokeStyle = '#00f2fe';
+            ctx.lineWidth = 1.8;
             ctx.beginPath();
-            ctx.roundRect(-r * 0.18, r * 0.70, r * 0.36, r * 0.68, 4);
+            ctx.roundRect(-r * 0.17, r * 0.72, r * 0.34, r * 0.70, 4);
             ctx.fill(); ctx.stroke();
 
-            ctx.fillStyle = paddleGlow;
-            ctx.font = `900 ${Math.min(11, Math.max(8, Math.round(r * 0.24)))}px Orbitron, sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.fillText(`LV.${skillLevel}`, 0, r * 1.12);
-
+            // 2. 截圖同款深色專業膠皮拍面 + 滿能量金光外環
+            const rimColor = (mana.p >= 100 || pPaddle.prechargedSkill) ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : '#00f2fe');
             ctx.beginPath();
             ctx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
-            ctx.fillStyle = paddleColor;
-            ctx.globalAlpha = 0.86;
-            ctx.shadowColor = paddleGlow;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+            ctx.strokeStyle = rimColor;
+            ctx.lineWidth = Math.max(3, 3.8 * (r / 48));
+            ctx.shadowColor = rimColor;
             ctx.shadowBlur = (pPaddle.swingTimer > 0 || mana.p >= 100) ? 26 : 14;
             ctx.fill();
-            ctx.globalAlpha = 1.0;
-            ctx.strokeStyle = pPaddle.prechargedSkill ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : paddleGlow);
-            ctx.lineWidth = 3;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
+            // 3. 內層膠皮反光與專屬幾何陣紋
+            ctx.beginPath();
+            ctx.ellipse(0, 0, r * 0.82, r * 0.76, 0, 0, Math.PI * 2);
+            ctx.fillStyle = pPaddle.swingTimer > 0 ? 'rgba(0, 242, 254, 0.32)' : 'rgba(30, 41, 59, 0.68)';
+            ctx.fill();
+
             drawPaddlePattern(ctx, sMeta.arch, r);
 
-            if (pPaddle.prechargedSkill || mana.p >= 100) {
-                ctx.font = `${Math.min(20, Math.round(r * 0.52))}px sans-serif`;
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(sMeta.name.slice(0, 2), 0, 0);
-            }
+            // 4. 拍柄處顯示等級
+            ctx.fillStyle = paddleGlow;
+            ctx.font = `900 ${Math.min(11, Math.max(8, Math.round(r * 0.22)))}px Orbitron, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(`LV.${skillLevel}`, 0, r * 1.12);
 
             ctx.restore();
         }
@@ -2582,12 +2783,11 @@
             const pSh = project(ball.x, shadowY, ball.z);
             if (!pSh.vis) return;
             const h = Math.max(0, ball.y - shadowY);
-            const sr = Math.min(18, Math.max(3, ball.r * 1.3 * pSh.scale * (1 / (1 + h * 0.006))));
+            const sr = Math.min(18, Math.max(3, ball.r * 1.35 * pSh.scale * (1 / (1 + h * 0.006))));
             ctx.beginPath(); ctx.ellipse(pSh.x, pSh.y, sr * 1.6, sr * 0.75, 0, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.18, 0.72 - h / 260)})`; ctx.fill();
         }
 
-        // 需求三 (1, 3) & 五 (1)：發光能量球 + 涇渭分明的元素軌跡 + 融合質變雙軌跡
         function drawRibbonBall3D() {
             const pb = project(ball.x, ball.y, ball.z);
             if (!pb.vis) return;
@@ -2597,7 +2797,7 @@
                 if (Math.sin(performance.now() * 0.038) > 0.35) return;
             }
 
-            const pulseScale = 1.0 + (ball.state ? 0.14 * Math.sin(performance.now() * 0.025) : 0);
+            const pulseScale = 1.0 + (ball.state ? 0.15 * Math.sin(performance.now() * 0.028) : 0);
             const br = Math.min(18, Math.max(5, ball.r * pb.scale * pulseScale));
 
             const spinColors = { topspin: '#ff5500', backspin: '#38bdf8', sidespin: '#10b981', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
@@ -2606,7 +2806,7 @@
 
             if (ball.trail.length > 1) {
                 ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                const wMult = ball.tier === 3 ? 3.6 : (ball.tier === 2 ? 3.0 : (ball.state ? 2.4 : 1.7));
+                const wMult = ball.tier === 3 ? 3.8 : (ball.tier === 2 ? 3.1 : (ball.state ? 2.4 : 1.7));
                 for (let i = 1; i < ball.trail.length; i++) {
                     const p0 = project(ball.trail[i - 1].x, ball.trail[i - 1].y, ball.trail[i - 1].z);
                     const p1 = project(ball.trail[i].x, ball.trail[i].y, ball.trail[i].z);
@@ -2614,7 +2814,6 @@
                         const ratio = i / ball.trail.length;
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
-                        // 雷系軌跡加入閃電鋸齒折線效果
                         if (sMeta && (sMeta.arch === 'thunder' || ball.secondaryArch === 'thunder')) {
                             ctx.lineTo(p1.x + (Math.random() - 0.5) * 10, p1.y + (Math.random() - 0.5) * 10);
                         } else {
@@ -2627,7 +2826,6 @@
                         ctx.shadowBlur = 20;
                         ctx.stroke();
 
-                        // 融合神技專屬：內層交錯第二元素能量芯
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
                         ctx.lineTo(p1.x, p1.y);
@@ -2654,20 +2852,44 @@
             }
 
             if (sMeta) {
-                ctx.save(); ctx.translate(pb.x, pb.y); ctx.rotate(ball.orbitalAngle);
-                ctx.beginPath(); ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
-                ctx.strokeStyle = sMeta.glow; ctx.lineWidth = 2.5; ctx.stroke();
+                ctx.save();
+                ctx.translate(pb.x, pb.y);
+                ctx.rotate(ball.orbitalAngle);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = sMeta.glow;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
                 if (ball.tier >= 2) {
                     ctx.rotate(Math.PI * 0.5);
-                    ctx.beginPath(); ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = secColor; ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = secColor;
+                    ctx.stroke();
+
+                    const runeR = br * (ball.tier === 3 ? 2.7 : 2.2);
+                    ctx.strokeStyle = '#fde047';
+                    ctx.lineWidth = 1.6;
+                    for (let t = 0; t < 2; t++) {
+                        ctx.rotate(Math.PI / 3);
+                        ctx.beginPath();
+                        for (let k = 0; k < 3; k++) {
+                            const ang = (k * Math.PI * 2) / 3;
+                            const rx = Math.cos(ang) * runeR;
+                            const ry = Math.sin(ang) * runeR;
+                            if (k === 0) ctx.moveTo(rx, ry);
+                            else ctx.lineTo(rx, ry);
+                        }
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
                 }
                 ctx.restore();
             }
 
-            // 高亮發光能量球核心
             ctx.save();
-            ctx.beginPath(); ctx.arc(pb.x, pb.y, br * (ball.tier >= 2 ? 1.3 : 1.08), 0, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(pb.x, pb.y, br * (ball.tier >= 2 ? 1.32 : 1.08), 0, Math.PI * 2);
             const bGrad = ctx.createRadialGradient(pb.x - br * 0.25, pb.y - br * 0.25, br * 0.1, pb.x, pb.y, br * 1.3);
             bGrad.addColorStop(0, '#ffffff');
             bGrad.addColorStop(0.55, sMeta ? sMeta.glow : '#fde047');
@@ -2684,7 +2906,7 @@
                 const pb = project(lp.x, 0, lp.z), pt = project(lp.x, 320, lp.z);
                 if (pb.vis && pt.vis) {
                     ctx.save();
-                    const w = Math.min(70, lp.r * pb.scale) * lp.alpha;
+                    const w = Math.min(68, lp.r * pb.scale) * lp.alpha;
                     const grad = ctx.createLinearGradient(pb.x, pb.y, pt.x, pt.y);
                     grad.addColorStop(0, lp.color); grad.addColorStop(1, 'rgba(255,255,255,0)');
                     ctx.fillStyle = grad; ctx.globalAlpha = lp.alpha * 0.85;
@@ -2697,7 +2919,7 @@
                 const pj = project(sw.x, sw.y, sw.z);
                 if (pj.vis) {
                     ctx.save(); ctx.beginPath();
-                    const rx = Math.min(130, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
+                    const rx = Math.min(125, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
                     ctx.ellipse(pj.x, pj.y, rx, ry, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = sw.color; ctx.globalAlpha = Math.max(0, sw.alpha);
                     ctx.lineWidth = 3.2; ctx.shadowColor = sw.color; ctx.shadowBlur = 14; ctx.stroke();
@@ -2725,7 +2947,6 @@
                     ctx.globalAlpha = Math.max(0, p.a);
                     ctx.shadowColor = p.c; ctx.shadowBlur = 8;
                     if (p.shape === 'hex') {
-                        // 冰系六角雪花粒子
                         ctx.translate(pj.x, pj.y);
                         ctx.beginPath();
                         for (let k = 0; k < 6; k++) {
@@ -2741,15 +2962,53 @@
             });
         }
 
-        // 需求四：全螢幕閃光、進化碎裂結晶與電競速度線渲染
-        function drawFlashAndCanvasCutIn() {
-            if (screenFlashAlpha > 0) {
+        function drawFlashAndGestureRipples() {
+            const activeMeta = ball.state ? SKILL_META[ball.state] : (screenFlashAlpha > 0 ? { color: screenFlashColor } : null);
+
+            if (activeMeta && (ball.tier >= 1 || screenFlashAlpha > 0)) {
                 ctx.save();
-                ctx.fillStyle = screenFlashColor;
-                ctx.globalAlpha = screenFlashAlpha * 0.45;
+                const vigAlpha = Math.max(screenFlashAlpha * 0.75, ball.tier >= 2 ? 0.42 : 0.24);
+                const minDim = Math.min(viewW, viewH);
+                const maxDim = Math.max(viewW, viewH);
+                const grad = ctx.createRadialGradient(viewW * 0.5, viewH * 0.5, minDim * 0.28, viewW * 0.5, viewH * 0.5, maxDim * 0.72);
+                grad.addColorStop(0, 'rgba(0,0,0,0)');
+                grad.addColorStop(1, activeMeta.color);
+                ctx.fillStyle = grad;
+                ctx.globalAlpha = vigAlpha;
                 ctx.fillRect(0, 0, viewW, viewH);
                 ctx.restore();
             }
+
+            gestureRipples.forEach(gr => {
+                ctx.save();
+                ctx.translate(gr.x, gr.y);
+                ctx.rotate(performance.now() * (gr.isFail ? -0.01 : 0.012));
+                ctx.globalAlpha = Math.max(0, gr.alpha);
+                ctx.strokeStyle = gr.color;
+                ctx.shadowColor = gr.color;
+                ctx.shadowBlur = 18;
+                ctx.lineWidth = 3;
+
+                ctx.beginPath();
+                ctx.arc(0, 0, gr.r, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (!gr.isFail) {
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const a = (i * Math.PI) / 3;
+                        const px = Math.cos(a) * gr.r * 0.78;
+                        const py = Math.sin(a) * gr.r * 0.78;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = gr.glow || '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
 
             speedLines.forEach(sl => {
                 ctx.save();
@@ -2780,7 +3039,7 @@
             });
         }
 
-        // ================= 電競 Cut-in 播報觸發器 =================
+        // ================= 電競 Cut-in 播報與底部顯眼超能槽更新 =================
         let leftToastTimer = null, rightToastTimer = null, topToastTimer = null;
 
         function triggerAnimeCutIn(pos, title, sub, color = '#00f2fe') {
@@ -2788,27 +3047,27 @@
             if (pos === 'center') {
                 showTopToast(title, sub);
             } else if (pos === 'left') {
-                showSideToast('left', title, sub, 'text-white', 1250);
+                showSideToast('left', title, sub, 'text-white', 1150);
             } else {
-                showSideToast('right', title, sub, 'text-white', 1250);
+                showSideToast('right', title, sub, 'text-white', 1150);
             }
         }
 
-        function showSideToast(side, title, sub, colorClass = 'text-cyan-300', duration = 1100) {
+        function showSideToast(side, title, sub, colorClass = 'text-cyan-300', duration = 1000) {
             const isLeft = side === 'left';
             const box = document.getElementById(isLeft ? 'left-toast' : 'right-toast');
             const tEl = document.getElementById(isLeft ? 'left-toast-title' : 'right-toast-title');
             const sEl = document.getElementById(isLeft ? 'left-toast-sub' : 'right-toast-sub');
-            tEl.className = `text-xl sm:text-3xl font-black cyber-font italic cutin-text-shadow tracking-wider ${colorClass}`;
+            tEl.className = `text-base sm:text-2xl font-black cyber-font italic cutin-text-shadow tracking-wider truncate ${colorClass}`;
             tEl.innerText = title;
             sEl.innerText = sub;
-            box.classList.remove('opacity-0', isLeft ? '-translate-x-16' : 'translate-x-16');
+            box.classList.remove('opacity-0', isLeft ? '-translate-x-12' : 'translate-x-12');
             if (isLeft) {
                 clearTimeout(leftToastTimer);
-                leftToastTimer = setTimeout(() => box.classList.add('opacity-0', '-translate-x-16'), duration);
+                leftToastTimer = setTimeout(() => box.classList.add('opacity-0', '-translate-x-12'), duration);
             } else {
                 clearTimeout(rightToastTimer);
-                rightToastTimer = setTimeout(() => box.classList.add('opacity-0', 'translate-x-16'), duration);
+                rightToastTimer = setTimeout(() => box.classList.add('opacity-0', 'translate-x-12'), duration);
             }
         }
 
@@ -2818,14 +3077,13 @@
             document.getElementById('top-toast-sub').innerText = sub;
             box.classList.remove('opacity-0', 'scale-75');
             clearTimeout(topToastTimer);
-            topToastTimer = setTimeout(() => box.classList.add('opacity-0', 'scale-75'), 1450);
+            topToastTimer = setTimeout(() => box.classList.add('opacity-0', 'scale-75'), 1350);
         }
 
         function updateHUD() {
             const pBar = document.getElementById('hud-mana-bar');
-            const mBtn = document.getElementById('btn-mobile-skill');
-            const mLbl = document.getElementById('btn-skill-label');
-            const mEmo = document.getElementById('btn-skill-emoji');
+            const barContainer = document.getElementById('overdrive-bar-container');
+            const statusText = document.getElementById('overdrive-status-text');
             const evBtn = document.getElementById('btn-evolve-prominent');
             const evNext = document.getElementById('btn-evolve-next-lv');
 
@@ -2837,20 +3095,26 @@
             if (canEvolve) evNext.innerText = `LV.${skillLevel + 1}`;
 
             const sMeta = SKILL_META[cfgSkill];
-            mEmo.innerText = sMeta.name.slice(0, 2);
-
             if (pPaddle.prechargedSkill) {
-                mLbl.innerText = "已上膛";
-                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-amber-500/90 flex flex-col items-center justify-center border-2 border-white shadow-[0_0_25px_#fde047]";
-            } else if (mana.p >= 80 && pPaddle.inStrikeZone) {
-                mLbl.innerText = "🔥時機到！";
-                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-gradient-to-br from-amber-400 via-red-500 to-pink-600 flex flex-col items-center justify-center border-2 border-white btn-strike-now";
+                barContainer.classList.add('overdrive-ready');
+                statusText.innerText = `🔥 【${sMeta.name}】必殺已上膛！球進範圍自動轟出`;
+                statusText.className = 'text-amber-300 tracking-wider animate-pulse';
+            } else if (mana.p >= 100) {
+                barContainer.classList.add('overdrive-ready');
+                statusText.innerText = isTouchMode
+                    ? `🔥 超能全滿！【雙指輕點螢幕】釋放 ${sMeta.name}`
+                    : `🔥 超能全滿！按【空白鍵 / 點此處】釋放 ${sMeta.name}`;
+                statusText.className = 'text-amber-300 tracking-wider';
             } else if (mana.p >= 80) {
-                mLbl.innerText = mana.p >= 100 ? `必殺 LV.${skillLevel}` : `可反制`;
-                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-amber-500/35 flex flex-col items-center justify-center border-2 border-amber-400 mana-ready";
+                barContainer.classList.add('overdrive-ready');
+                statusText.innerText = isTouchMode
+                    ? `⚡ 已達 80% 反制門檻！敵方開大時【雙指輕點】觸發融合神技`
+                    : `⚡ 已達 80% 反制門檻！敵方開大時按【空白鍵】觸發融合神技`;
+                statusText.className = 'text-cyan-200 tracking-wider';
             } else {
-                mLbl.innerText = `${Math.round(mana.p)}%`;
-                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl cyber-panel opacity-80 flex flex-col items-center justify-center border border-slate-500";
+                barContainer.classList.remove('overdrive-ready');
+                statusText.innerText = `⚡ 超能核心蓄力中 (${Math.round(mana.p)}% · 80%反制 / 100%必殺)`;
+                statusText.className = 'text-slate-300 tracking-wider';
             }
         }
 
@@ -2894,16 +3158,16 @@
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('pause-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.remove('hidden');
+            document.getElementById('bottom-overdrive-hud').classList.remove('hidden');
 
-            const isMob = viewW < 900 || ('ontouchstart' in window);
-            document.getElementById('mobile-controls').classList.toggle('hidden', !isMob);
-
-            const deskHint = document.getElementById('desktop-onboarding');
-            deskHint.style.opacity = '1';
-            setTimeout(() => { deskHint.style.opacity = '0'; }, 5000);
+            const hint = document.getElementById('controls-onboarding');
+            hint.style.opacity = '1';
+            setTimeout(() => { hint.style.opacity = '0'; }, 5500);
 
             const sMeta = SKILL_META[cfgSkill];
             document.getElementById('hud-skill-emoji').innerText = sMeta.name.slice(0, 2);
+            document.getElementById('hud-skill-name-short').innerText = sMeta.name.slice(3);
+            document.getElementById('hud-skill-name-short').className = `text-xs font-black ${sMeta.textCls}`;
             document.getElementById('hud-skill-icon-box').style.borderColor = sMeta.color;
 
             restartMatch();
@@ -2931,8 +3195,9 @@
             prismShield = { player: 0, ai: 0 };
             lingeringFields = [];
             stolenPassives = []; gamblerBet = 0; yinYangSwitches = 0;
-            twinClone.active = false; twinClone.orbX = null;
+            twinClone.active = false; twinClone.cooldown = 0; twinClone.orbX = null;
             rewindState.active = false; rewindState.freeUsed = false;
+            quantumPortal.active = false;
             pPaddle.poisonStacks = 0; pPaddle.webRootTimer = 0; pPaddle.prechargedSkill = null;
             aPaddle.poisonStacks = 0; aPaddle.webRootTimer = 0;
 
@@ -2959,7 +3224,7 @@
             document.getElementById('pause-modal').classList.add('hidden');
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.add('hidden');
-            document.getElementById('mobile-controls').classList.add('hidden');
+            document.getElementById('bottom-overdrive-hud').classList.add('hidden');
             document.getElementById('info-drawer').classList.add('hidden');
             document.getElementById('setup-modal').classList.remove('hidden');
         }
