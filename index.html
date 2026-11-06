@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER PONG 2077 - 23超能×P2P聯機×真實乒乓終極版</title>
+    <title>CYBER PONG 2077 - 電競超能街機終極版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { user-select: none; -webkit-user-select: none; touch-action: none; box-sizing: border-box; }
         html, body {
@@ -20,35 +20,56 @@
             font-family: 'Noto Sans TC', 'Orbitron', sans-serif;
             color: #fff;
         }
-        .cyber-font { font-family: 'Orbitron', monospace; }
+        .cyber-font { font-family: 'Orbitron', 'Noto Sans TC', sans-serif; }
         .cyber-panel {
-            background: rgba(8, 14, 30, 0.84);
-            border: 1px solid rgba(0, 242, 254, 0.42);
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.14);
+            background: rgba(8, 14, 30, 0.88);
+            border: 1px solid rgba(0, 242, 254, 0.45);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.18);
             backdrop-filter: blur(8px);
         }
         .cyber-btn {
-            background: linear-gradient(135deg, rgba(255, 0, 128, 0.14) 0%, rgba(0, 242, 254, 0.14) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.16) 0%, rgba(0, 242, 254, 0.16) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.24);
             transition: all 0.15s ease;
         }
         .cyber-btn:hover, .cyber-btn.active {
-            background: linear-gradient(135deg, rgba(255, 0, 128, 0.55) 0%, rgba(0, 242, 254, 0.55) 100%);
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.6) 0%, rgba(0, 242, 254, 0.6) 100%);
             border-color: #00f2fe;
-            box-shadow: 0 0 14px rgba(0, 242, 254, 0.55);
+            box-shadow: 0 0 16px rgba(0, 242, 254, 0.6);
             transform: translateY(-1px);
         }
         .cyber-btn:active { transform: scale(0.95); }
+
         @keyframes manaPulse {
-            0%, 100% { box-shadow: 0 0 8px #00f2fe; }
-            50% { box-shadow: 0 0 22px #fde047, inset 0 0 10px #fff; }
+            0%, 100% { box-shadow: 0 0 10px #00f2fe; }
+            50% { box-shadow: 0 0 26px #fde047, inset 0 0 12px #fff; }
         }
-        .mana-ready { animation: manaPulse 0.75s infinite ease-in-out; }
+        .mana-ready { animation: manaPulse 0.65s infinite ease-in-out; }
+
         @keyframes strikePulse {
-            0%, 100% { transform: scale(1.12); box-shadow: 0 0 25px #ef4444, inset 0 0 15px #fde047; }
-            50% { transform: scale(1.18); box-shadow: 0 0 38px #fde047, inset 0 0 22px #fff; }
+            0%, 100% { transform: scale(1.08); box-shadow: 0 0 25px #ef4444, inset 0 0 15px #fde047; }
+            50% { transform: scale(1.16); box-shadow: 0 0 42px #fde047, inset 0 0 24px #fff; }
         }
-        .btn-strike-now { animation: strikePulse 0.4s infinite ease-in-out; }
+        .btn-strike-now { animation: strikePulse 0.38s infinite ease-in-out; }
+
+        @keyframes evolveBounce {
+            0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 15px #f59e0b, 0 0 30px #fde047; }
+            50% { transform: scale(1.12) translateY(-3px); box-shadow: 0 0 28px #fde047, 0 0 45px #ffffff; }
+        }
+        .evolve-mega-btn { animation: evolveBounce 0.55s infinite ease-in-out; }
+
+        /* 參考圖 2：電競動漫風斜切 Cut-in 橫幅 */
+        .cutin-slash-left {
+            clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+            transform: skewX(-12deg);
+        }
+        .cutin-slash-right {
+            clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+            transform: skewX(-12deg);
+        }
+        .cutin-text-shadow {
+            text-shadow: 0 4px 0 #000, 0 0 22px currentColor, 0 0 40px currentColor;
+        }
         .safe-bottom-right {
             bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
             right: calc(env(safe-area-inset-right, 0px) + 16px);
@@ -60,111 +81,115 @@
     <div id="game-container" class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#03050c]">
         <canvas id="gameCanvas" class="block w-full h-full cursor-none"></canvas>
 
-        <!-- ================= 需求 6：三層極簡頂部 HUD ================= -->
-        <div id="in-game-hud" class="absolute top-2.5 inset-x-3 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
+        <!-- ================= 頂部極簡街機 HUD ================= -->
+        <div id="in-game-hud" class="absolute top-2.5 inset-x-2.5 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
             
-            <!-- 6.2 左上角極簡 1 行：[圖標+⬆️] [LV.1] [能量條] + 新體系情境小條 -->
-            <div class="flex flex-col gap-1">
+            <!-- 左上：技能圖示 + 能量條 + 超顯眼金色升級大按鈕 -->
+            <div class="flex flex-col gap-1.5">
                 <div class="cyber-panel px-2.5 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
-                    <button onclick="evolvePlayerSkill()" id="hud-skill-icon-btn" class="relative w-8 h-8 rounded-lg bg-slate-900 border border-cyan-400 flex items-center justify-center text-base transition" title="滿100%能量點擊進化 (E鍵)">
+                    <div id="hud-skill-icon-box" class="w-8 h-8 rounded-lg bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-base shadow-md">
                         <span id="hud-skill-emoji">🔥</span>
-                        <span id="hud-evolve-badge" class="hidden absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 text-[9px] font-black px-1 rounded-full animate-bounce">⬆️</span>
-                    </button>
+                    </div>
                     <span id="hud-passive-star" class="text-amber-300 text-xs font-black opacity-0 transition-opacity duration-200">✦</span>
-                    <span id="hud-skill-lv" class="cyber-font text-[11px] font-black text-amber-300">LV.1</span>
-                    <div class="w-24 sm:w-32 bg-slate-900 h-2.5 rounded-full overflow-hidden border border-cyan-500/40 p-[1px]">
+                    <span id="hud-skill-lv" class="cyber-font text-xs font-black text-amber-300">LV.1</span>
+                    <div class="w-20 sm:w-32 bg-slate-950 h-3 rounded-full overflow-hidden border border-cyan-500/50 p-[1px]">
                         <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-400 to-amber-300 rounded-full transition-all duration-150" style="width:100%"></div>
                     </div>
-                    <span id="hud-mana" class="cyber-font text-[11px] font-black text-cyan-300 min-w-[34px] text-right">100%</span>
+                    <span id="hud-mana" class="cyber-font text-xs font-black text-cyan-300 min-w-[34px] text-right">100%</span>
                 </div>
-                <!-- 6.6 新體系情境 HUD (Gambler押注 / Thief竊取 / YinYang形態) -->
+
+                <!-- 需求四：極度顯眼的金色閃爍升級大按鈕 -->
+                <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
+                    <span>⬆️ 點擊超能進化</span>
+                    <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-1.5 py-0.2 rounded text-[10px]">LV.2</span>
+                </button>
+
+                <!-- 新體系情境小條 -->
                 <div id="hud-context-bar" class="hidden cyber-panel px-2.5 py-1 rounded-lg text-[10px] font-bold text-amber-200 flex items-center gap-2 pointer-events-auto"></div>
             </div>
 
-            <!-- 6.3 中央極簡 2 行：0 : 0 + R1 · 0-0 -->
+            <!-- 中央：比分板 -->
             <div class="cyber-panel px-4 sm:px-6 py-1 rounded-2xl flex flex-col items-center">
-                <div class="flex items-center gap-3 text-2xl sm:text-3xl font-black cyber-font leading-none">
+                <div class="flex items-center gap-2.5 text-2xl sm:text-3xl font-black cyber-font leading-none">
                     <span id="serve-dot-p" class="text-xs text-amber-300">🏓</span>
-                    <span id="score-player" class="text-cyan-400">0</span>
-                    <span class="text-slate-600 text-base">:</span>
-                    <span id="score-ai" class="text-pink-500">0</span>
+                    <span id="score-player" class="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,242,254,0.8)]">0</span>
+                    <span class="text-slate-500 text-base">:</span>
+                    <span id="score-ai" class="text-pink-500 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">0</span>
                     <span id="serve-dot-a" class="text-xs text-amber-300 hidden">🏓</span>
                 </div>
                 <div class="flex items-center gap-2 mt-0.5">
                     <span id="hud-round-info" class="text-[10px] font-black text-amber-300 cyber-font">R1 · 0-0</span>
-                    <span id="hud-context-pill" class="hidden text-[9px] px-1.5 rounded bg-fuchsia-600/60 text-white font-bold animate-pulse"></span>
+                    <span id="hud-context-pill" class="hidden text-[9px] px-1.5 rounded bg-fuchsia-600 text-white font-bold animate-pulse"></span>
                 </div>
             </div>
 
-            <!-- 6.4 右上角精簡按鈕：⚙️ (資訊面板) + ⏸️ (暫停選單) + 🚪 (退出) -->
+            <!-- 右上：精簡系統按鈕 -->
             <div class="flex items-center gap-1.5 pointer-events-auto">
-                <button onclick="toggleInfoDrawer()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="戰術與AI資訊面板">⚙️</button>
-                <button onclick="togglePause()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="暫停與設定">⏸️</button>
-                <button onclick="exitToMenu()" class="cyber-panel hover:bg-rose-600/40 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm text-rose-300 border border-rose-500/50" title="退出回主選單">🚪</button>
+                <button onclick="toggleInfoDrawer()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="技能資訊">⚙️</button>
+                <button onclick="togglePause()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="暫停">⏸️</button>
+                <button onclick="exitToMenu()" class="cyber-panel hover:bg-rose-600/40 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm text-rose-300 border border-rose-500/50" title="退出">🚪</button>
             </div>
         </div>
 
-        <!-- 6.7 ⚙️ 第三層按需戰術資訊面板 -->
+        <!-- ⚙️ 戰術資訊抽屜 -->
         <div id="info-drawer" class="hidden fixed top-14 right-3 z-30 cyber-panel w-72 rounded-2xl p-4 text-xs space-y-2 pointer-events-auto shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-1.5">
-                <span class="font-black text-cyan-300 cyber-font">TACTICAL & AI STATUS</span>
+                <span class="font-black text-cyan-300 cyber-font">SKILL & TACTICAL INFO</span>
                 <button onclick="toggleInfoDrawer()" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <div><span class="text-slate-400">當前技能：</span><span id="info-skill-full" class="font-bold text-amber-300"></span></div>
             <div id="info-passive-desc" class="text-[11px] text-slate-300"></div>
-            <div><span class="text-slate-400">AI 戰術狀態：</span><span id="info-ai-tactic" class="font-bold text-pink-400">CONTROL (控制)</span></div>
+            <div><span class="text-slate-400">AI 戰術模式：</span><span id="info-ai-tactic" class="font-bold text-pink-400">ATTACK</span></div>
             <div id="info-ai-brain" class="text-[11px] text-cyan-200">🧠 AI 解析度：取樣中...</div>
             <div id="info-thief-list" class="text-[11px] text-purple-300">🔮 已竊取被動：無</div>
-            <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機 AI 對戰</div>
-            <div class="border-t border-slate-700 pt-1.5 text-[10px] text-slate-400 leading-relaxed">
-                🏓 <b>操作說明</b>：左鍵揮拍（上甩弧圈/下甩削球/橫甩側旋）· 右鍵高球 · 空白鍵上膛/釋放超能力 · 點左上圖標或按 E 鍵進化。
+            <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
+        </div>
+
+        <!-- ================= 需求四：參考圖 2 電競級動漫斜切大字 Cut-in 播報系統 ================= -->
+        <!-- 左側玩家大招 / 聯動斜切 Cut-in -->
+        <div id="left-toast" class="fixed left-0 top-[20%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-16">
+            <div class="cutin-slash-left bg-gradient-to-r from-slate-950 via-cyan-950/95 to-blue-900/80 border-y-2 border-l-8 border-cyan-400 pl-4 pr-12 py-2.5 shadow-[0_0_35px_rgba(0,242,254,0.65)]">
+                <div id="left-toast-sub" class="text-[10px] sm:text-xs font-black text-amber-300 tracking-widest uppercase italic">⚡ CYBER OVERDRIVE</div>
+                <div id="left-toast-title" class="text-xl sm:text-3xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider">次元突破！</div>
             </div>
         </div>
 
-        <!-- 左側玩家切入播報 (永不置中擋球台) -->
-        <div id="left-toast" class="fixed left-3 top-[30%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-8">
-            <div class="bg-gradient-to-r from-slate-950/90 to-transparent border-l-4 border-cyan-400 pl-3 pr-6 py-1.5 rounded-r-xl backdrop-blur-sm">
-                <div id="left-toast-title" class="text-base sm:text-lg font-black cyber-font text-cyan-300"></div>
-                <div id="left-toast-sub" class="text-[10px] font-bold text-white/90 uppercase"></div>
+        <!-- 右側對手大招斜切 Cut-in -->
+        <div id="right-toast" class="fixed right-0 top-[20%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-16 text-right">
+            <div class="cutin-slash-right bg-gradient-to-l from-slate-950 via-rose-950/95 to-pink-900/80 border-y-2 border-r-8 border-pink-500 pr-4 pl-12 py-2.5 shadow-[0_0_35px_rgba(236,72,153,0.65)]">
+                <div id="right-toast-sub" class="text-[10px] sm:text-xs font-black text-pink-300 tracking-widest uppercase italic">⚠️ RIVAL UNLEASHED</div>
+                <div id="right-toast-title" class="text-xl sm:text-3xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider">敵方必殺！</div>
             </div>
         </div>
 
-        <!-- 右側對手切入播報 (2.1 第一層：0.6s 對手技能標籤) -->
-        <div id="right-toast" class="fixed right-3 top-[30%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-8 text-right">
-            <div class="bg-gradient-to-l from-slate-950/90 to-transparent border-r-4 border-pink-500 pr-3 pl-6 py-1.5 rounded-l-xl backdrop-blur-sm">
-                <div id="right-toast-title" class="text-base sm:text-lg font-black cyber-font text-pink-400"></div>
-                <div id="right-toast-sub" class="text-[10px] font-bold text-white/90 uppercase"></div>
+        <!-- 頂部中央高空巨幅融合 / 進化橫幅 (位於球網上方高空，絕不擋球路) -->
+        <div id="top-toast" class="fixed top-[11%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-75 px-3">
+            <div class="cutin-slash-left bg-gradient-to-r from-amber-500/25 via-slate-950/95 to-fuchsia-600/25 border-y-2 border-x-4 border-amber-400 px-8 py-2 shadow-[0_0_45px_rgba(251,191,36,0.75)] text-center">
+                <div id="top-toast-title" class="text-lg sm:text-2xl font-black cyber-font italic text-amber-300 cutin-text-shadow tracking-wider"></div>
+                <div id="top-toast-sub" class="text-[11px] sm:text-xs font-bold text-white tracking-widest uppercase mt-0.5"></div>
             </div>
         </div>
 
-        <!-- 頂部高空橫幅 (y > 250 高空安全區) -->
-        <div id="top-toast" class="fixed top-[12%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-90 px-3">
-            <div class="bg-slate-950/95 border border-amber-400/80 px-5 py-1 rounded-full shadow-[0_0_25px_rgba(251,191,36,0.5)] text-center">
-                <span id="top-toast-title" class="text-sm sm:text-base font-black cyber-font text-amber-300 mr-2"></span>
-                <span id="top-toast-sub" class="text-[11px] font-bold text-white"></span>
-            </div>
-        </div>
-
-        <!-- 6.5 桌面開局 5 秒操作提示 (5秒後自動淡出，保持 0 底部元素) -->
+        <!-- 桌面開局 5 秒操作提示 -->
         <div id="desktop-onboarding" class="hidden md:flex fixed bottom-4 inset-x-0 justify-center z-20 pointer-events-none transition-opacity duration-700">
-            <div class="bg-black/75 px-5 py-1.5 rounded-full border border-cyan-500/30 text-[11px] text-slate-300">
-                🏓 <b>左鍵</b>：揮拍拉旋球 ｜ <b>右鍵</b>：挑高球 ｜ <b>空白鍵</b>：超能上膛/釋放 ｜ <b>E鍵</b>：進化技能 (5秒後自動隱藏)
+            <div class="bg-black/80 px-5 py-1.5 rounded-full border border-cyan-500/40 text-xs text-slate-200 shadow-lg">
+                🏓 <b>滑鼠移動</b>：走位（自動揮拍） ｜ <b>左鍵滑動</b>：強勢抽球與旋球 ｜ <b>右鍵</b>：高球 ｜ <b>空白鍵</b>：釋放超能必殺 ｜ <b>E鍵</b>：進化技能
             </div>
         </div>
 
-        <!-- 3.6 & 6.5 手機端右下垂直雙按鈕 (56×56 高球 + 88×88 三態技能按鈕) -->
+        <!-- 手機端右下垂直雙按鈕 (不擋球台，左半屏全區自由拖曳) -->
         <div id="mobile-controls" class="fixed safe-bottom-right z-20 flex flex-col items-center gap-3 pointer-events-none hidden">
-            <button onclick="triggerLobShot()" class="pointer-events-auto w-[56px] h-[56px] rounded-2xl cyber-panel active:scale-90 flex flex-col items-center justify-center border border-indigo-400/70 shadow-lg">
+            <button onclick="triggerLobShot()" class="pointer-events-auto w-[56px] h-[56px] rounded-2xl cyber-panel active:scale-90 flex flex-col items-center justify-center border border-indigo-400/80 shadow-lg">
                 <span class="text-base">🎈</span>
                 <span class="text-[9px] text-indigo-200 font-bold">高球</span>
             </button>
-            <button onclick="castSkill()" id="btn-mobile-skill" class="pointer-events-auto w-[88px] h-[88px] rounded-3xl cyber-panel active:scale-90 flex flex-col items-center justify-center border-2 border-slate-600 shadow-2xl transition-all">
+            <button onclick="castSkill()" id="btn-mobile-skill" class="pointer-events-auto w-[86px] h-[86px] rounded-3xl cyber-panel active:scale-90 flex flex-col items-center justify-center border-2 border-slate-500 shadow-2xl transition-all">
                 <span id="btn-skill-emoji" class="text-2xl">⚡</span>
-                <span id="btn-skill-label" class="text-[10px] font-black text-slate-400 mt-0.5">蓄力中</span>
+                <span id="btn-skill-label" class="text-[10px] font-black text-slate-300 mt-0.5">蓄力中</span>
             </button>
         </div>
 
-        <!-- 6.4 暫停與設定彈窗 (整合音效/重開/全螢幕) -->
+        <!-- 暫停選單 -->
         <div id="pause-modal" class="hidden absolute inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 z-40 pointer-events-auto">
             <div class="cyber-panel max-w-xs w-full rounded-2xl p-6 text-center space-y-2.5">
                 <h3 class="text-2xl font-black cyber-font text-cyan-400 mb-2">PAUSED</h3>
@@ -176,26 +201,25 @@
             </div>
         </div>
 
-        <!-- 戰前準備選單 (23大超能 + 單機AI / PeerJS P2P 聯機對戰) -->
+        <!-- 戰前準備選單 -->
         <div id="setup-modal" class="absolute inset-0 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
-            <div class="cyber-panel max-w-5xl w-full rounded-2xl p-3.5 sm:p-5 flex flex-col shadow-[0_0_50px_rgba(0,242,254,0.2)] pointer-events-auto my-auto">
+            <div class="cyber-panel max-w-5xl w-full rounded-2xl p-3.5 sm:p-5 flex flex-col shadow-[0_0_50px_rgba(0,242,254,0.25)] pointer-events-auto my-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
                     <div>
-                        <h1 class="text-xl sm:text-3xl font-black cyber-font text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-500">
-                            CYBER PONG 2077 : ULTIMATE
+                        <h1 class="text-xl sm:text-3xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-500">
+                            CYBER PONG 2077 : HYPER ARCADE
                         </h1>
-                        <p class="text-slate-400 text-[11px]">真實乒乓物理(吃轉/發球/時機/延長賽) · 23大超能 · PeerJS P2P 好友聯機</p>
+                        <p class="text-slate-300 text-[11px]">極致爽快街機對決 · 一鍵開球零失誤 · 23大超能×167種融合神技 · 電競級全屏播報</p>
                     </div>
-                    <!-- 模式切換：單機 AI vs P2P 雙人聯機 -->
                     <div class="flex bg-slate-900/90 p-1 rounded-xl border border-cyan-500/40">
                         <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500 text-slate-950 transition">🤖 單機 AI</button>
                         <button onclick="switchMode('p2p')" id="tab-mode-p2p" class="px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition">🌐 雙人聯機 (P2P)</button>
                     </div>
                 </div>
 
-                <!-- 單機 AI 難度區 -->
+                <!-- 難度選擇 -->
                 <div id="ai-setup-section" class="mb-2.5">
-                    <div class="text-[11px] font-bold text-cyan-400 mb-1 uppercase tracking-wider">1. 選擇 AI 難度 (11分制 × 3局2勝 · 10:10 需贏2分)</div>
+                    <div class="text-[11px] font-bold text-cyan-400 mb-1 uppercase tracking-wider">1. 選擇 AI 難度 (11分制 × 3局2勝)</div>
                     <div class="grid grid-cols-3 gap-2">
                         <button onclick="selectDiff('easy')" id="diff-easy" class="cyber-btn py-1.5 px-3 rounded-xl text-center">
                             <div class="font-bold text-xs">休閒 EASY</div>
@@ -204,18 +228,18 @@
                             <div class="font-bold text-xs text-cyan-300">標準 NORMAL</div>
                         </button>
                         <button onclick="selectDiff('hard')" id="diff-hard" class="cyber-btn py-1.5 px-3 rounded-xl text-center">
-                            <div class="font-bold text-xs text-pink-400">宗師 INSANE 🔥</div>
+                            <div class="font-bold text-xs text-pink-400">狂暴宗師 INSANE 🔥</div>
                         </button>
                     </div>
                 </div>
 
-                <!-- 需求 4：PeerJS P2P 聯機房間設定區 -->
+                <!-- P2P 聯機設定 -->
                 <div id="p2p-setup-section" class="hidden mb-2.5 p-3 rounded-xl bg-slate-950/90 border border-pink-500/40">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="flex flex-col gap-1.5">
                             <div class="text-xs font-bold text-cyan-300">🏠 創建房間 (HOST)</div>
                             <div class="flex items-center gap-2">
-                                <input id="p2p-pass-host" type="password" maxlength="6" placeholder="選填4~6位密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-32">
+                                <input id="p2p-pass-host" type="password" maxlength="6" placeholder="選填密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-28">
                                 <button onclick="createP2PRoom()" class="cyber-btn px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300">生成房間碼</button>
                             </div>
                             <div id="p2p-host-code-display" class="text-xs text-amber-300 font-black cyber-font mt-0.5">尚未創建房間</div>
@@ -223,31 +247,31 @@
                         <div class="flex flex-col gap-1.5">
                             <div class="text-xs font-bold text-pink-300">🔗 加入房間 (JOIN)</div>
                             <div class="flex items-center gap-1.5">
-                                <input id="p2p-code-join" type="text" maxlength="6" placeholder="輸入6位房間碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white uppercase cyber-font w-28">
-                                <input id="p2p-pass-join" type="password" maxlength="6" placeholder="密碼(選填)" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-24">
+                                <input id="p2p-code-join" type="text" maxlength="6" placeholder="6位房間碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white uppercase cyber-font w-28">
+                                <input id="p2p-pass-join" type="password" maxlength="6" placeholder="密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-20">
                                 <button onclick="joinP2PRoom()" class="cyber-btn px-3 py-1.5 rounded-lg text-xs font-bold text-pink-300">連線</button>
                             </div>
-                            <div id="p2p-status-text" class="text-[11px] text-slate-400">狀態：待機中 (雙方盲選球拍，開局揭曉)</div>
+                            <div id="p2p-status-text" class="text-[11px] text-slate-400">狀態：待機中</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. 23大基礎技能選擇 (18原有 + 5新體系) -->
+                <!-- 23 大技能選擇 -->
                 <div class="mb-3">
-                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (23 選 1 · 含 5 大全新戰術體系)</div>
+                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (23 選 1 · 每個技能具備鮮明元素特效與常駐被動)</div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[42vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
                 </div>
 
-                <button onclick="initMatch()" id="btn-start-match" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500 hover:brightness-110 active:scale-98 text-white font-black text-sm sm:text-base cyber-font rounded-xl shadow-[0_0_25px_rgba(0,242,254,0.5)] transition">
-                    START FULLSCREEN MATCH (開始 3局2勝 對決)
+                <button onclick="initMatch()" id="btn-start-match" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500 hover:brightness-110 active:scale-98 text-white font-black text-sm sm:text-base cyber-font rounded-xl shadow-[0_0_25px_rgba(0,242,254,0.55)] transition">
+                    START HYPER MATCH (開始爽快對決)
                 </button>
             </div>
         </div>
 
-        <!-- 3局2勝結算彈窗 -->
+        <!-- 勝負結算彈窗 -->
         <div id="gameover-modal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 pointer-events-auto">
             <div class="cyber-panel max-w-sm w-full rounded-2xl p-6 text-center">
-                <h2 id="go-title" class="text-4xl font-black cyber-font mb-1"></h2>
+                <h2 id="go-title" class="text-4xl font-black cyber-font italic mb-1"></h2>
                 <p id="go-sub" class="text-xs text-slate-300 mb-3"></p>
                 <div class="bg-slate-950/85 py-3 px-4 rounded-xl border border-slate-800 mb-4">
                     <div class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">FINAL SET SCORE (總局分)</div>
@@ -265,59 +289,57 @@
     </div>
 
     <script>
-        // ================= 一、23 大基礎技能 (18原有 + 5新體系) 與 167 種融合矩陣 =================
+        // ================= 一、23 大基礎技能與 167 種融合矩陣 =================
         const ARCH_STYLE = {
-            fire:    { color: '#f97316', glow: '#fde047', textCls: 'text-amber-400' },
-            thunder: { color: '#fef08a', glow: '#38bdf8', textCls: 'text-yellow-300' },
-            gravity: { color: '#818cf8', glow: '#c084fc', textCls: 'text-indigo-300' },
-            sonic:   { color: '#34d399', glow: '#a7f3d0', textCls: 'text-emerald-300' },
-            ghost:   { color: '#e879f9', glow: '#38bdf8', textCls: 'text-purple-400' },
-            prism:   { color: '#22d3ee', glow: '#ffffff', textCls: 'text-cyan-300' },
-            chrono:  { color: '#38bdf8', glow: '#bae6fd', textCls: 'text-sky-300' },
-            leech:   { color: '#fb7185', glow: '#fda4af', textCls: 'text-rose-400' },
-            mirror:  { color: '#e2e8f0', glow: '#38bdf8', textCls: 'text-slate-200' },
-            laser:   { color: '#00f2fe', glow: '#f43f5e', textCls: 'text-cyan-200' },
-            void:    { color: '#a855f7', glow: '#c084fc', textCls: 'text-purple-300' },
-            frost:   { color: '#7dd3fc', glow: '#ffffff', textCls: 'text-sky-200' },
-            toxin:   { color: '#a3e635', glow: '#bef264', textCls: 'text-lime-400' },
-            cyclone: { color: '#a78bfa', glow: '#f0abfc', textCls: 'text-violet-300' },
-            aqua:    { color: '#22d3ee', glow: '#a5f3fc', textCls: 'text-cyan-200' },
-            nova:    { color: '#fbbf24', glow: '#fef08a', textCls: 'text-yellow-200' },
-            web:     { color: '#94a3b8', glow: '#e2e8f0', textCls: 'text-slate-300' },
-            oracle:  { color: '#f472b6', glow: '#fbcfe8', textCls: 'text-pink-200' },
-            // 需求 5：5 個新技能體系色彩
-            gambler: { color: '#f59e0b', glow: '#fef08a', textCls: 'text-amber-300' },
-            twin:    { color: '#2dd4bf', glow: '#99f6e4', textCls: 'text-teal-300' },
-            rewind:  { color: '#60a5fa', glow: '#dbeafe', textCls: 'text-blue-300' },
-            thief:   { color: '#c084fc', glow: '#f3e8ff', textCls: 'text-purple-300' },
-            yinyang: { color: '#f8fafc', glow: '#94a3b8', textCls: 'text-white' }
+            fire:    { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400' },
+            thunder: { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300' },
+            gravity: { color: '#9333ea', glow: '#e879f9', textCls: 'text-purple-300' },
+            sonic:   { color: '#10b981', glow: '#a7f3d0', textCls: 'text-emerald-300' },
+            ghost:   { color: '#e879f9', glow: '#38bdf8', textCls: 'text-fuchsia-300' },
+            prism:   { color: '#00f2fe', glow: '#ffffff', textCls: 'text-cyan-300' },
+            chrono:  { color: '#38bdf8', glow: '#fde047', textCls: 'text-sky-300' },
+            leech:   { color: '#f43f5e', glow: '#fda4af', textCls: 'text-rose-400' },
+            mirror:  { color: '#f8fafc', glow: '#38bdf8', textCls: 'text-slate-200' },
+            laser:   { color: '#06b6d4', glow: '#f43f5e', textCls: 'text-cyan-200' },
+            void:    { color: '#7e22ce', glow: '#c084fc', textCls: 'text-purple-300' },
+            frost:   { color: '#38bdf8', glow: '#ffffff', textCls: 'text-sky-200' },
+            toxin:   { color: '#84cc16', glow: '#d9f99d', textCls: 'text-lime-400' },
+            cyclone: { color: '#8b5cf6', glow: '#f0abfc', textCls: 'text-violet-300' },
+            aqua:    { color: '#0ea5e9', glow: '#a5f3fc', textCls: 'text-cyan-200' },
+            nova:    { color: '#f59e0b', glow: '#fef08a', textCls: 'text-yellow-200' },
+            web:     { color: '#cbd5e1', glow: '#ffffff', textCls: 'text-slate-300' },
+            oracle:  { color: '#ec4899', glow: '#fbcfe8', textCls: 'text-pink-300' },
+            gambler: { color: '#eab308', glow: '#fef08a', textCls: 'text-amber-300' },
+            twin:    { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300' },
+            rewind:  { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300' },
+            thief:   { color: '#a855f7', glow: '#f3e8ff', textCls: 'text-purple-300' },
+            yinyang: { color: '#f8fafc', glow: '#f97316', textCls: 'text-white' }
         };
 
         const BASE_SKILLS = [
-            { id: 'fire',    name: '🔥 熾焰重扣', desc: '極速火球·留烈焰加速帶', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量', arch: 'fire' },
-            { id: 'thunder', name: '⚡ 雷霆瞬影', desc: 'Z字瞬移·留EMP麻痺網',   passiveName: '疾電', passiveDesc: '球拍移速+10%', arch: 'thunder' },
-            { id: 'gravity', name: '🪐 黑洞重力', desc: '引力拉扯·貼地零彈跳',   passiveName: '引力井', passiveDesc: '甜區半徑+10%', arch: 'gravity' },
-            { id: 'sonic',   name: '💨 音速疾風', desc: '大外旋音爆·落地二次飆速', passiveName: '疾風', passiveDesc: '揮拍速度+15%', arch: 'sonic' },
-            { id: 'ghost',   name: '🌀 次元幽靈', desc: '3分身螺旋交錯混淆對手', passiveName: '幻影', passiveDesc: 'AI預判誤差+10%', arch: 'ghost' },
-            { id: 'prism',   name: '🛡️ 稜鏡力場', desc: '張開盾牆自動反彈1次',   passiveName: '稜鏡', passiveDesc: '破防硬直-50%', arch: 'prism' },
+            { id: 'fire',    name: '🔥 熾焰重扣', desc: '濃煙烈焰球·留加速火帶', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量', arch: 'fire' },
+            { id: 'thunder', name: '⚡ 雷霆瞬影', desc: '閃電折線瞬移·留麻痺網', passiveName: '疾電', passiveDesc: '球拍移速+10%', arch: 'thunder' },
+            { id: 'gravity', name: '🪐 黑洞重力', desc: '紫色引力漩渦·拉扯對手', passiveName: '引力井', passiveDesc: '甜區半徑+10%', arch: 'gravity' },
+            { id: 'sonic',   name: '💨 音速疾風', desc: '馬赫音爆環·落地二次飆速', passiveName: '疾風', passiveDesc: '揮拍速度+15%', arch: 'sonic' },
+            { id: 'ghost',   name: '🌀 次元幽靈', desc: '3分身螺旋交錯混淆視覺', passiveName: '幻影', passiveDesc: 'AI預判誤差+10%', arch: 'ghost' },
+            { id: 'prism',   name: '🛡️ 稜鏡力場', desc: '張開全息盾牆自動反彈1次', passiveName: '稜鏡', passiveDesc: '破防硬直-50%', arch: 'prism' },
             { id: 'chrono',  name: '⏳ 時滯領域', desc: '全場降速40%·甜區放大',  passiveName: '時之沙', passiveDesc: '能量獲取+15%', arch: 'chrono' },
             { id: 'leech',   name: '🩸 熵能汲取', desc: '抽取對手30%能量歸己',   passiveName: '吸取', passiveDesc: '每擊偷取3%能量', arch: 'leech' },
             { id: 'mirror',  name: '🪞 鏡像複製', desc: '複製敵方技能湊同系超載', passiveName: '鏡映', passiveDesc: '融合威力+10%', arch: 'mirror' },
-            { id: 'laser',   name: '💎 相位雷射', desc: '直線穿透幻影·貼地滑行', passiveName: '精準', passiveDesc: '甜區判定+8%', arch: 'laser' },
+            { id: 'laser',   name: '💎 相位雷射', desc: '筆直雷射光束·貼地急衝', passiveName: '精準', passiveDesc: '甜區判定+8%', arch: 'laser' },
             { id: 'void',    name: '🌑 虛空相位', desc: '週期性隱身閃爍干擾預判', passiveName: '虛無', passiveDesc: 'AI預判誤差+15%', arch: 'void' },
-            { id: 'frost',   name: '❄️ 絕對冰霜', desc: '生成大範圍冰面減速',    passiveName: '冰晶', passiveDesc: '冰面減速達-65%', arch: 'frost' },
+            { id: 'frost',   name: '❄️ 絕對冰霜', desc: '六角暴雪軌跡·大冰面減速', passiveName: '冰晶', passiveDesc: '冰面減速達-65%', arch: 'frost' },
             { id: 'toxin',   name: '☠️ 劇毒腐蝕', desc: '生成毒池疊滿中毒麻痺',  passiveName: '毒素', passiveDesc: '毒池+50%·2層麻痺', arch: 'toxin' },
-            { id: 'cyclone', name: '🌪️ 氣旋龍捲', desc: 'S型扭曲·旋風甩飛球拍',  passiveName: '螺旋', passiveDesc: '旋球曲率+10%', arch: 'cyclone' },
-            { id: 'aqua',    name: '🌊 潮汐水能', desc: '下沉水花·大水窪減速60%', passiveName: '潮汐', passiveDesc: '水窪範圍+30%', arch: 'aqua' },
+            { id: 'cyclone', name: '🌪️ 氣旋龍捲', desc: '強制S型大拐彎·旋風甩飛', passiveName: '螺旋', passiveDesc: '旋球曲率+15%', arch: 'cyclone' },
+            { id: 'aqua',    name: '🌊 潮汐水能', desc: '激流下沉水花·水窪減速', passiveName: '潮汐', passiveDesc: '水窪範圍+30%', arch: 'aqua' },
             { id: 'nova',    name: '💫 新星爆發', desc: '全屏衝擊波·落地二次爆炸', passiveName: '星核', passiveDesc: '擊球球速+10%', arch: 'nova' },
             { id: 'web',     name: '🕸️ 相位蛛網', desc: '落點生成蛛網黏住0.8秒', passiveName: '黏絲', passiveDesc: '蛛網持續+50%', arch: 'web' },
-            { id: 'oracle',  name: '🔮 預言棱鏡', desc: '預示落點·圈內甜區×1.5', passiveName: '預見', passiveDesc: '滿能提示對手空檔', arch: 'oracle' },
-            // 需求 5：新增 5 大戰術體系
-            { id: 'gambler', name: '🎲 命運賭徒', desc: '押注能量使下次融合LV+1必中空檔', passiveName: '豪賭', passiveDesc: '對拉>5拍能量獲取+50%', arch: 'gambler' },
-            { id: 'twin',    name: '👥 雙子分身', desc: '召喚自主AI分身球拍3秒自動擋球', passiveName: '雙生', passiveDesc: '分身擋球+25%能量', arch: 'twin' },
-            { id: 'rewind',  name: '⏪ 時光倒流', desc: '球落地前定格1秒可回溯重打', passiveName: '回檔', passiveDesc: '每局免費1次回溯救球', arch: 'rewind' },
-            { id: 'thief',   name: '🔮 技能竊取', desc: '竊取對手技能被動(最多疊3個)', passiveName: '妙手', passiveDesc: '每擊球3次自動偷1個被動', arch: 'thief' },
-            { id: 'yinyang', name: '🌗 陰陽切換', desc: '切換陰(精準大甜區)/陽(狂暴破防)', passiveName: '共濟', passiveDesc: '連切3次下球必出Tier3', arch: 'yinyang' }
+            { id: 'oracle',  name: '🔮 預言棱鏡', desc: '預示空檔·圈內甜區×1.5', passiveName: '預見', passiveDesc: '滿能標示對手空檔', arch: 'oracle' },
+            { id: 'gambler', name: '🎲 命運賭徒', desc: '押注能量使下次融合LV+1', passiveName: '豪賭', passiveDesc: '對拉>5拍能量+50%', arch: 'gambler' },
+            { id: 'twin',    name: '👥 雙子分身', desc: '召喚AI分身球拍自動協防', passiveName: '雙生', passiveDesc: '分身擋球+25%能量', arch: 'twin' },
+            { id: 'rewind',  name: '⏪ 時光倒流', desc: '漏球前定格時間回溯重打', passiveName: '回檔', passiveDesc: '每局免費1次回溯', arch: 'rewind' },
+            { id: 'thief',   name: '🔮 技能竊取', desc: '竊取對手被動(最多疊3個)', passiveName: '妙手', passiveDesc: '每3擊自動偷被動', arch: 'thief' },
+            { id: 'yinyang', name: '🌗 陰陽切換', desc: '切換陰(大甜區)/陽(強破防)', passiveName: '共濟', passiveDesc: '連切3次下球必Tier3', arch: 'yinyang' }
         ];
 
         const SKILL_META = {};
@@ -325,9 +347,7 @@
             SKILL_META[s.id] = { ...s, ...ARCH_STYLE[s.arch], isFusion: false };
         });
 
-        // 完整融合定義 (147 原有 + 20 新體系融合 = 167 種)
         const RAW_FUSIONS = [
-            // 同系超載 (23)
             ['fire+fire', 'inferno_overload', '☄️ 滅世隕星·超載', 'fire'],
             ['thunder+thunder', 'storm_emperor', '🌩️ 雷帝領域·超載', 'thunder'],
             ['gravity+gravity', 'black_hole', '🕳️ 真·奇點坍縮', 'gravity'],
@@ -342,16 +362,15 @@
             ['frost+frost', 'absolute_zero', '🧊 絕對零度', 'frost'],
             ['toxin+toxin', 'plague', '☣️ 瘟疫爆發', 'toxin'],
             ['cyclone+cyclone', 'mega_tornado', '🌪️ 超級龍捲', 'cyclone'],
-            ['aqua+aqua', 'tsunami', '🌊 海嘯', 'aqua'],
+            ['aqua+aqua', 'tsunami', '🌊 怒海狂濤', 'aqua'],
             ['nova+nova', 'supernova', '💫 超新星爆發', 'nova'],
-            ['web+web', 'cocoon', '🕸️ 繭縛', 'web'],
+            ['web+web', 'cocoon', '🕸️ 天羅地網', 'web'],
             ['oracle+oracle', 'fate_seal', '🔮 命運封印', 'oracle'],
             ['gambler+gambler', 'jackpot_burst', '🎰 皇家大滿貫', 'gambler'],
             ['twin+twin', 'legion_clone', '👥 雙子星軍團', 'twin'],
             ['rewind+rewind', 'eternal_loop', '⏪ 永恆輪迴', 'rewind'],
             ['thief+thief', 'phantom_heist', '🃏 怪盜神威', 'thief'],
             ['yinyang+yinyang', 'chaos_taiji', '☯️ 混沌太極', 'yinyang'],
-            // 原有異系融合
             ['fire+thunder', 'plasma', '💥 雷炎裁決', 'thunder'],
             ['fire+gravity', 'magma_core', '🌋 熔岩核心', 'gravity'],
             ['fire+sonic', 'flare_dash', '🔥 烈焰音爆閃', 'sonic'],
@@ -363,7 +382,7 @@
             ['fire+laser', 'solar_beam', '🔆 恆星射線', 'laser'],
             ['fire+void', 'dark_flame', '🖤 暗焰吞噬', 'void'],
             ['fire+frost', 'thermal_shock', '❄️🔥 冰火湮滅', 'frost'],
-            ['fire+toxin', 'plague_flame', '☣️🔥 疫火', 'toxin'],
+            ['fire+toxin', 'plague_flame', '☣️🔥 疫火焚城', 'toxin'],
             ['thunder+gravity', 'gravity_storm', '🌩️ 引力雷暴', 'thunder'],
             ['thunder+sonic', 'railgun', '⚡ 超電磁砲', 'thunder'],
             ['thunder+ghost', 'phantom_bolt', '⚡ 幻影雷襲', 'ghost'],
@@ -373,8 +392,8 @@
             ['thunder+mirror', 'mirror_bolt', '🪞 鏡雷反射', 'thunder'],
             ['thunder+laser', 'railgun_laser', '⚡ 超電磁砲', 'laser'],
             ['thunder+void', 'void_thunder', '🌩️ 虛空雷帝', 'void'],
-            ['thunder+frost', 'cryo_storm', '🌨️ 極寒風暴', 'frost'],
-            ['thunder+toxin', 'venom_bolt', '☣️⚡ 毒雷', 'toxin'],
+            ['thunder+frost', 'cryo_storm', '🌨️ 極寒雷暴', 'frost'],
+            ['thunder+toxin', 'venom_bolt', '☣️⚡ 劇毒狂雷', 'toxin'],
             ['gravity+sonic', 'gravity_sling', '🪐 重力彈弓加速', 'sonic'],
             ['gravity+ghost', 'void_mirage', '🌌 虛空幻影黑洞', 'ghost'],
             ['gravity+prism', 'event_horizon', '🕳️ 事件視界力場', 'gravity'],
@@ -382,33 +401,33 @@
             ['gravity+leech', 'mass_drain', '🩸 質量汲取', 'leech'],
             ['gravity+mirror', 'mirror_gravity', '🪞 鏡引反轉', 'gravity'],
             ['gravity+laser', 'gravity_lance', '🕳️ 引力長矛', 'laser'],
-            ['gravity+void', 'singularity', '🌌 奇點', 'void'],
+            ['gravity+void', 'singularity', '🌌 終極奇點', 'void'],
             ['gravity+frost', 'absolute_zero', '🧊 絕對零度', 'frost'],
-            ['gravity+toxin', 'toxic_well', '☣️🕳️ 毒井', 'toxin'],
+            ['gravity+toxin', 'toxic_well', '☣️🕳️ 深淵毒井', 'toxin'],
             ['sonic+ghost', 'afterimage', '💨 音速殘影突襲', 'ghost'],
             ['sonic+prism', 'sonic_wall', '🛡️ 音速壁壘', 'prism'],
             ['sonic+chrono', 'time_dash', '⏳ 時速疾行', 'chrono'],
-            ['sonic+leech', 'speed_drain', '🩸 速度汲取', 'leech'],
+            ['sonic+leech', 'speed_drain', '🩸 極速汲取', 'leech'],
             ['sonic+mirror', 'mirror_sonic', '🪞 鏡音反射', 'sonic'],
             ['sonic+laser', 'photon_dash', '💫 光子疾行', 'laser'],
             ['sonic+void', 'phase_dash', '👻 相位疾行', 'void'],
-            ['sonic+frost', 'frost_wind', '🌬️ 霜風', 'frost'],
-            ['sonic+toxin', 'venom_dash', '☣️💨 毒速', 'toxin'],
+            ['sonic+frost', 'frost_wind', '🌬️ 極地霜風', 'frost'],
+            ['sonic+toxin', 'venom_dash', '☣️💨 劇毒音爆', 'toxin'],
             ['ghost+prism', 'phantom_mirror', '🛡️ 幻鏡迷宮', 'prism'],
             ['ghost+chrono', 'time_ghost', '⏳ 時幻殘影', 'chrono'],
             ['ghost+leech', 'soul_steal', '🩸 靈魂竊取', 'leech'],
             ['ghost+mirror', 'mirror_ghost', '🪞 鏡幻分身', 'ghost'],
-            ['ghost+laser', 'annihilation', '🌑 湮滅', 'laser'],
+            ['ghost+laser', 'annihilation', '🌑 虛光湮滅', 'laser'],
             ['ghost+void', 'phantom_void', '👁️ 幻虛神威', 'void'],
-            ['ghost+frost', 'ice_mirage', '🧊 冰幻', 'frost'],
-            ['ghost+toxin', 'poison_mirage', '☣️👻 毒幻', 'toxin'],
+            ['ghost+frost', 'ice_mirage', '🧊 冰鏡幻影', 'frost'],
+            ['ghost+toxin', 'poison_mirage', '☣️👻 劇毒魅影', 'toxin'],
             ['prism+chrono', 'time_prism', '⏳ 時稜壁壘', 'chrono'],
             ['prism+leech', 'drain_shield', '🛡️ 汲取壁壘', 'prism'],
             ['prism+mirror', 'mirror_maze', '🪞 鏡面迷宮', 'prism'],
             ['prism+laser', 'prism_cannon', '💎 稜鏡激光加農', 'laser'],
             ['prism+void', 'void_barrier', '🕳️ 虛空壁壘', 'void'],
             ['prism+frost', 'ice_wall', '🛡️ 冰晶壁壘', 'frost'],
-            ['prism+toxin', 'toxic_wall', '☣️🛡️ 毒壁壘', 'toxin'],
+            ['prism+toxin', 'toxic_wall', '☣️🛡️ 劇毒壁壘', 'toxin'],
             ['chrono+leech', 'time_drain', '⏳ 時空汲取', 'chrono'],
             ['chrono+mirror', 'time_copy', '⏳ 時複拷貝', 'chrono'],
             ['chrono+laser', 'time_lance', '⏳ 時光長矛', 'laser'],
@@ -418,19 +437,19 @@
             ['leech+mirror', 'perfect_copy', '🪞 雙生完美神威', 'mirror'],
             ['leech+laser', 'drain_beam', '🩸🔆 汲取射線', 'laser'],
             ['leech+void', 'void_drain', '🩸🕳️ 虛空汲取', 'void'],
-            ['leech+frost', 'frost_drain', '🩸❄️ 霜噬', 'frost'],
+            ['leech+frost', 'frost_drain', '🩸❄️ 霜噬汲取', 'frost'],
             ['leech+toxin', 'corrosive_drain', '☣️🩸 腐蝕汲取', 'toxin'],
             ['mirror+laser', 'mirror_beam', '🪞🔆 鏡光射線', 'laser'],
             ['mirror+void', 'void_mirror', '🪞🕳️ 虛空鏡像', 'void'],
-            ['mirror+frost', 'mirror_frost', '🪞❄️ 鏡霜', 'frost'],
-            ['mirror+toxin', 'mirror_toxin', '🪞☠️ 鏡毒', 'toxin'],
-            ['laser+void', 'annihilation', '🌑 湮滅', 'laser'],
+            ['mirror+frost', 'mirror_frost', '🪞❄️ 鏡霜反射', 'frost'],
+            ['mirror+toxin', 'mirror_toxin', '🪞☠️ 鏡毒反射', 'toxin'],
+            ['laser+void', 'annihilation', '🌑 次元湮滅', 'laser'],
             ['laser+frost', 'cryo_beam', '❄️🔆 冰晶射線', 'frost'],
-            ['laser+toxin', 'venom_beam', '☣️🔆 毒射線', 'toxin'],
+            ['laser+toxin', 'venom_beam', '☣️🔆 劇毒射線', 'toxin'],
             ['void+frost', 'frozen_void', '🕳️❄️ 凍結虛空', 'void'],
             ['void+toxin', 'void_toxin', '🕳️☠️ 虛空劇毒', 'void'],
-            ['frost+toxin', 'frost_toxin', '☣️❄️ 冰毒', 'toxin'],
-            ['cyclone+fire', 'fire_tornado', '🔥🌪️ 火焰龍捲', 'cyclone'],
+            ['frost+toxin', 'frost_toxin', '☣️❄️ 冰毒蔓延', 'toxin'],
+            ['cyclone+fire', 'fire_tornado', '🔥🌪️ 業火龍捲', 'cyclone'],
             ['cyclone+thunder', 'storm_lord', '⚡🌪️ 風暴領主', 'cyclone'],
             ['cyclone+gravity', 'vortex_hole', '🕳️ 渦流黑洞', 'cyclone'],
             ['cyclone+sonic', 'turbo_cyclone', '💨 渦輪疾風', 'cyclone'],
@@ -439,49 +458,48 @@
             ['cyclone+laser', 'spiral_beam', '💎 螺旋光束', 'cyclone'],
             ['cyclone+void', 'void_cyclone', '🌑 虛空漩渦', 'cyclone'],
             ['cyclone+oracle', 'fate_wind', '🔮 命運之風', 'cyclone'],
-            ['aqua+fire', 'steam_burst', '♨️ 蒸汽爆發', 'aqua'],
-            ['aqua+thunder', 'storm_surge', '🌊⚡ 風暴潮', 'aqua'],
+            ['aqua+fire', 'steam_burst', '♨️ 蒸汽核爆', 'aqua'],
+            ['aqua+thunder', 'storm_surge', '🌊⚡ 雷電風暴潮', 'aqua'],
             ['aqua+gravity', 'deep_sea', '🌊🕳️ 深海漩渦', 'aqua'],
-            ['aqua+frost', 'glacier', '🧊 冰川', 'aqua'],
-            ['aqua+toxin', 'poison_water', '☠️ 毒水', 'aqua'],
-            ['aqua+ghost', 'mist_phantom', '👻 霧幻', 'aqua'],
+            ['aqua+frost', 'glacier', '🧊 極地冰川', 'aqua'],
+            ['aqua+toxin', 'poison_water', '☠️ 腐蝕毒海', 'aqua'],
+            ['aqua+ghost', 'mist_phantom', '👻 迷霧幻影', 'aqua'],
             ['aqua+prism', 'crystal_water', '💎 水晶水鏡', 'aqua'],
             ['aqua+oracle', 'tidal_fate', '🔮 潮汐預言', 'aqua'],
             ['nova+fire', 'solar_flare', '☀️ 太陽耀斑', 'nova'],
             ['nova+thunder', 'thunder_nova', '⚡💫 雷爆新星', 'nova'],
             ['nova+gravity', 'star_collapse', '🌌 恆星坍縮', 'nova'],
             ['nova+laser', 'gamma_burst', '💫🔆 伽馬射線暴', 'nova'],
-            ['nova+void', 'dark_nova', '🕳️💫 暗新星', 'nova'],
+            ['nova+void', 'dark_nova', '🕳️💫 暗物質新星', 'nova'],
             ['nova+frost', 'supercool_nova', '❄️ 極寒新星', 'nova'],
             ['nova+mirror', 'twin_nova', '🪞 雙子新星', 'nova'],
-            ['nova+chrono', 'time_bomb', '⏳💫 時光炸彈', 'nova'],
-            ['web+fire', 'burning_web', '🔥🕸️ 燃蛛網', 'web'],
-            ['web+thunder', 'electric_web', '⚡🕸️ 電蛛網', 'web'],
+            ['nova+chrono', 'time_bomb', '⏳💫 時光星爆', 'nova'],
+            ['web+fire', 'burning_web', '🔥🕸️ 烈焰蛛網', 'web'],
+            ['web+thunder', 'electric_web', '⚡🕸️ 高壓電網', 'web'],
             ['web+gravity', 'gravity_web', '🕳️🕸️ 重力蛛網', 'web'],
-            ['web+toxin', 'venom_web', '☠️🕸️ 毒蛛網', 'web'],
-            ['web+frost', 'ice_web', '❄️🕸️ 冰蛛網', 'web'],
-            ['web+ghost', 'phantom_web', '👻🕸️ 幻蛛網', 'web'],
+            ['web+toxin', 'venom_web', '☠️🕸️ 劇毒蛛網', 'web'],
+            ['web+frost', 'ice_web', '❄️🕸️ 寒冰蛛網', 'web'],
+            ['web+ghost', 'phantom_web', '👻🕸️ 幻影蛛網', 'web'],
             ['web+void', 'void_web', '🌑🕸️ 虛空蛛網', 'web'],
-            ['web+leech', 'drain_web', '🩸🕸️ 吸取蛛網', 'web'],
-            ['oracle+fire', 'flame_prophecy', '🔮🔥 火焰預言', 'oracle'],
-            ['oracle+thunder', 'thunder_omen', '🔮⚡ 雷之預兆', 'oracle'],
+            ['web+leech', 'drain_web', '🩸🕸️ 噬血蛛網', 'web'],
+            ['oracle+fire', 'flame_prophecy', '🔮🔥 業火神諭', 'oracle'],
+            ['oracle+thunder', 'thunder_omen', '🔮⚡ 天雷預兆', 'oracle'],
             ['oracle+gravity', 'fate_well', '🔮🕳️ 命運之井', 'oracle'],
-            ['oracle+chrono', 'time_prophecy', '⏳🔮 時空預言', 'oracle'],
+            ['oracle+chrono', 'time_prophecy', '⏳🔮 時空神諭', 'oracle'],
             ['oracle+ghost', 'phantom_oracle', '👻🔮 幻影神諭', 'oracle'],
             ['oracle+mirror', 'mirror_fate', '🪞🔮 鏡映命運', 'oracle'],
             ['oracle+leech', 'fate_drain', '🩸🔮 命運汲取', 'oracle'],
             ['oracle+prism', 'crystal_oracle', '💎🔮 水晶神諭', 'oracle'],
-            ['cyclone+aqua', 'hurricane', '🌪️🌊 颶風', 'cyclone'],
-            ['cyclone+nova', 'tornado_burst', '🌪️💫 龍捲爆發', 'cyclone'],
-            ['cyclone+web', 'spider_storm', '🌪️🕸️ 蛛風暴', 'cyclone'],
+            ['cyclone+aqua', 'hurricane', '🌪️🌊 毀滅颶風', 'cyclone'],
+            ['cyclone+nova', 'tornado_burst', '🌪️💫 星爆龍捲', 'cyclone'],
+            ['cyclone+web', 'spider_storm', '🌪️🕸️ 天羅風暴', 'cyclone'],
             ['aqua+nova', 'steam_nova', '♨️💫 蒸汽新星', 'aqua'],
-            ['aqua+web', 'tidal_web', '🌊🕸️ 潮汐蛛網', 'aqua'],
-            ['aqua+oracle', 'ocean_fate', '🌊🔮 海洋預言', 'aqua'],
-            ['nova+web', 'explosive_web', '💫🕸️ 爆裂蛛網', 'nova'],
+            ['aqua+web', 'tidal_web', '🌊🕸️ 潮汐巨網', 'aqua'],
+            ['aqua+oracle', 'ocean_fate', '🌊🔮 深海預言', 'aqua'],
+            ['nova+web', 'explosive_web', '💫🕸️ 爆裂星網', 'nova'],
             ['nova+oracle', 'starburst_fate', '💫🔮 星爆命運', 'nova'],
             ['web+oracle', 'fate_trap', '🕸️🔮 命運陷阱', 'web'],
             ['cyclone+oracle', 'storm_oracle', '🌪️🔮 風暴神諭', 'cyclone'],
-            // 需求 5：15 條新體系關鍵融合
             ['gambler+mirror', 'double_or_nothing', '🎲🪞 雙倍或全無', 'gambler'],
             ['gambler+nova',   'all_in_nuke',       '🎲💫 全押核爆',   'nova'],
             ['gambler+oracle', 'god_of_gamblers',   '🎲🔮 賭神預言',   'oracle'],
@@ -553,13 +571,14 @@
             const hardTier3 = SPIN_HARD_MAP[spinType]?.[baseFusion];
 
             if (hardTier3) {
-                return { id: hardTier3, displayName: SKILL_META[hardTier3].name, isHardTier3: true };
+                return { id: hardTier3, displayName: SKILL_META[hardTier3].name, isHardTier3: true, secondaryArch: archA };
             }
             const suffix = GENERIC_SPIN_SUFFIX[spinType] || '';
             return {
                 id: baseFusion,
                 displayName: SKILL_META[baseFusion].name + suffix,
-                isHardTier3: false
+                isHardTier3: false,
+                secondaryArch: archA
             };
         }
 
@@ -587,18 +606,17 @@
             'laser+prism':     { name: '🛡️💎 稜鏡加農', effect: 'autoClone' },
             'nova+thunder':    { name: '💫⚡ 星雷爆',   effect: 'doubleBoom' },
             'chrono+oracle':   { name: '⏳🔮 時空預言', effect: 'oracleTime' },
-            'gravity+void':    { name: '🪐🌑 奇點',     effect: 'forceTier3' },
-            'ghost+web':       { name: '🌀🕸️ 幻網',     effect: 'fakeRings' },
-            'mirror+nova':     { name: '🪞💫 鏡爆',     effect: 'nextPower' },
-            'aqua+toxin':      { name: '🌊☠️ 毒水',     effect: 'poisonWeb' },
+            'gravity+void':    { name: '🪐🌑 奇點降臨', effect: 'forceTier3' },
+            'ghost+web':       { name: '🌀🕸️ 幻網迷蹤', effect: 'fakeRings' },
+            'mirror+nova':     { name: '🪞💫 鏡爆星辰', effect: 'nextPower' },
+            'aqua+toxin':      { name: '🌊☠️ 劇毒狂潮', effect: 'poisonWeb' },
             'cyclone+gravity': { name: '🌪️🪐 渦流黑洞', effect: 'vortexPull' }
         };
 
         const LV_MULT   = [1.0, 1.2, 1.5, 1.8, 2.2];
         const LV_RADIUS = [1.0, 1.15, 1.3, 1.5, 1.8];
-        const LV_BREAK  = [0.0, 0.10, 0.20, 0.30, 0.40];
+        const LV_BREAK  = [0.0, 0.12, 0.24, 0.36, 0.48];
 
-        // 震動輔助 (3.8)
         function vibrate(pattern) {
             if (navigator.vibrate) {
                 try { navigator.vibrate(pattern); } catch (e) {}
@@ -614,13 +632,12 @@
             passiveStarTimer = setTimeout(() => { star.style.opacity = '0'; }, 400);
         }
 
-        // 支援 Thief 疊加多個被動技能
         let stolenPassives = [];
-        let yinYangMode = 'yin'; // 'yin' | 'yang'
+        let yinYangMode = 'yin';
         let yinYangSwitches = 0;
-        let gamblerBet = 0;      // 0 | 30 | 50 | 70
+        let gamblerBet = 0;
         let twinClone = { active: false, x: 0, y: 42, z: 410, timer: 0, orbX: null };
-        let rewindState = { active: false, timer: 0, freeUsed: false, savedShot: null };
+        let rewindState = { active: false, timer: 0, freeUsed: false };
 
         function hasPassive(id) {
             return cfgSkill === id || stolenPassives.includes(id);
@@ -628,10 +645,10 @@
 
         function applyPassive(skillId, stage) {
             if (stage === 'paddle') {
-                let sweetMult = (hasPassive('gravity') ? 1.10 : 1.0) * (hasPassive('laser') ? 1.08 : 1.0);
-                if (cfgSkill === 'yinyang') sweetMult *= (yinYangMode === 'yin' ? 1.40 : 0.70);
+                let sweetMult = (hasPassive('gravity') ? 1.12 : 1.0) * (hasPassive('laser') ? 1.10 : 1.0);
+                if (cfgSkill === 'yinyang') sweetMult *= (yinYangMode === 'yin' ? 1.40 : 0.85);
                 return {
-                    moveSpeedMult: hasPassive('thunder') ? 1.10 : 1.0,
+                    moveSpeedMult: hasPassive('thunder') ? 1.12 : 1.0,
                     sweetSpotMult: sweetMult,
                     swingMaxMult:  hasPassive('sonic') ? 0.85 : 1.0,
                     stunDurationMult: hasPassive('prism') ? 0.50 : 1.0
@@ -643,12 +660,12 @@
                 if (hasPassive('gambler') && rallyCount > 5) manaMult *= 1.50;
                 if (cfgSkill === 'yinyang' && yinYangMode === 'yin') manaMult *= 1.30;
                 let frameMult = hasPassive('nova') ? 0.90 : 1.0;
-                if (cfgSkill === 'yinyang') frameMult *= (yinYangMode === 'yin' ? 1.20 : 0.78);
+                if (cfgSkill === 'yinyang') frameMult *= (yinYangMode === 'yin' ? 1.10 : 0.80);
                 return {
-                    flatManaBonus: hasPassive('fire') ? 5 : 0,
+                    flatManaBonus: hasPassive('fire') ? 6 : 0,
                     manaGainMult:  manaMult,
-                    leechSteal:    hasPassive('leech') ? 3 : 0,
-                    spinCurveMult: hasPassive('cyclone') ? 1.10 : 1.0,
+                    leechSteal:    hasPassive('leech') ? 4 : 0,
+                    spinCurveMult: hasPassive('cyclone') ? 1.20 : 1.0,
                     flightFrameMult: frameMult
                 };
             }
@@ -663,19 +680,18 @@
             }
             if (stage === 'ai') {
                 return {
-                    aiErrorMult: hasPassive('void') ? 1.15 : (hasPassive('ghost') ? 1.10 : 1.0)
+                    aiErrorMult: hasPassive('void') ? 1.18 : (hasPassive('ghost') ? 1.12 : 1.0)
                 };
             }
             if (stage === 'cast') {
                 return {
-                    fusionPowerMult: hasPassive('mirror') ? 1.10 : 1.0
+                    fusionPowerMult: hasPassive('mirror') ? 1.12 : 1.0
                 };
             }
             return {};
         }
 
-        // 渲染 23 技能選單
-        let gameMode = 'ai'; // 'ai' | 'p2p'
+        let gameMode = 'ai';
         let cfgDiff = 'normal';
         let cfgSkill = 'fire';
 
@@ -714,12 +730,12 @@
             document.getElementById('skill-' + s).classList.add('active');
         }
 
-        // ================= 需求 4：PeerJS P2P 聯機對戰系統 =================
+        // ================= PeerJS P2P 聯機對戰系統 =================
         const ROOM_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         let peer = null, conn = null, isHost = false, roomCode = '', roomPass = '';
         let authFailCount = 0, authLockUntil = 0;
-        let lastPaddleSync = 0, lastHeartbeat = 0, lastReceivedHeartbeat = 0;
-        let peerLatency = 0, remotePaddleTarget = { x: 0, y: 42, tilt: 0 };
+        let lastPaddleSync = 0, lastHeartbeat = 0, peerLatency = 0;
+        let remotePaddleTarget = { x: 0, y: 42, tilt: 0 };
 
         function genRoomCode() {
             let s = '';
@@ -737,17 +753,11 @@
             peer.on('open', () => {
                 document.getElementById('p2p-host-code-display').innerText = `房間碼：${roomCode} (等待對手加入...)`;
             });
-            peer.on('connection', c => {
-                conn = c;
-                setupPeerConnection();
-            });
+            peer.on('connection', c => { conn = c; setupPeerConnection(); });
         }
 
         function joinP2PRoom() {
-            if (Date.now() < authLockUntil) {
-                document.getElementById('p2p-status-text').innerText = '⚠️ 密碼錯誤過多，請稍後再試！';
-                return;
-            }
+            if (Date.now() < authLockUntil) return;
             const code = document.getElementById('p2p-code-join').value.trim().toUpperCase();
             if (code.length !== 6) return;
             roomCode = code;
@@ -764,32 +774,26 @@
             });
         }
 
-        function sendP2P(msg) {
-            if (conn && conn.open) conn.send(msg);
-        }
+        function sendP2P(msg) { if (conn && conn.open) conn.send(msg); }
 
         function setupPeerConnection() {
-            lastReceivedHeartbeat = Date.now();
             conn.on('data', data => handleP2PMessage(data));
             conn.on('close', () => {
-                document.getElementById('p2p-status-text').innerText = '⚠️ 對手已斷線';
                 if (gameRunning) showTopToast('⚠️ DISCONNECTED', '對手連線中斷');
             });
         }
 
         function handleP2PMessage(msg) {
-            lastReceivedHeartbeat = Date.now();
             if (msg.timestamp) peerLatency = Math.max(0, Date.now() - msg.timestamp);
-
             if (msg.type === 'JOIN' && isHost) {
                 if (roomPass && msg.pass !== roomPass) {
                     sendP2P({ type: 'REJECT', reason: '密碼錯誤' });
                     return;
                 }
                 sendP2P({ type: 'ACCEPT', timestamp: Date.now() });
-                document.getElementById('p2p-host-code-display').innerText = `✅ 對手已連線！點擊下方開始對決`;
+                document.getElementById('p2p-host-code-display').innerText = `✅ 對手已連線！點擊開始對決`;
             } else if (msg.type === 'ACCEPT') {
-                document.getElementById('p2p-status-text').innerText = '✅ 已成功加入房間！等待房主開局';
+                document.getElementById('p2p-status-text').innerText = '✅ 已加入房間！等待房主開局';
             } else if (msg.type === 'REJECT') {
                 authFailCount++;
                 if (authFailCount >= 3) authLockUntil = Date.now() + 30000;
@@ -797,34 +801,20 @@
             } else if (msg.type === 'COUNTDOWN') {
                 initMatch(true);
             } else if (msg.type === 'PADDLE') {
-                // 鏡像對手的 X 座標與 Z 座標
                 remotePaddleTarget.x = -msg.x;
                 remotePaddleTarget.y = msg.y;
                 remotePaddleTarget.tilt = -msg.tilt;
             } else if (msg.type === 'HIT' || msg.type === 'SERVE') {
-                // 4.1 & 4.7 & 4.11：擊球方權威同步 + 延遲快進補償 (座標鏡像翻轉)
-                ball.x = -msg.startX;
-                ball.y = msg.startY;
-                ball.z = -msg.startZ;
-                ball.state = msg.ballState;
-                ball.tier = msg.ballTier;
-                ball.spinType = msg.spinType;
-                ball.spinX = -msg.spinX;
-                ball.spinY = msg.spinY;
+                ball.x = -msg.startX; ball.y = msg.startY; ball.z = -msg.startZ;
+                ball.state = msg.ballState; ball.tier = msg.ballTier;
+                ball.spinType = msg.spinType; ball.spinX = -msg.spinX; ball.spinY = msg.spinY;
                 ball.lastHitBy = 'ai';
                 aiMemory.lastAiSkill = msg.rawSkill || 'fire';
-
                 if (msg.ballState) {
                     const sm = SKILL_META[msg.ballState];
-                    if (sm) showSideToast('right', `敵方 ${sm.name}`, '0.6s 技能識別', 'text-pink-400');
+                    if (sm) triggerAnimeCutIn('right', `敵方 ${sm.name}`, 'RIVAL SUPER SKILL', sm.color);
                 }
-                launchBall3DSpin(-msg.targetX, -msg.targetZ, msg.flightFrames, -msg.spinX, msg.spinY, msg.isLob, msg.isServe, msg.isEdgeBall);
-
-                // 延遲補償快進 (4.11)
-                const framesPassed = Math.min(12, Math.floor(peerLatency / 16.67));
-                for (let i = 0; i < framesPassed; i++) {
-                    stepBallPhysics(1.0);
-                }
+                launchBall3DSpin(-msg.targetX, -msg.targetZ, msg.flightFrames, -msg.spinX, msg.spinY, msg.isLob);
             } else if (msg.type === 'SCORE') {
                 matchState.roundScores = { p: msg.a, a: msg.p };
                 document.getElementById('score-player').innerText = matchState.roundScores.p;
@@ -835,14 +825,14 @@
             }
         }
 
-        // ================= 音效引擎 (含立體聲方向簽名 2.2) =================
+        // ================= 音效引擎 =================
         class AudioEngine {
             constructor() { this.ctx = null; this.muted = false; }
             init() {
                 if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                 if (this.ctx.state === 'suspended') this.ctx.resume();
             }
-            playTone(type, f1, f2, dur, vol = 0.32, delay = 0, panX = 0) {
+            playTone(type, f1, f2, dur, vol = 0.35, delay = 0, panX = 0) {
                 if (!this.ctx || this.muted) return;
                 const now = this.ctx.currentTime + delay;
                 const osc = this.ctx.createOscillator();
@@ -863,37 +853,39 @@
                 }
                 osc.start(now); osc.stop(now + dur);
             }
-            swing() { this.playTone('sine', 290, 140, 0.075, 0.16, 0, pPaddle.x); }
+            swing() { this.playTone('sine', 300, 150, 0.07, 0.18, 0, pPaddle.x); }
             bounce(isHeavy = false) {
-                if (isHeavy) this.playTone('triangle', 220, 60, 0.13, 0.42, 0, ball.x);
-                else this.playTone('sine', 660, 240, 0.06, 0.26, 0, ball.x);
-            }
-            edgeBall() {
-                this.playTone('square', 1420, 620, 0.12, 0.45, 0, ball.x);
+                if (isHeavy) this.playTone('triangle', 240, 55, 0.15, 0.48, 0, ball.x);
+                else this.playTone('sine', 680, 260, 0.06, 0.28, 0, ball.x);
             }
             hit(isPerfect = false, spinType = 'flat') {
                 if (isPerfect) {
-                    this.playTone('triangle', 640, 160, 0.14, 0.52, 0, ball.x);
-                    this.playTone('sine', 1280, 1920, 0.15, 0.3, 0.02, ball.x);
+                    this.playTone('triangle', 680, 180, 0.15, 0.55, 0, ball.x);
+                    this.playTone('sine', 1360, 2040, 0.16, 0.35, 0.02, ball.x);
                 } else if (spinType === 'lob') {
-                    this.playTone('sine', 340, 880, 0.16, 0.35, 0, ball.x);
+                    this.playTone('sine', 360, 920, 0.16, 0.36, 0, ball.x);
                 } else {
-                    this.playTone('triangle', 440, 130, 0.1, 0.38, 0, ball.x);
+                    this.playTone('triangle', 460, 140, 0.11, 0.42, 0, ball.x);
                 }
             }
             skillCast() {
-                this.playTone('sawtooth', 320, 80, 0.32, 0.5);
-                this.playTone('sine', 640, 1280, 0.25, 0.35, 0.03);
+                this.playTone('sawtooth', 360, 90, 0.35, 0.55);
+                this.playTone('sine', 720, 1440, 0.28, 0.4, 0.03);
             }
             fusionClash() {
-                [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => {
-                    this.playTone('sawtooth', f, f * 0.48, 0.32, 0.45, i * 0.03);
+                [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((f, i) => {
+                    this.playTone('sawtooth', f, f * 0.45, 0.35, 0.5, i * 0.028);
+                });
+            }
+            levelUp() {
+                [440, 554.37, 659.25, 880, 1108.73, 1318.5].forEach((f, i) => {
+                    this.playTone('triangle', f, f * 1.1, 0.22, 0.48, i * 0.045);
                 });
             }
             guardBreak() { this.playTone('sawtooth', 170, 42, 0.28, 0.55); }
             score(won) {
-                if (won) [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.playTone('triangle', f, f, 0.15, 0.3, i * 0.07));
-                else [320, 260, 200].forEach((f, i) => this.playTone('sawtooth', f, f * 0.85, 0.18, 0.28, i * 0.09));
+                if (won) [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.playTone('triangle', f, f, 0.15, 0.35, i * 0.07));
+                else [360, 300, 240].forEach((f, i) => this.playTone('sine', f, f * 0.9, 0.16, 0.28, i * 0.08));
             }
         }
         const sfx = new AudioEngine();
@@ -902,12 +894,12 @@
             document.getElementById('btn-sound').innerText = sfx.muted ? '🔇 音效：關閉' : '🔊 音效：開啟';
         }
 
-        // ================= 需求 3.1, 3.2, 3.3：相機方向自適應 + 高 DPI 視網膜修復 =================
+        // ================= 需求一：手機端 2.5D 俯視相機與嚴格尺寸上限修復 =================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
         let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
-        const CAM = { z: 700, y: 305, horiz: 0.14 };
+        const CAM = { z: 740, y: 315, horiz: 0.15 };
 
         function resizeCanvas() {
             viewW = window.innerWidth;
@@ -917,43 +909,43 @@
             canvas.height = viewH * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            const isMobile = viewW < 920 || ('ontouchstart' in window);
+            const isMobile = viewW < 900 || ('ontouchstart' in window);
             const isPortrait = viewH > viewW;
             if (!isMobile) {
-                CAM.z = 700; CAM.y = 305; CAM.horiz = 0.14;
+                CAM.z = 740; CAM.y = 315; CAM.horiz = 0.15;
             } else if (isPortrait) {
-                // 3.1 手機豎屏相機拉近
-                CAM.z = 520; CAM.y = 235; CAM.horiz = 0.22;
+                // 關鍵修復：拉遠相機 Z 軸至 860、提高 Y 至 390，徹底杜絕近端除以零導致球拍與紅圈放大數十倍的 Bug！
+                CAM.z = 860; CAM.y = 390; CAM.horiz = 0.20;
             } else {
-                // 3.1 手機橫屏相機
-                CAM.z = 640; CAM.y = 280; CAM.horiz = 0.16;
+                CAM.z = 760; CAM.y = 330; CAM.horiz = 0.15;
             }
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         function project(x, y, z) {
-            const rZ = CAM.z - z;
-            if (rZ <= 10) return { x: 0, y: 0, scale: 0, vis: false };
+            // 保證 rZ 永遠 >= 220，絕不產生無限大縮放
+            const rZ = Math.max(220, CAM.z - z);
             const isPortrait = viewH > viewW;
-            // 3.2 Focal 計算修正
-            const focal = isPortrait ? Math.min(viewW * 0.88, viewH * 0.46) : Math.min(viewW * 0.62, viewH * 0.66);
-            const scale = focal / rZ;
+            const focal = isPortrait ? Math.min(viewW * 0.85, viewH * 0.50) : Math.min(viewW * 0.60, viewH * 0.66);
+            // 強制限制 scale 最大上限
+            const scale = Math.min(isPortrait ? 0.90 : 1.18, focal / rZ);
             return {
                 x: viewW * 0.5 + x * scale,
                 y: viewH * CAM.horiz + (CAM.y - y) * scale,
-                scale, vis: true
+                scale,
+                vis: true
             };
         }
 
-        // ================= AI 難度與 1.6 戰術狀態機 (attack / control / defend) =================
+        // ================= AI 難度與學習型記憶 =================
         const AI_PROFILES = {
-            easy:   { name: 'EASY',          speed: 6.2,  flightFrames: 45, spread: 0.55, saveRate: 0.25, clashRate: 0.15, learnRate: 0.2 },
-            normal: { name: 'NORMAL',        speed: 10.2, flightFrames: 37, spread: 0.76, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
-            hard:   { name: 'NEURAL INSANE', speed: 16.8, flightFrames: 30, spread: 0.88, saveRate: 0.88, clashRate: 0.86, learnRate: 1.0 }
+            easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
+            normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
+            hard:   { name: 'NEURAL INSANE', speed: 16.8, flightFrames: 29, spread: 0.86, saveRate: 0.86, clashRate: 0.85, learnRate: 1.0 }
         };
         const AI_SKILL_POOL = ['fire', 'thunder', 'gravity', 'sonic', 'ghost', 'leech', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova', 'web'];
-        let aiTactic = 'control'; // 'attack' | 'control' | 'defend'
+        let aiTactic = 'attack';
 
         const aiMemory = {
             leftHits: 1, centerHits: 1, rightHits: 1,
@@ -970,19 +962,21 @@
                 else this.centerHits += 1.5;
                 const sum = this.leftHits + this.centerHits + this.rightHits;
                 const bias = (this.rightHits - this.leftHits) / sum;
-                this.predictedX = bias * (T_W * 0.68) * AI_PROFILES[cfgDiff].learnRate;
+                this.predictedX = bias * (T_W * 0.65) * AI_PROFILES[cfgDiff].learnRate;
                 const conf = Math.min(99, Math.round(this.totalShots * 10 * AI_PROFILES[cfgDiff].learnRate));
                 const dir = bias > 0.2 ? '偏右' : (bias < -0.2 ? '偏左' : '均衡');
                 document.getElementById('info-ai-brain').innerText = `🧠 AI 解析度：${conf}% (習慣${dir})`;
             }
         };
 
-        // ================= 遊戲狀態與物理變數 =================
-        let gameRunning = false, isPaused = false, isTouchMode = false, autoSwingEnabled = true;
+        // ================= 遊戲狀態變數 =================
+        let gameRunning = false, isPaused = false, isTouchMode = false;
         let mana = { p: 100, a: 30 };
-        let rallyCount = 0, shake = 0, edgeFlashAlpha = 0, edgeFlashColor = '#00f2fe';
+        let rallyCount = 0, shake = 0, screenFlashAlpha = 0, screenFlashColor = '#00f2fe';
         let hitStopTimer = 0, roundWaitTimer = 0;
-        let paddleAngleFlashTimer = 0, lastContactAngle = 0; // 1.5 觸球瞬間顯示拍面角度 0.2s
+
+        // Canvas 動漫斜切大字 Cut-in 狀態
+        let canvasCutIn = { active: false, title: '', sub: '', color: '#00f2fe', timer: 0, maxTimer: 0.95 };
 
         let matchState = {
             round: 1, playerRounds: 0, aiRounds: 0,
@@ -1000,82 +994,69 @@
         let lingeringFields = [];
 
         const pPaddle = {
-            x: 0, y: 42, z: 435, rx: 44, ry: 44, vx: 0, vy: 0, tilt: 0,
-            swingTimer: 0, swingMax: 0.32, hasHitThisSwing: false,
+            x: 0, y: 42, z: 425, rx: 42, ry: 42, vx: 0, vy: 0, tilt: 0,
+            swingTimer: 0, swingMax: 0.30, hasHitThisSwing: false,
             stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0,
-            inStrikeZone: false, wantLob: false, prechargedSkill: null, powerRatio: 0.5
+            inStrikeZone: false, wantLob: false, prechargedSkill: null
         };
 
         const aPaddle = {
-            x: 0, y: 42, z: -425, rx: 42, ry: 42, tilt: 0,
+            x: 0, y: 42, z: -425, rx: 40, ry: 40, tilt: 0,
             swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0
         };
 
         const ball = {
             x: 0, y: 65, z: 240, vx: 0, vy: 0, vz: 0, ax: 0, ay: 0,
             spinX: 0, spinY: 0, spinType: 'flat', lob: false, r: 9.5, g: -0.42,
-            lastHitBy: 'player', bouncedOnTarget: false, isServe: false, bouncedOwnSide: false,
-            targetX: 0, targetZ: 0, showLandingRing: false, ringDelayTimer: 0, fakeRingOffsetX: 0,
-            state: null, tier: 0, voidTimer: 0, cycloneWave: false, isEdgeBall: false, trail: [],
+            lastHitBy: 'player', bouncedOnTarget: false,
+            targetX: 0, targetZ: 0, showLandingRing: false, fakeRingOffsetX: 0,
+            state: null, secondaryArch: null, tier: 0, voidTimer: 0, cycloneWave: false, trail: [],
             ghostOffsets: [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
             lightningBolts: [], orbitalAngle: 0
         };
 
-        let particles = [], shockwaves = [], lightPillars = [], speedLines = [];
+        let particles = [], shockwaves = [], lightPillars = [], speedLines = [], shatterShards = [];
 
-        // ================= 1.2, 1.4, 1.8：支援兩跳發球、真實掛網/出界與確定性擦邊的拋物線引擎 =================
-        function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false, isServe = false, isEdgeBall = false, allowNetError = false) {
-            const frames = Math.max(14, isLob ? 56 : flightFrames);
+        // ================= 需求二 & 五：100% 必過網、必上台的誇張旋球拋物線引擎 =================
+        function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false) {
+            const frames = Math.max(14, isLob ? 54 : flightFrames);
+            // 安全鎖定落點 100% 在球台範圍內，絕不出界失誤！
+            const safeX = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, targetX));
+            const safeZ = targetZ < 0 ? Math.max(-T_L * 0.88, Math.min(-110, targetZ)) : Math.min(T_L * 0.88, Math.max(110, targetZ));
+
             ball.ax = spinAccX;
             ball.ay = spinAccY;
             ball.lob = isLob;
-            ball.isServe = isServe;
-            ball.bouncedOwnSide = false;
-            ball.isEdgeBall = isEdgeBall;
 
             const effG = (isLob ? -0.48 : -0.42) + ball.ay;
+            // 自動補償橫向旋球加速度 ax，讓球在空中畫出誇張 C 字型大弧線後依然 100% 精準落在 safeX！
+            ball.vx = (safeX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
+            ball.vz = (safeZ - ball.z) / frames;
+            ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
 
-            if (isServe) {
-                // 1.4 正規兩跳發球：第一落點在發球方自己半場，彈起後再飛向 targetZ
-                const midZ = ball.z > 0 ? 150 : -150;
-                const f1 = Math.round(frames * 0.42);
-                ball.vx = (targetX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
-                ball.vz = (targetZ - ball.z) / frames;
-                ball.vy = (0 - ball.y - 0.5 * effG * f1 * f1) / f1;
-            } else {
-                ball.vx = (targetX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
-                ball.vz = (targetZ - ball.z) / frames;
-                ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
-
-                // 1.2 若非嚴重吃下旋失誤，維持基本過網高度；若接強下旋未提拉 (allowNetError)，則不補高度讓其真實掛網！
-                if (!allowNetError) {
-                    const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
-                    if (framesToNet > 0 && framesToNet < frames) {
-                        const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
-                        const minClear = isLob ? NET_H + 85 : NET_H + 12;
-                        if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
-                    }
-                }
+            // 100% 確保過網高度充裕，絕不掛網！
+            const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
+            if (framesToNet > 0 && framesToNet < frames) {
+                const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
+                const minClear = isLob ? NET_H + 85 : NET_H + 18;
+                if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
             }
 
-            ball.targetX = targetX;
-            ball.targetZ = targetZ;
+            ball.targetX = safeX;
+            ball.targetZ = safeZ;
             ball.bouncedOnTarget = false;
             ball.showLandingRing = true;
-            ball.ringDelayTimer = (ball.state && ball.spinType === 'sidespin') ? 0.3 : 0;
-            ball.fakeRingOffsetX = (ball.state && ball.spinType === 'dead') ? 68 : 0;
+            ball.fakeRingOffsetX = (ball.state && ball.spinType === 'dead') ? 55 : 0;
         }
 
-        // ================= 輸入監聽與 3.7 / 3.9 手機手勢擴展 =================
+        // ================= 輸入監聽（左半屏滑動走位 + 自動揮拍 + 一鍵開球） =================
         const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.74 };
-        let leftTouchStart = null, leftLongPressTimer = null, lastLeftTap = 0;
 
         window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
         window.addEventListener('mousedown', e => {
             if (!gameRunning || isPaused) return;
             sfx.init();
-            // 5.3 時光倒流定格期間：左鍵確認、右鍵回溯
             if (rewindState.active) {
                 if (e.button === 2) triggerRewindRestore();
                 else confirmRewindFreeze();
@@ -1100,7 +1081,6 @@
             else if (e.code === 'KeyE') { evolvePlayerSkill(); }
         });
 
-        // 3.7 移除 touchstart 內的雙重揮拍；加入 3.9 左半屏手勢擴展
         window.addEventListener('touchstart', e => {
             if (!gameRunning || isPaused) return;
             const t = e.target;
@@ -1113,30 +1093,16 @@
             if (!touch) return;
 
             if (rewindState.active) {
-                if (touch.clientX < viewW * 0.5) triggerRewindRestore();
-                else confirmRewindFreeze();
+                triggerRewindRestore();
                 return;
             }
 
             mouse.x = touch.clientX;
-            mouse.y = touch.clientY - 35;
+            mouse.y = touch.clientY - 28;
 
+            // 一鍵點擊開球
             if (matchState.waitingForServe && matchState.currentServer === 'player') {
-                triggerPlayerSwing();
-            }
-
-            // 3.9 左半屏手勢偵測
-            if (touch.clientX < viewW * 0.45) {
-                leftTouchStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-                if (Date.now() - lastLeftTap < 280) {
-                    autoSwingEnabled = !autoSwingEnabled;
-                    showSideToast('left', autoSwingEnabled ? '🤖 自動揮拍：開' : '🖐️ 手動揮拍：開', '雙擊左屏切換', 'text-cyan-300');
-                }
-                lastLeftTap = Date.now();
-                clearTimeout(leftLongPressTimer);
-                leftLongPressTimer = setTimeout(() => {
-                    evolvePlayerSkill();
-                }, 900);
+                executePlayerServe();
             }
         }, { passive: false });
 
@@ -1144,21 +1110,10 @@
             if (!e.touches[0]) return;
             const touch = e.touches[0];
             mouse.x = touch.clientX;
-            mouse.y = touch.clientY - 35;
-            if (leftTouchStart && Math.hypot(touch.clientX - leftTouchStart.x, touch.clientY - leftTouchStart.y) > 25) {
-                clearTimeout(leftLongPressTimer);
+            mouse.y = touch.clientY - 28;
+            if (matchState.waitingForServe && matchState.currentServer === 'player') {
+                executePlayerServe();
             }
-        }, { passive: false });
-
-        window.addEventListener('touchend', e => {
-            clearTimeout(leftLongPressTimer);
-            if (leftTouchStart && e.changedTouches[0]) {
-                const dy = e.changedTouches[0].clientY - leftTouchStart.y;
-                if (dy < -55) castSkill();
-                else if (dy > 55) triggerLobShot();
-                else if (!autoSwingEnabled) triggerPlayerSwing();
-            }
-            leftTouchStart = null;
         }, { passive: false });
 
         function triggerLobShot() {
@@ -1170,12 +1125,11 @@
 
         function triggerPlayerSwing() {
             const pMod = applyPassive(cfgSkill, 'paddle');
-            pPaddle.swingMax = 0.32 * pMod.swingMaxMult;
+            pPaddle.swingMax = 0.30 * pMod.swingMaxMult;
             pPaddle.swingTimer = pPaddle.swingMax;
             pPaddle.hasHitThisSwing = false;
             sfx.swing();
 
-            // 1.4 玩家發球回合：揮拍即發球
             if (matchState.waitingForServe && matchState.currentServer === 'player') {
                 executePlayerServe();
                 return;
@@ -1183,39 +1137,57 @@
             checkPlayerHitBall(false);
         }
 
+        // ================= 需求四：超能進化 LV.1~5 與全屏碎裂特效 =================
+        function spawnShatterEffect(color) {
+            for (let i = 0; i < 28; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const spd = 6 + Math.random() * 14;
+                shatterShards.push({
+                    x: viewW * 0.5 + (Math.random() - 0.5) * 160,
+                    y: viewH * 0.45 + (Math.random() - 0.5) * 120,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    size: 14 + Math.random() * 24,
+                    rot: Math.random() * Math.PI,
+                    vRot: (Math.random() - 0.5) * 0.25,
+                    color: i % 2 === 0 ? color : '#fde047',
+                    alpha: 1.0
+                });
+            }
+        }
+
         function evolvePlayerSkill() {
             if (!gameRunning || isPaused || skillLevel >= 5 || roundsEvolvedThisRound >= 2 || mana.p < 100) return;
             mana.p = 0;
             skillLevel++;
             roundsEvolvedThisRound++;
-            vibrate([40, 30, 60]);
+            vibrate([60, 40, 100]);
 
             const stars = skillLevel === 5 ? '★★★' : (skillLevel >= 3 ? '★★' : '★');
             document.getElementById('hud-skill-lv').innerText = `LV.${skillLevel}${stars}`;
 
             const sMeta = SKILL_META[cfgSkill];
-            sfx.fusionClash();
-            shake = 18 + skillLevel * 3;
-            edgeFlashColor = sMeta.color;
-            edgeFlashAlpha = 0.75;
-            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 40, 8);
+            sfx.levelUp();
+            shake = 26;
+            screenFlashColor = '#fde047';
+            screenFlashAlpha = 0.65;
+            spawnShatterEffect(sMeta.color);
+            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 45, 9);
             updateHUD();
-            showTopToast(`⬆️ EVOLVED TO LV.${skillLevel} : ${sMeta.name}`, `威力 ×${LV_MULT[skillLevel - 1]} · 範圍 ×${LV_RADIUS[skillLevel - 1]}`);
+
+            triggerAnimeCutIn('center', `LEVEL UP! 超能進化 LV.${skillLevel}`, `${sMeta.name} · 威力×${LV_MULT[skillLevel - 1]} 範圍×${LV_RADIUS[skillLevel - 1]}`, '#fde047');
         }
 
-        // ================= 3.5 預充能與新體系主動技能釋放 =================
         function castSkill() {
             if (!gameRunning || isPaused) return;
 
-            // 3.5 再點一次取消預充能
             if (pPaddle.prechargedSkill) {
                 pPaddle.prechargedSkill = null;
-                showSideToast('left', 'SKILL CANCELLED', '已取消預充能上膛', 'text-slate-400');
+                showSideToast('left', '已取消上膛', 'SKILL CANCELLED', 'text-slate-400');
                 updateHUD();
                 return;
             }
 
-            // 5.5 陰陽切換：低消耗即時切換形態
             if (cfgSkill === 'yinyang' && mana.p < 80) {
                 toggleYinYangForm();
                 return;
@@ -1225,13 +1197,12 @@
             const reqMana = incomingEnemySkill ? 80 : 100;
 
             if (mana.p < reqMana) {
-                showSideToast('left', 'ENERGY LOW', `需 ${reqMana}% 能量`, 'text-slate-400');
+                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動`, 'text-slate-400');
                 return;
             }
 
             vibrate(50);
 
-            // 5.1 命運賭徒：押注 50% 能量
             if (cfgSkill === 'gambler') {
                 gamblerBet = 50;
                 mana.p = Math.max(0, mana.p - 50);
@@ -1239,37 +1210,27 @@
                 mana.p = incomingEnemySkill ? Math.max(15, mana.p - 80) : 0;
             }
 
-            // 5.2 雙子分身：立即召喚 3s 自主分身球拍
             if (cfgSkill === 'twin') {
                 twinClone.active = true;
-                twinClone.timer = 3.0;
+                twinClone.timer = 3.2;
                 twinClone.x = -pPaddle.x * 0.5;
-                showSideToast('left', '👥 TWIN SUMMONED!', '雙子分身協防 3 秒！', 'text-teal-300');
             }
-
-            // 5.4 技能竊取：立即偷取對手被動
-            if (cfgSkill === 'thief') {
-                stealOpponentPassive(aiMemory.lastAiSkill || 'fire');
-            }
-
-            // 5.5 陰陽切換：滿能量時切換並觸發大招
-            if (cfgSkill === 'yinyang') {
-                toggleYinYangForm();
-            }
+            if (cfgSkill === 'thief') stealOpponentPassive(aiMemory.lastAiSkill || 'fire');
+            if (cfgSkill === 'yinyang') toggleYinYangForm();
 
             updateHUD();
 
-            if (isBallHittableByPlayer(35)) {
+            if (isBallHittableByPlayer(45)) {
                 pPaddle.swingTimer = pPaddle.swingMax;
                 pPaddle.hasHitThisSwing = false;
                 executePlayerReturn(true);
                 return;
             }
 
-            // 3.5 預充能上膛：球進擊球區時自動釋放
             pPaddle.prechargedSkill = cfgSkill;
             sfx.skillCast();
-            showSideToast('left', `${SKILL_META[cfgSkill].name} 上膛`, '球進綠圈將自動釋放 (再按取消)', SKILL_META[cfgSkill].textCls);
+            const sMeta = SKILL_META[cfgSkill];
+            triggerAnimeCutIn('left', `必殺上膛！${sMeta.name.slice(3)}`, '球進範圍自動轟出！', sMeta.color);
             updateHUD();
         }
 
@@ -1279,9 +1240,9 @@
             if (yinYangSwitches >= 3) {
                 yinYangSwitches = 0;
                 forceNextTier3 = true;
-                showTopToast('☯️ 陰陽共濟觸發！', '連切 3 次形態 · 下一球必為 Tier 3 終極神技！');
+                triggerAnimeCutIn('center', '☯️ 陰陽共濟！太極覺醒', '下一球強制升階 Tier 3 終極神技！', '#f97316');
             } else {
-                showSideToast('left', yinYangMode === 'yin' ? '🌑 陰之型 (精準/大甜區)' : '☀️ 陽之型 (極速/強破防)', '陰陽切換生效', 'text-white');
+                showSideToast('left', yinYangMode === 'yin' ? '🌑 陰之型 (大甜區)' : '☀️ 陽之型 (強破防)', '形態切換', 'text-white');
             }
             updateContextBarUI();
         }
@@ -1292,30 +1253,28 @@
                 if (stolenPassives.length >= 3) stolenPassives.shift();
                 stolenPassives.push(targetSkillId);
             }
-            showSideToast('left', `🔮 竊取被動【${SKILL_META[targetSkillId].passiveName}】`, SKILL_META[targetSkillId].passiveDesc, 'text-purple-300');
+            showSideToast('left', `🔮 竊取【${SKILL_META[targetSkillId].passiveName}】`, SKILL_META[targetSkillId].passiveDesc, 'text-purple-300');
             updateContextBarUI();
         }
 
         function updateContextBarUI() {
             const bar = document.getElementById('hud-context-bar');
-            const iconBtn = document.getElementById('hud-skill-icon-btn');
             if (cfgSkill === 'yinyang') {
                 bar.classList.remove('hidden');
-                bar.innerText = yinYangMode === 'yin' ? '🌑 陰形態：甜區+40% 能量+30%' : '☀️ 陽形態：球速+25% 破防+50%';
-                iconBtn.style.borderColor = yinYangMode === 'yin' ? '#38bdf8' : '#f97316';
+                bar.innerText = yinYangMode === 'yin' ? '🌑 陰：甜區+40% 能量+30%' : '☀️ 陽：球速+25% 破防+50%';
             } else if (cfgSkill === 'gambler' && gamblerBet > 0) {
                 bar.classList.remove('hidden');
-                bar.innerText = `🎲 已押注 ${gamblerBet}%：下次融合 LV+1 必中空檔`;
+                bar.innerText = `🎲 已押注 ${gamblerBet}%：下次融合必中空檔`;
             } else if (stolenPassives.length > 0) {
                 bar.classList.remove('hidden');
-                bar.innerText = `🔮 已偷被動：${stolenPassives.map(id => SKILL_META[id]?.passiveName).join(' / ')}`;
+                bar.innerText = `🔮 已偷：${stolenPassives.map(id => SKILL_META[id]?.passiveName).join('/')}`;
                 document.getElementById('info-thief-list').innerText = bar.innerText;
             } else {
                 bar.classList.add('hidden');
             }
         }
 
-        // ================= 玩家球拍更新與 3.5 自動釋放 =================
+        // ================= 玩家球拍更新與全自動揮拍輔助 =================
         function updatePlayerPaddle(dt) {
             const pMod = applyPassive(cfgSkill, 'paddle');
             const bMod = applyPassive(cfgSkill, 'bounce');
@@ -1324,11 +1283,9 @@
             const worldX = (mouse.x - viewW * 0.5) / scale;
             const worldY = CAM.y - (mouse.y - viewH * CAM.horiz) / scale;
 
-            // 拾取雙子分身留下的能量球
-            if (twinClone.orbX !== null && Math.abs(pPaddle.x - twinClone.orbX) < 55) {
+            if (twinClone.orbX !== null && Math.abs(pPaddle.x - twinClone.orbX) < 60) {
                 twinClone.orbX = null;
                 mana.p = Math.min(100, mana.p + 15);
-                showSideToast('left', '🟢 拾取分身能量球', '能量 +15%', 'text-teal-300');
                 updateHUD();
             }
 
@@ -1336,83 +1293,80 @@
                 pPaddle.webRootTimer -= dt;
                 pPaddle.vx = 0; pPaddle.vy = 0;
                 pPaddle.inStrikeZone = isBallHittableByPlayer();
+                if (pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= 315) triggerPlayerSwing();
                 return;
             }
 
             let fieldSlow = 1.0;
             let inOracleCircle = false;
             lingeringFields.forEach(f => {
-                if (f.z > 0 && Math.hypot(pPaddle.x - f.x, pPaddle.z - f.z) < f.r * 1.35) {
-                    if (f.type === 'gravity') pPaddle.x += (f.x - pPaddle.x) * 0.075;
-                    if (f.type === 'cyclone') pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 8.5;
+                if (f.z > 0 && Math.hypot(pPaddle.x - f.x, pPaddle.z - f.z) < f.r * 1.25) {
+                    if (f.type === 'gravity') pPaddle.x += (f.x - pPaddle.x) * 0.065;
+                    if (f.type === 'cyclone') pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 7.5;
                     if (f.type === 'frost') fieldSlow = bMod.frostSlowMult;
-                    if (f.type === 'aqua') fieldSlow = 0.40;
-                    if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.48;
+                    if (f.type === 'aqua') fieldSlow = 0.45;
+                    if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.55;
                     if (f.type === 'web' && !f.triggered) {
                         f.triggered = true;
-                        pPaddle.webRootTimer = 0.8;
-                        showSideToast('right', '🕸️ WEB ROOTED!', '踩中蛛網被黏住 0.8 秒！', 'text-slate-300');
+                        pPaddle.webRootTimer = 0.65;
+                        showSideToast('right', '🕸️ 蛛網束縛!', '短暫定身 0.65 秒', 'text-slate-300');
                     }
                     if (f.type === 'nova' && !f.triggered) {
                         f.triggered = true;
-                        pPaddle.stunTimer = 0.4;
+                        pPaddle.stunTimer = 0.35;
                     }
                     if (f.type === 'oracle') inOracleCircle = true;
                     if (f.type === 'toxin') {
-                        pPaddle.poisonStacks += dt * 1.4;
+                        pPaddle.poisonStacks += dt * 1.3;
                         if (pPaddle.poisonStacks >= bMod.toxinStackReq) {
                             pPaddle.poisonStacks = 0;
-                            pPaddle.stunTimer = 1.0;
+                            pPaddle.stunTimer = 0.85;
                             vibrate([80, 30, 80]);
-                            showSideToast('right', '☠️ POISON PARALYSIS!', '中毒麻痺 1 秒！', 'text-lime-400');
+                            showSideToast('right', '☠️ 劇毒麻痺!', '移速降低', 'text-lime-400');
                         }
                     }
                 }
             });
 
-            const followRate = Math.min(0.95, (pPaddle.stunTimer > 0 ? 0.18 : 0.85) * pMod.moveSpeedMult * fieldSlow);
+            const followRate = Math.min(0.95, (pPaddle.stunTimer > 0 ? 0.25 : 0.88) * pMod.moveSpeedMult * fieldSlow);
             const nextX = pPaddle.x + (worldX - pPaddle.x) * followRate;
             const nextY = pPaddle.y + (worldY - pPaddle.y) * followRate;
 
             pPaddle.vx = (nextX - pPaddle.x) / Math.max(0.01, dt * 60);
             pPaddle.vy = (nextY - pPaddle.y) / Math.max(0.01, dt * 60);
-            // 1.2 計算揮拍力量比 (0.2 ~ 1.0)
-            pPaddle.powerRatio = Math.min(1.0, Math.max(0.25, Math.hypot(pPaddle.vx, pPaddle.vy) / 18));
 
             pPaddle.x = Math.max(-T_W * 1.65, Math.min(T_W * 1.65, nextX));
-            pPaddle.y = Math.max(10, Math.min(140, nextY));
+            pPaddle.y = Math.max(12, Math.min(135, nextY));
 
             if (pPaddle.stunTimer > 0) pPaddle.stunTimer -= dt;
             if (pPaddle.knockbackZ > 0) pPaddle.knockbackZ = Math.max(0, pPaddle.knockbackZ - dt * 110);
 
-            const targetTilt = Math.max(-0.48, Math.min(0.48, (pPaddle.x / T_W) * 0.22 + pPaddle.vx * 0.018));
+            const targetTilt = Math.max(-0.45, Math.min(0.45, (pPaddle.x / T_W) * 0.22 + pPaddle.vx * 0.018));
             pPaddle.tilt += (targetTilt - pPaddle.tilt) * 0.35;
 
             pPaddle.oracleBoost = inOracleCircle ? 1.5 : 1.0;
             pPaddle.inStrikeZone = isBallHittableByPlayer();
-            updateHUD(); // 即時更新手機三態按鈕
+            updateHUD();
 
-            // 3.5 若已預充能上膛，或處於自動揮拍模式，球進入綠圈自動擊出！
-            if (pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= 325) {
-                if (pPaddle.prechargedSkill || (isTouchMode && autoSwingEnabled)) {
-                    triggerPlayerSwing();
-                }
+            // 需求一 (3)：自動擊球優化——只要球進入擊球範圍且玩家走位到位，系統自動揮拍回擊！
+            if (pPaddle.inStrikeZone && pPaddle.swingTimer <= 0 && ball.z >= 310) {
+                triggerPlayerSwing();
             }
         }
 
         function isBallHittableByPlayer(extraBonus = 0) {
-            if (ball.vz <= 0 || ball.z < 245 || ball.z > 505) return false;
+            if (ball.vz <= 0 || ball.z < 235 || ball.z > 515) return false;
             const pMod = applyPassive(cfgSkill, 'paddle');
-            const sideExpand = Math.abs(ball.x) > T_W * 0.42 ? 1.45 : 1.1;
+            const sideExpand = Math.abs(ball.x) > T_W * 0.38 ? 1.55 : 1.2;
             const dx3D = Math.abs(ball.x - pPaddle.x) / sideExpand;
-            const dy3D = Math.abs(ball.y - pPaddle.y) * 0.8;
+            const dy3D = Math.abs(ball.y - pPaddle.y) * 0.75;
             const dist3D = Math.hypot(dx3D, dy3D);
-            const limit3D = ((chronoTimer > 0 ? 112 : 86) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1)) + extraBonus;
+            const limit3D = ((chronoTimer > 0 ? 120 : 96) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1)) + extraBonus;
 
             const pb = project(ball.x, ball.y, ball.z);
             const pp = project(pPaddle.x, pPaddle.y, pPaddle.z);
             const distScreen = Math.hypot((pb.x - pp.x) / sideExpand, pb.y - pp.y);
-            const paddleScreenR = pPaddle.rx * pp.scale * 2.15 * pMod.sweetSpotMult + extraBonus;
+            const paddleScreenR = Math.min(48, pPaddle.rx * pp.scale) * 2.35 * pMod.sweetSpotMult + extraBonus;
 
             return (dist3D <= limit3D || distScreen <= paddleScreenR);
         }
@@ -1420,19 +1374,18 @@
         function checkPlayerHitBall(forceSkill = false) {
             if (pPaddle.swingTimer <= 0 || pPaddle.hasHitThisSwing) return;
             if (isBallHittableByPlayer(0)) {
-                pPaddle.x += (ball.x - pPaddle.x) * 0.45;
+                pPaddle.x += (ball.x - pPaddle.x) * 0.48;
                 executePlayerReturn(forceSkill || Boolean(pPaddle.prechargedSkill));
             }
         }
 
-        // ================= 1.1, 1.2, 1.3, 4.2：確定性擊球、旋轉吃球與三段時機判定 =================
+        // ================= 玩家回球、技能聯動與旋球聯動 =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
             const rMod = applyPassive(cfgSkill, 'return');
             const cMod = applyPassive(cfgSkill, 'cast');
 
-            // 5.4 妙手被動：每擊球 3 次自動偷取對手 1 個被動
             if (hasPassive('thief') && rallyCount > 0 && rallyCount % 3 === 0) {
                 stealOpponentPassive(aiMemory.lastAiSkill || 'fire');
             }
@@ -1446,36 +1399,24 @@
                 mana.a -= s; mana.p = Math.min(100, mana.p + s);
             }
 
-            // 1.3 擊球時機分級：上升期 (Rising) / 高點期 (Peak) / 下降期 (Late)
-            let timingType = 'peak', timingSpeedMult = 1.0, timingSpinMult = 1.0, timingSweetMult = 1.0, timingLabel = '🔥 高點期 PEAK';
-            if (ball.vy > 1.6) {
-                timingType = 'early'; timingSpeedMult = 0.84; timingSpinMult = 0.65; timingSweetMult = 0.85; timingLabel = '⚡ 上升期搶攻 EARLY';
-            } else if (ball.vy < -1.6) {
-                timingType = 'late'; timingSpeedMult = 1.15; timingSpinMult = 1.50; timingSweetMult = 0.95; timingLabel = '🌀 下降期加轉 LATE';
-            } else {
-                timingSpeedMult = 0.82; timingSpinMult = 1.15; timingSweetMult = 1.25;
-            }
-
-            const prevBallSpin = ball.spinType;
-
             if (activeSkill) {
                 skillUseTotal++;
                 if (skillUseTotal === 5 && !skillAwakened) {
                     skillAwakened = true;
-                    showTopToast(`🌟 SKILL AWAKENED : ${SKILL_META[cfgSkill].name}`, '累積施放 5 次 · 技能永久覺醒！');
+                    triggerAnimeCutIn('center', `🌟 覺醒解放！${SKILL_META[cfgSkill].name}`, '威力永久 +50% · 融合保底三階！', SKILL_META[cfgSkill].color);
                 }
                 if (lastPlayerCastSkill) {
                     const pairKey = [lastPlayerCastSkill, activeSkill].sort().join('+');
                     const pairInfo = RESONANCE_PAIRS[pairKey];
                     if (pairInfo) {
-                        showTopToast(`🔗 ${pairInfo.name}`, '觸發技能共鳴配對獎勵！');
+                        triggerAnimeCutIn('left', `超能聯動！${pairInfo.name}`, '雙技能配對共鳴觸發！', '#fde047');
                         if (pairInfo.effect === 'nextPower') resonancePowerBoost = true;
                         if (pairInfo.effect === 'fastFlight') resonanceFastFlight = true;
                         if (pairInfo.effect === 'instantMana') mana.p = Math.min(100, mana.p + 20);
                         if (pairInfo.effect === 'autoClone') prismShield.player = 2.2;
                         if (pairInfo.effect === 'freezeAi') aPaddle.stunTimer = 1.2;
                         if (pairInfo.effect === 'ignoreAiPred') ignoreNextAiPred = true;
-                        if (pairInfo.effect === 'globalIce') lingeringFields.push({ x: 0, z: -220, r: 200, type: 'frost', timer: 1.5, color: '#7dd3fc' });
+                        if (pairInfo.effect === 'globalIce') lingeringFields.push({ x: 0, z: -220, r: 190, type: 'frost', timer: 1.5, color: '#38bdf8' });
                         if (pairInfo.effect === 'superBreak') resonancePowerBoost = true;
                         if (pairInfo.effect === 'poisonWeb') aPaddle.poisonStacks = 2;
                         if (pairInfo.effect === 'oracleCopy') { oracleVisionTimer = 3.0; activeSkill = aiMemory.lastAiSkill || activeSkill; }
@@ -1483,8 +1424,8 @@
                         if (pairInfo.effect === 'doubleBoom') shake = 28;
                         if (pairInfo.effect === 'oracleTime') { chronoTimer = 1.8; oracleVisionTimer = 3.0; }
                         if (pairInfo.effect === 'forceTier3') forceNextTier3 = true;
-                        if (pairInfo.effect === 'fakeRings') ball.fakeRingOffsetX = 95;
-                        if (pairInfo.effect === 'vortexPull') lingeringFields.push({ x: 0, z: -250, r: 95, type: 'gravity', timer: 2.5, color: '#a855f7' });
+                        if (pairInfo.effect === 'fakeRings') ball.fakeRingOffsetX = 85;
+                        if (pairInfo.effect === 'vortexPull') lingeringFields.push({ x: 0, z: -250, r: 95, type: 'gravity', timer: 2.5, color: '#9333ea' });
                     }
                 }
                 lastPlayerCastSkill = activeSkill;
@@ -1493,11 +1434,12 @@
             if (activeSkill === 'mirror') activeSkill = ball.state || aiMemory.lastAiSkill || 'fire';
 
             const dist = Math.hypot(ball.x - pPaddle.x, (ball.y - pPaddle.y) * 0.8);
-            const sweetThreshold = (chronoTimer > 0 ? 64 : 46) * pMod.sweetSpotMult * timingSweetMult * (pPaddle.oracleBoost || 1);
-            const isSweetSpot = guaranteedPerfect || (dist <= sweetThreshold && ball.z >= 315 && ball.z <= 465);
+            const sweetThreshold = (chronoTimer > 0 ? 70 : 54) * pMod.sweetSpotMult * (pPaddle.oracleBoost || 1);
+            const isSweetSpot = guaranteedPerfect || (dist <= sweetThreshold);
             guaranteedPerfect = false;
             if (isSweetSpot) vibrate(20);
 
+            // 需求五：誇張化旋球弧線，讓 C 字側旋與急墜上旋肉眼清晰可見！
             const swipeSpeed = Math.hypot(pPaddle.vx, pPaddle.vy);
             let spinType = 'flat', spinAccX = 0, spinAccY = 0;
             let isLob = pPaddle.wantLob;
@@ -1505,31 +1447,29 @@
 
             if (isLob) {
                 spinType = 'lob';
-                spinAccY = pPaddle.vy < -2 ? 0.08 : 0;
-            } else if (swipeSpeed < 2.2) {
+                spinAccY = 0.08;
+            } else if (swipeSpeed < 2.0) {
                 spinType = 'dead';
-            } else if (Math.abs(pPaddle.vy) > Math.abs(pPaddle.vx) * 1.25) {
+            } else if (Math.abs(pPaddle.vy) > Math.abs(pPaddle.vx) * 1.2) {
                 if (pPaddle.vy > 0) {
                     spinType = 'topspin';
-                    spinAccY = -0.14 * Math.min(1.4, swipeSpeed / 14) * timingSpinMult;
+                    spinAccY = -0.18 * Math.min(1.5, swipeSpeed / 12); // 明顯急墜下沉
                 } else {
                     spinType = 'backspin';
-                    spinAccY = 0.13 * Math.min(1.4, swipeSpeed / 14) * timingSpinMult;
+                    spinAccY = 0.15 * Math.min(1.5, swipeSpeed / 12);
                 }
             } else {
                 spinType = 'sidespin';
-                spinAccX = Math.sign(pPaddle.vx) * Math.min(0.24, swipeSpeed * 0.014) * rMod.spinCurveMult * timingSpinMult;
+                // 大幅度 C 字型香蕉弧線
+                spinAccX = Math.sign(pPaddle.vx || (ball.x - pPaddle.x) || 1) * Math.min(0.36, Math.max(0.18, swipeSpeed * 0.02)) * rMod.spinCurveMult;
             }
-
-            // 1.5 記錄觸球瞬間拍面角度閃現 0.2s
-            paddleAngleFlashTimer = 0.22;
-            lastContactAngle = pPaddle.tilt + (spinType === 'topspin' ? -0.35 : (spinType === 'backspin' ? 0.35 : 0));
 
             if (spinType === spinChain.type && spinType !== 'flat') spinChain.count++;
             else { spinChain.type = spinType; spinChain.count = 1; }
             if (spinChain.count >= 3) {
                 spinAccX *= 1.45; spinAccY *= 1.45;
-                showTopToast(`🌀 ${spinType.toUpperCase()} MASTERY!`, '連續 3 球同旋 · 旋轉曲率 ×1.45！');
+                const sNames = { topspin: '極致弧圈！烈焰下沉', backspin: '極致削球！深淵急停', sidespin: '極致側旋！雙重C字斬', lob: '極致高吊！蒼穹墜落', dead: '極致無轉！幻影死球' };
+                triggerAnimeCutIn('left', sNames[spinType] || '旋球專精突破！', 'SPIN MASTERY x3 · 曲率放大 145%', '#34d399');
             }
 
             recentSpins.push(spinType);
@@ -1538,15 +1478,16 @@
                 recentSpins = [];
                 mana.p = Math.min(100, mana.p + 25);
                 guaranteedPerfect = true;
-                showTopToast('🌈 SPIN COMBO MASTER!', '5 球內施展 4 種旋轉 · 能量 +25% 且下球必 PERFECT！');
+                triggerAnimeCutIn('center', '🌈 萬象旋球連攜！', '施展 4 種不同旋轉 · 能量 +25%！', '#38bdf8');
             }
 
-            let nextSkillState = null, nextTier = 0, displayFusionTitle = '';
+            let nextSkillState = null, nextSecondaryArch = null, nextTier = 0, displayFusionTitle = '';
 
             if (ball.state !== null) {
                 if (activeSkill) {
                     const fRes = getFusedSkill(ball.state, activeSkill, spinType);
                     nextSkillState = fRes.id;
+                    nextSecondaryArch = fRes.secondaryArch;
                     displayFusionTitle = fRes.displayName;
                     const fMeta = SKILL_META[nextSkillState] || SKILL_META.inferno_overload;
                     const isCounter = COUNTER_MAP[activeSkill] === (SKILL_META[ball.state]?.arch || ball.state);
@@ -1556,24 +1497,26 @@
 
                     vibrate([100, 50, 100]);
                     sfx.fusionClash();
-                    hitStopTimer = 0.09;
-                    shake = 30;
-                    edgeFlashColor = fMeta.color;
-                    edgeFlashAlpha = 0.85;
+                    hitStopTimer = 0.095; // 大招對撞慢動作停頓 Hit-Stop
+                    shake = 32;
+                    screenFlashColor = fMeta.color;
+                    screenFlashAlpha = 0.72; // 全屏閃技能色
                     resonanceActive = true;
 
-                    showTopToast(`⚔️ ${displayFusionTitle}`, `${isCounter ? '【克制破防 +30%】' : ''}超能共鳴爆發！`);
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 250, color: fMeta.color, alpha: 1.0 });
-                    lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 45, alpha: 1.0 });
-                } else if (!isSweetSpot && dist > 58) {
+                    triggerAnimeCutIn('center', `次元突破！${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}超能融合神技降臨！`, fMeta.color);
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 12, maxR: 260, color: fMeta.color, alpha: 1.0 });
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 30, maxR: 180, color: '#ffffff', alpha: 1.0 });
+                    lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 50, alpha: 1.0 });
+                    spawnShatterEffect(fMeta.color);
+                } else if (!isSweetSpot && dist > 62) {
                     sfx.guardBreak();
-                    pPaddle.knockbackZ = 52;
-                    pPaddle.stunTimer = 0.65 * pMod.stunDurationMult;
-                    shake = 15;
-                    showSideToast('right', '💥 GUARD CRUSH!', '偏心接大招被震退！', 'text-rose-400');
+                    pPaddle.knockbackZ = 45;
+                    pPaddle.stunTimer = 0.5 * pMod.stunDurationMult;
+                    shake = 16;
+                    showSideToast('right', '💥 破防震退!', '敵方超能球威力強大', 'text-rose-400');
                 } else {
                     mana.p = Math.min(100, mana.p + 35);
-                    showSideToast('left', '🛡️ PERFECT PARRY!', '紅心格擋 · 能量 +35%', 'text-cyan-300');
+                    triggerAnimeCutIn('left', '🛡️ 完美格擋！PERFECT PARRY', '精準卸力 · 能量 +35%', '#00f2fe');
                 }
             } else if (activeSkill) {
                 nextSkillState = activeSkill;
@@ -1586,29 +1529,30 @@
                     nextSkillState = fRes.id;
                     nextTier = 3;
                     sfx.fusionClash();
-                    showTopToast(`🔗 CHAIN OVERLOAD : ${fRes.displayName}`, '同系連擊 3 次觸發超載融合！');
+                    triggerAnimeCutIn('center', `極限超載！${fRes.displayName}`, '同系連擊 3 次觸發終極形態！', SKILL_META[nextSkillState].color);
                 } else {
                     sfx.skillCast();
-                    showSideToast('left', `${SKILL_META[activeSkill].name} LV.${skillLevel}`, timingLabel, SKILL_META[activeSkill].textCls);
+                    triggerAnimeCutIn('left', `領域展開！${SKILL_META[activeSkill].name.slice(3)}`, `LV.${skillLevel} 超能釋放 · 威力 ×${LV_MULT[skillLevel - 1]}`, SKILL_META[activeSkill].color);
                 }
 
-                edgeFlashColor = SKILL_META[activeSkill].color;
-                edgeFlashAlpha = 0.55;
-                shake = 18;
+                screenFlashColor = SKILL_META[activeSkill].color;
+                screenFlashAlpha = 0.45;
+                shake = 20;
                 if (skillLevel >= 4) aPaddle.stunTimer += 0.3;
 
-                if (activeSkill === 'prism') prismShield.player = 2.6 * LV_MULT[skillLevel - 1];
-                else if (activeSkill === 'chrono') chronoTimer = 1.6 * LV_MULT[skillLevel - 1];
-                else if (activeSkill === 'oracle') oracleVisionTimer = 3.0;
-                else if (activeSkill === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 220, color: '#fbbf24', alpha: 1.0 });
+                if (activeSkill === 'prism') prismShield.player = 2.8 * LV_MULT[skillLevel - 1];
+                else if (activeSkill === 'chrono') chronoTimer = 1.8 * LV_MULT[skillLevel - 1];
+                else if (activeSkill === 'oracle') oracleVisionTimer = 3.2;
+                else if (activeSkill === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 230, color: '#fbbf24', alpha: 1.0 });
                 else if (activeSkill === 'leech') {
                     const st = Math.min(mana.a, 32 * LV_MULT[skillLevel - 1]);
                     mana.a -= st; mana.p = Math.min(100, mana.p + st);
                 }
-                hitStopTimer = 0.045;
+                hitStopTimer = 0.05;
             }
 
             ball.state = nextSkillState;
+            ball.secondaryArch = nextSecondaryArch;
             ball.tier = nextTier;
             ball.spinType = spinType;
             ball.spinX = spinAccX;
@@ -1621,7 +1565,7 @@
             if (arch === 'laser' || arch === 'web') {
                 spinAccX = 0; spinAccY = 0; ball.spinX = 0;
             } else if (arch === 'sonic') {
-                spinAccX = (spinAccX >= 0 ? 1 : -1) * 0.32;
+                spinAccX = (spinAccX >= 0 ? 1 : -1) * 0.35;
                 ball.spinX = spinAccX;
             } else if (arch === 'cyclone') {
                 ball.cycloneWave = true;
@@ -1631,36 +1575,16 @@
                 ball.voidTimer = 1.6;
             }
 
-            // 1.1 & 1.2：計算落點、力量精度與吃轉失誤 (接上旋未壓拍出台 / 接強下旋未提拉下網)
-            let aimX = (ball.x - pPaddle.x) * 1.25 + pPaddle.vx * 9.0 + pPaddle.x * 0.38;
-            let targetX = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, aimX));
+            let aimX = (ball.x - pPaddle.x) * 1.25 + pPaddle.vx * 8.8 + pPaddle.x * 0.35;
+            let targetX = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, aimX));
             if (gamblerBet > 0) {
-                targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78; // 賭徒必中空檔
+                targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
                 gamblerBet = 0;
                 updateContextBarUI();
             }
 
-            let targetZ = spinType === 'dead' ? -135 : -265;
-            let allowNetError = false;
-
-            if (!ball.state && !isSweetSpot) {
-                if (prevBallSpin === 'topspin' && spinType !== 'topspin' && pPaddle.powerRatio > 0.85 && dist > 52) {
-                    // 1.1 接強上旋未壓拍且發力過猛 -> 吃上旋飛出底線出台！
-                    targetZ = -T_L - 45;
-                    showSideToast('left', '⚠️ OVERHIT (吃上旋出台)', '接強上旋建議向上刷弧圈壓球', 'text-amber-400');
-                } else if (prevBallSpin === 'backspin' && spinType === 'flat' && dist > 55) {
-                    // 1.1 接強下旋平擋未提拉 -> 吃下旋掛網！
-                    allowNetError = true;
-                    targetZ = -35;
-                    showSideToast('left', '⚠️ INTO NET (吃下旋掛網)', '接下旋球建議向上拉弧圈或挑高球', 'text-sky-300');
-                }
-            }
-
-            let flightFrames = Math.round((isSweetSpot ? 29 : 34) * timingSpeedMult * (1.12 - pPaddle.powerRatio * 0.22));
-            if (aiMemory.totalShots >= 3 && Math.abs(targetX - aiMemory.predictedX) > T_W * 0.65) {
-                mana.p = Math.min(100, mana.p + 15);
-                showTopToast('🧠 MIND GAME!', '逆向變線騙過預判 · 能量 +15%');
-            }
+            let targetZ = spinType === 'dead' ? -150 : -265;
+            let flightFrames = isSweetSpot ? 28 : 33;
             aiMemory.recordPlayerShot(targetX);
 
             const lvSpeedFactor = skillLevel >= 2 ? 0.90 : 1.0;
@@ -1670,30 +1594,34 @@
 
             if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.8); resonanceFastFlight = false; }
 
-            // 1.8 確定性擦邊球判定 (4% 機率)
-            const isEdgeBall = Math.abs(targetX) > T_W * 0.72 && ((rallyCount * 17) % 100 < 4);
-
             if (ball.state) {
                 const m = SKILL_META[ball.state] || SKILL_META.fire;
-                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 45 : 28, 8);
-                if (m.arch === 'thunder' || m.arch === 'laser') {
-                    createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.color);
+                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 55 : 35, 9);
+                if (m.arch === 'thunder' || m.arch === 'laser' || ball.secondaryArch === 'thunder') {
+                    createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.glow);
                 }
-                if (ball.tier >= 2) spawnSpeedLines(m.color);
+                spawnSpeedLines(m.color);
             } else {
                 sfx.hit(isSweetSpot, spinType);
-                if (isSweetSpot) showSideToast('left', timingLabel, `PERFECT · +28% 能量`, 'text-cyan-300');
-                spawnParticles(ball.x, ball.y, ball.z, isSweetSpot ? '#00f2fe' : '#fff', isSweetSpot ? 20 : 10, 5);
+                shake = isSweetSpot ? 7 : 3;
+                if (isSweetSpot && spinType !== 'flat') {
+                    const spinNames = { topspin: '🔥 極速上旋抽擊！', backspin: '❄️ 極寒削球急停！', sidespin: '🌪️ C字弧光側旋！', lob: '🎈 蒼穹高吊球！' };
+                    showSideToast('left', spinNames[spinType] || '⚡ PERFECT HIT!', '完美擊球 · 能量 +28%', 'text-cyan-300');
+                }
+                spawnParticles(ball.x, ball.y, ball.z, isSweetSpot ? '#00f2fe' : '#fff', isSweetSpot ? 26 : 14, 5.5);
                 const prevMana = mana.p;
-                const gain = (isSweetSpot ? 28 : 18) * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
+                const gain = (isSweetSpot ? 28 : 20) * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
                 mana.p = Math.min(100, mana.p + gain);
-                if (prevMana < 100 && mana.p >= 100) vibrate([30, 50, 30]);
+                if (prevMana < 100 && mana.p >= 100) {
+                    vibrate([30, 50, 30]);
+                    sfx.levelUp();
+                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', '按空白鍵釋放必殺 · 或點擊金色按鈕進化！', '#fde047');
+                }
             }
 
             updateHUD();
-            launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX, spinAccY, isLob, false, isEdgeBall, allowNetError);
+            launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX, spinAccY, isLob);
 
-            // 4.7 P2P 聯機同步發送 HIT 事件
             if (gameMode === 'p2p') {
                 sendP2P({
                     type: 'HIT',
@@ -1701,14 +1629,13 @@
                     targetX, targetZ, flightFrames,
                     spinX: spinAccX, spinY: spinAccY, spinType, isLob,
                     ballState: ball.state, ballTier: ball.tier, rawSkill: cfgSkill,
-                    isServe: false, isEdgeBall, timestamp: Date.now()
+                    timestamp: Date.now()
                 });
             }
         }
 
-        // ================= 1.6 AI 戰術狀態機與對手控制 =================
+        // ================= AI 走位與對撞 =================
         function updateAI(dt) {
-            // P2P 聯機模式下，遠端對手球拍使用 0.25 插值平滑同步 (4.8)
             if (gameMode === 'p2p') {
                 aPaddle.x += (remotePaddleTarget.x - aPaddle.x) * 0.25;
                 aPaddle.y += (remotePaddleTarget.y - aPaddle.y) * 0.25;
@@ -1719,12 +1646,6 @@
             const prof = AI_PROFILES[cfgDiff];
             const aiMod = applyPassive(cfgSkill, 'ai');
             const timeScale = chronoTimer > 0 ? 0.58 : 1.0;
-
-            // 1.6 更新 AI 戰術狀態機
-            const scoreDiff = matchState.roundScores.a - matchState.roundScores.p;
-            if (ball.tier >= 2) aiTactic = 'defend';
-            else if (scoreDiff < -1) aiTactic = 'attack';
-            else aiTactic = 'control';
 
             if (aPaddle.stunTimer > 0) aPaddle.stunTimer -= dt;
             if (aPaddle.webRootTimer > 0) { aPaddle.webRootTimer -= dt; return; }
@@ -1741,7 +1662,7 @@
 
                 let fieldSlow = 1.0;
                 lingeringFields.forEach(f => {
-                    if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.4) {
+                    if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.35) {
                         if (f.type === 'gravity') desiredX = desiredX * 0.35 + f.x * 0.65;
                         if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 9.0;
                         if (f.type === 'frost') fieldSlow = 0.42;
@@ -1762,7 +1683,7 @@
                 aPaddle.y += (Math.max(20, ball.y) - aPaddle.y) * 0.25;
                 aPaddle.tilt = Math.max(-0.38, Math.min(0.38, -dx * 0.015));
 
-                if (ball.z <= -335 && ball.z >= -485 && ball.lastHitBy === 'player') {
+                if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player') {
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
                     let reach = aPaddle.rx * (cfgDiff === 'hard' ? 2.45 : 1.85);
 
@@ -1793,7 +1714,7 @@
             rallyCount++;
 
             const incomingSkill = ball.state;
-            let aiNextSkill = null, aiNextTier = 0, fusionLabel = '';
+            let aiNextSkill = null, aiNextSecondary = null, aiNextTier = 0, fusionLabel = '';
             mana.a = Math.min(100, mana.a + (resonanceActive ? 30 : 22));
 
             if (incomingSkill && mana.a >= 80 && Math.random() < prof.clashRate) {
@@ -1803,135 +1724,91 @@
                 const aiSpin = ['topspin', 'sidespin', 'backspin'][Math.floor(Math.random() * 3)];
                 const fRes = getFusedSkill(incomingSkill, counterSkill, aiSpin);
                 aiNextSkill = fRes.id;
+                aiNextSecondary = fRes.secondaryArch;
                 fusionLabel = fRes.displayName;
                 aiNextTier = fRes.isHardTier3 ? 3 : 2;
 
                 sfx.fusionClash();
-                hitStopTimer = 0.08;
-                shake = 24;
+                hitStopTimer = 0.085;
+                shake = 26;
                 const fMeta = SKILL_META[aiNextSkill] || SKILL_META.plasma;
-                edgeFlashColor = fMeta.color;
-                edgeFlashAlpha = 0.7;
+                screenFlashColor = fMeta.color;
+                screenFlashAlpha = 0.55;
                 resonanceActive = true;
 
-                // 2.1 第一層識別：對手一側顯示 0.6s 技能標籤
-                showSideToast('right', `⚠️ ${fusionLabel}`, `AI 融合反擊`, 'text-pink-400', 700);
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 200, color: fMeta.color, alpha: 1.0 });
-                lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 40, alpha: 1.0 });
-            } else if (!incomingSkill && mana.a >= 100 && (aiTactic === 'attack' || Math.random() < prof.clashRate)) {
+                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, '按空白鍵反制融合 · 或走位接球！', fMeta.color);
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 210, color: fMeta.color, alpha: 1.0 });
+                lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 42, alpha: 1.0 });
+            } else if (!incomingSkill && mana.a >= 100 && Math.random() < prof.clashRate) {
                 mana.a = 0;
                 aiNextSkill = AI_SKILL_POOL[Math.floor(Math.random() * AI_SKILL_POOL.length)];
                 aiMemory.lastAiSkill = aiNextSkill;
                 aiNextTier = 1;
                 sfx.skillCast();
-                shake = 15;
+                shake = 16;
                 const sMeta = SKILL_META[aiNextSkill];
                 if (aiNextSkill === 'leech') mana.p = Math.max(0, mana.p - 25);
                 if (aiNextSkill === 'void') ball.voidTimer = 1.6;
                 if (aiNextSkill === 'cyclone') ball.cycloneWave = true;
-                showSideToast('right', `AI ${sMeta.name}`, '按空白鍵可融合反制！', 'text-pink-400', 650);
+                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, '按空白鍵可觸發【雙重融合】！', sMeta.color);
             } else {
                 const arch = SKILL_META[incomingSkill]?.arch;
                 if (arch === 'fire') aPaddle.knockbackZ = -48;
                 if (arch === 'thunder') aPaddle.stunTimer = 0.95;
                 sfx.hit(false, 'flat');
-                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 14, 4.5);
+                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 16, 4.5);
             }
 
             ball.state = aiNextSkill;
+            ball.secondaryArch = aiNextSecondary;
             ball.tier = aiNextTier;
             updateHUD();
 
-            // 1.6 根據 AI 戰術狀態機決定球路與旋轉
             const targetSide = pPaddle.x > 0 ? -1 : 1;
-            let targetX = targetSide * (0.28 + Math.random() * 0.44) * T_W * prof.spread;
-            let targetZ = 205 + Math.random() * 95;
+            let targetX = targetSide * (0.25 + Math.random() * 0.42) * T_W * prof.spread;
+            let targetZ = 195 + Math.random() * 95;
             let flightFrames = prof.flightFrames;
-            let isAiLob = false;
 
-            if (aiTactic === 'control') {
-                targetZ = 140 + Math.random() * 75; // 控制球偏短或大角度
-                ball.spinType = Math.random() > 0.5 ? 'backspin' : 'sidespin';
-            } else if (aiTactic === 'defend') {
-                isAiLob = Math.random() < 0.45;
-                ball.spinType = isAiLob ? 'lob' : 'backspin';
-                targetZ = 270;
-            } else {
-                ball.spinType = 'topspin';
-                flightFrames = Math.max(24, prof.flightFrames - 4);
-            }
-
-            let aiSpinX = ball.spinType === 'sidespin' ? (targetSide * 0.16) : 0;
-            let aiSpinY = ball.spinType === 'topspin' ? -0.12 : (ball.spinType === 'backspin' ? 0.11 : 0);
+            let aiSpinX = (Math.random() - 0.5) * (cfgDiff === 'hard' ? 0.24 : 0.12);
+            let aiSpinY = (Math.random() - 0.5) * 0.12;
+            ball.spinType = Math.abs(aiSpinX) > 0.08 ? 'sidespin' : 'topspin';
             ball.spinX = aiSpinX;
             ball.spinY = aiSpinY;
-            paddleAngleFlashTimer = 0.2;
-            lastContactAngle = aPaddle.tilt;
 
-            if (aiNextTier >= 2) flightFrames = Math.max(22, prof.flightFrames - 9);
-            else if (aiNextTier === 1) flightFrames = Math.max(25, prof.flightFrames - 6);
+            if (aiNextTier >= 2) flightFrames = Math.max(22, prof.flightFrames - 8);
+            else if (aiNextTier === 1) flightFrames = Math.max(25, prof.flightFrames - 5);
 
-            launchBall3DSpin(targetX, targetZ, flightFrames, aiSpinX, aiSpinY, isAiLob);
-
-            // 5.3 時光倒流被動：若球落點極偏且有免費回溯，準備觸發
-            rewindState.savedShot = { targetX, targetZ, flightFrames, aiSpinX, aiSpinY };
+            launchBall3DSpin(targetX, targetZ, flightFrames, aiSpinX, aiSpinY, false);
         }
 
-        // ================= 5.3 時光倒流定格與回溯處理 =================
         function triggerRewindRestore() {
             rewindState.active = false;
             sfx.fusionClash();
-            showTopToast('⏪ TIME REWIND!', '時光倒流回溯成功 · 球已重新慢速飛來！');
-            ball.x = 0; ball.y = 85; ball.z = -180;
-            ball.state = null; ball.tier = 0;
-            launchBall3DSpin(pPaddle.x * 0.5, 230, 46, 0, 0, false);
+            triggerAnimeCutIn('center', '⏪ 時光倒流！TIME REWIND', '已回溯球路並自動反擊！', '#60a5fa');
+            ball.x = pPaddle.x; ball.y = 55; ball.z = 380;
+            executePlayerReturn(false);
         }
 
         function confirmRewindFreeze() {
             rewindState.active = false;
         }
 
-        // ================= 主物理步進與循環 =================
+        // ================= 需求二 & 三：零阻擋物理步進與涇渭分明的元素飛行粒子 =================
         function stepBallPhysics(simSpeed) {
             ball.vx += ball.ax * simSpeed;
             ball.x += ball.vx * simSpeed;
             if (ball.cycloneWave && !ball.bouncedOnTarget) {
-                ball.x += Math.cos(ball.z * 0.035) * 3.8 * simSpeed;
+                ball.x += Math.cos(ball.z * 0.038) * 4.2 * simSpeed;
             }
             ball.y += ball.vy * simSpeed;
             ball.z += ball.vz * simSpeed;
             ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * simSpeed;
 
-            // 1.2 球網碰撞檢測 (掛網失誤或 1.8 擦網球)
-            if (Math.abs(ball.z) < 12 && ball.y < NET_H) {
-                if (ball.isEdgeBall) {
-                    ball.isEdgeBall = false;
-                    ball.y = NET_H + 4;
-                    ball.vz *= 0.62;
-                    ball.vx += (ball.x > 0 ? -2.2 : 2.2);
-                    sfx.edgeBall();
-                    showTopToast('✨ NET CORD! (擦網球)', '球擦過網頂改變了軌跡與速度！');
-                } else {
-                    ball.vz = -ball.vz * 0.25;
-                    ball.vy = -2;
-                    sfx.guardBreak();
-                    resolvePoint();
-                }
-            }
-
-            const onTableX = Math.abs(ball.x) <= T_W + 18;
-            const onTableZ = Math.abs(ball.z) <= T_L + 18;
+            const onTableX = Math.abs(ball.x) <= T_W + 30;
+            const onTableZ = Math.abs(ball.z) <= T_L + 30;
 
             if (ball.y <= 0 && ball.vy < 0 && onTableX && onTableZ) {
-                // 1.4 發球第一落點在己方半場彈跳
-                if (ball.isServe && !ball.bouncedOwnSide && ((ball.vz < 0 && ball.z > 0) || (ball.vz > 0 && ball.z < 0))) {
-                    ball.y = 0;
-                    ball.vy = Math.abs(ball.vy) * 0.88;
-                    ball.bouncedOwnSide = true;
-                    sfx.bounce(false);
-                } else {
-                    handleTableBounce();
-                }
+                handleTableBounce();
             }
         }
 
@@ -1946,19 +1823,20 @@
             if (oracleVisionTimer > 0) oracleVisionTimer = Math.max(0, oracleVisionTimer - rawDt);
             if (prismShield.player > 0) prismShield.player = Math.max(0, prismShield.player - rawDt);
             if (ball.voidTimer > 0) ball.voidTimer = Math.max(0, ball.voidTimer - rawDt);
-            if (ball.ringDelayTimer > 0) ball.ringDelayTimer = Math.max(0, ball.ringDelayTimer - rawDt);
-            if (paddleAngleFlashTimer > 0) paddleAngleFlashTimer = Math.max(0, paddleAngleFlashTimer - rawDt);
+            if (canvasCutIn.active) {
+                canvasCutIn.timer -= rawDt;
+                if (canvasCutIn.timer <= 0) canvasCutIn.active = false;
+            }
 
             if (twinClone.active) {
                 twinClone.timer -= rawDt;
-                twinClone.x += (ball.x - twinClone.x) * 0.18;
+                twinClone.x += (ball.x - twinClone.x) * 0.22;
                 if (twinClone.timer <= 0) {
                     twinClone.active = false;
                     twinClone.orbX = twinClone.x;
                 }
             }
 
-            // P2P 球拍與心跳同步 (4.8 & 4.12)
             if (gameMode === 'p2p' && conn && conn.open) {
                 if (now - lastPaddleSync > 50) {
                     lastPaddleSync = now;
@@ -1980,39 +1858,33 @@
                     checkPlayerHitBall(false);
                 }
 
-                // 5.3 時光倒流定格處理
                 if (rewindState.active) {
                     rewindState.timer -= rawDt;
-                    if (rewindState.timer <= 0) confirmRewindFreeze();
+                    if (rewindState.timer <= 0) triggerRewindRestore();
                 } else if (hitStopTimer > 0) {
                     hitStopTimer -= rawDt;
                 } else if (roundWaitTimer === 0 && !matchState.waitingForServe) {
                     stepBallPhysics(simSpeed);
-                    ball.orbitalAngle += rawDt * 14;
+                    ball.orbitalAngle += rawDt * 16;
 
-                    // 5.3 檢查是否觸發免費時光倒流定格 (球即將落地且距離玩家較遠)
-                    if (cfgSkill === 'rewind' && !rewindState.freeUsed && ball.vz > 0 && ball.z > 340 && Math.abs(ball.x - pPaddle.x) > 125) {
+                    if (cfgSkill === 'rewind' && !rewindState.freeUsed && ball.vz > 0 && ball.z > 350 && Math.abs(ball.x - pPaddle.x) > 130) {
                         rewindState.freeUsed = true;
-                        rewindState.active = true;
-                        rewindState.timer = 1.0;
-                        showTopToast('⏪ REWIND FREEZE (定格1秒)', '按【右鍵/點左屏】回溯重打 · 按【左鍵】繼續！');
+                        triggerRewindRestore();
                     }
 
-                    // 5.2 雙子分身自動攔截
-                    if (twinClone.active && ball.vz > 0 && ball.z >= 375 && ball.z <= 430 && Math.abs(ball.x - twinClone.x) < 75) {
+                    if (twinClone.active && ball.vz > 0 && ball.z >= 370 && ball.z <= 435 && Math.abs(ball.x - twinClone.x) < 80) {
                         twinClone.active = false;
                         twinClone.orbX = twinClone.x;
                         mana.p = Math.min(100, mana.p + 25);
                         sfx.fusionClash();
-                        showSideToast('left', '👥 TWIN BLOCK!', '分身擋球成功 · 能量 +25%！', 'text-teal-300');
+                        showSideToast('left', '👥 雙子分身救球!', '能量 +25%', 'text-teal-300');
                         executePlayerReturn(false);
                     }
 
-                    // 🛡️ 稜鏡力場盾牆自動反彈
-                    if (prismShield.player > 0 && ball.vz > 0 && ball.z >= 365 && ball.z <= 425) {
+                    if (prismShield.player > 0 && ball.vz > 0 && ball.z >= 365 && ball.z <= 430) {
                         prismShield.player = 0;
                         sfx.fusionClash();
-                        showSideToast('left', '🛡️ PRISM AUTO-REFLECT!', '力場自動反彈來球！', 'text-cyan-300');
+                        triggerAnimeCutIn('left', '🛡️ 稜鏡反射！PRISM REFLECT', '全息盾牆自動反彈必殺！', '#22d3ee');
                         executePlayerReturn(true);
                     }
 
@@ -2026,7 +1898,7 @@
                     });
 
                     ball.trail.push({ x: ball.x, y: ball.y, z: ball.z });
-                    const maxTrail = ball.tier >= 2 ? 26 : (ball.state ? 22 : 16);
+                    const maxTrail = ball.tier >= 2 ? 28 : (ball.state ? 24 : 18);
                     while (ball.trail.length > maxTrail) ball.trail.shift();
 
                     updateActiveSkillFlight(rawDt);
@@ -2040,19 +1912,31 @@
 
             updateEffects(rawDt);
             if (shake > 0) shake = Math.max(0, shake - rawDt * 45);
-            if (edgeFlashAlpha > 0) edgeFlashAlpha = Math.max(0, edgeFlashAlpha - rawDt * 2.0);
+            if (screenFlashAlpha > 0) screenFlashAlpha = Math.max(0, screenFlashAlpha - rawDt * 2.2);
 
             drawScene();
             requestAnimationFrame(loop);
         }
 
+        // 需求三 (1)：每個元素技能涇渭分明的專屬粒子（火濃煙、雷折線、冰六角雪花、重力漩渦）
         function updateActiveSkillFlight(dt) {
             if (!ball.state) return;
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
             const arch = meta.arch;
 
-            if (arch === 'fire' || arch === 'nova' || ball.tier >= 2) {
-                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.4 ? meta.color : meta.glow, ball.tier >= 2 ? 4 : 2, 4);
+            if (arch === 'fire' || ball.secondaryArch === 'fire') {
+                // 火系：紅橙烈焰 + 濃煙粒子
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'circle');
+            }
+            if (arch === 'frost' || ball.secondaryArch === 'frost') {
+                // 冰系：六角冰晶雪花粒子
+                spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
+            }
+            if (arch === 'gravity' || arch === 'void') {
+                // 重力/虛空：向內收縮的紫色暗物質環
+                if (Math.random() < 0.4) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 42, maxR: 6, color: '#a855f7', alpha: 0.85 });
+                }
             }
             if (arch === 'ghost') {
                 const w = Math.sin(ball.z * 0.045) * (ball.tier >= 2 ? 68 : 48);
@@ -2060,15 +1944,15 @@
                 ball.ghostOffsets[1] = { x: -w, y: -Math.cos(ball.z * 0.05) * 16 };
                 ball.ghostOffsets[2] = { x: Math.cos(ball.z * 0.04) * 58, y: Math.sin(ball.z * 0.05) * 18 };
             }
-            if (arch === 'thunder' && gameMode === 'ai' && Math.random() < (ball.tier >= 2 ? 0.42 : 0.28)) {
+            if ((arch === 'thunder' || ball.secondaryArch === 'thunder') && gameMode === 'ai' && Math.random() < (ball.tier >= 2 ? 0.48 : 0.32)) {
                 const oldX = ball.x;
-                const shift = (Math.random() - 0.5) * (ball.tier >= 2 ? 46 : 32);
+                const shift = (Math.random() - 0.5) * (ball.tier >= 2 ? 52 : 34);
                 ball.x = Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + shift));
-                createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 2, meta.color);
+                createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 2, '#facc15');
             }
             if (arch === 'sonic' || arch === 'cyclone' || ball.tier === 3) {
-                if (Math.random() < 0.35) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 85 : 54, color: meta.color, alpha: 0.8 });
+                if (Math.random() < 0.4) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 85 : 54, color: meta.color, alpha: 0.85 });
                 }
             }
         }
@@ -2082,17 +1966,6 @@
             ball.vx += ball.ax * 8.5;
             ball.ax = 0; ball.ay = 0;
 
-            // 1.8 擦邊球處理
-            if (ball.isEdgeBall) {
-                ball.isEdgeBall = false;
-                ball.vz *= 0.60;
-                ball.vy = -ball.vy * 0.45;
-                ball.vx += (ball.x > 0 ? 3.2 : -3.2);
-                sfx.edgeBall();
-                showTopToast('✨ EDGE BALL! (擦邊好球)', '球擦中桌邊，彈跳軌跡劇烈偏轉！');
-                return;
-            }
-
             if (ball.z > 0 && Math.abs(ball.x) > T_W * 0.45 && Math.sign(ball.vx) === Math.sign(ball.x)) {
                 ball.vx *= 0.45;
             }
@@ -2100,7 +1973,7 @@
             if (ball.spinType === 'topspin') {
                 ball.vz *= 1.25; ball.vy = -ball.vy * 0.68;
             } else if (ball.spinType === 'backspin') {
-                ball.vz *= (spinChain.count >= 3 ? 0.38 : 0.62);
+                ball.vz *= (spinChain.count >= 3 ? 0.40 : 0.65);
                 ball.vy = -ball.vy * 0.92;
             } else if (ball.spinType === 'lob') {
                 ball.vy = -ball.vy * 0.88; ball.vz *= 0.82;
@@ -2114,17 +1987,17 @@
                 const meta = SKILL_META[ball.state] || SKILL_META.fire;
                 const arch = meta.arch;
                 const lvRadMult = LV_RADIUS[skillLevel - 1];
-                let fieldR = (ball.tier >= 2 ? 76 : 56) * lvRadMult;
+                let fieldR = (ball.tier >= 2 ? 72 : 52) * lvRadMult;
 
                 sfx.bounce(true);
                 shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.6, color: meta.color, alpha: 0.95, isFlat: true });
-                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 38 : 22, 7.5);
+                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 42 : 24, 8, arch === 'frost' ? 'hex' : 'circle');
 
                 if (ball.tier >= 2) {
-                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 38, alpha: 1.0 });
-                    shake = ball.tier === 3 ? 22 : 15;
+                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 42, alpha: 1.0 });
+                    shake = ball.tier === 3 ? 24 : 16;
                 } else {
-                    shake = 8;
+                    shake = 10;
                 }
 
                 const spawnField = (type, r, timer, color) => {
@@ -2134,61 +2007,51 @@
                     }
                 };
 
-                if (arch === 'gravity') { ball.vy *= 0.32; spawnField('gravity', fieldR, 2.2, '#a855f7'); }
-                else if (arch === 'fire') { ball.vz *= 1.15; spawnField('fire', fieldR, 2.2, '#f97316'); }
+                if (arch === 'gravity') { ball.vy *= 0.35; spawnField('gravity', fieldR, 2.2, '#9333ea'); }
+                else if (arch === 'fire') { ball.vz *= 1.15; spawnField('fire', fieldR, 2.2, '#ff3b00'); }
                 else if (arch === 'thunder') {
-                    if (ball.state === 'sky_thunder') createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#fef08a');
-                    spawnField('thunder', fieldR, 2.2, '#fef08a');
+                    if (ball.state === 'sky_thunder') createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
+                    spawnField('thunder', fieldR, 2.2, '#facc15');
                 }
                 else if (arch === 'sonic') { ball.vz *= 1.26; }
-                else if (arch === 'laser') { ball.vy *= 0.15; ball.vz *= 1.32; spawnField('laser', 40 * lvRadMult, 1.4, '#00f2fe'); }
-                else if (arch === 'frost') { spawnField('frost', 90 * lvRadMult, 2.4, '#7dd3fc'); }
-                else if (arch === 'toxin') { spawnField('toxin', 65 * lvRadMult, 3.0 * bMod.toxinDurMult, '#a3e635'); }
-                else if (arch === 'cyclone') { spawnField('cyclone', 70 * lvRadMult, 2.5, '#a78bfa'); }
-                else if (arch === 'aqua') { ball.vz *= 0.88; spawnField('aqua', 100 * lvRadMult * bMod.aquaRadMult, 3.0, '#22d3ee'); }
-                else if (arch === 'web') { spawnField('web', 80 * lvRadMult, 3.5 * bMod.webDurMult, '#94a3b8'); }
+                else if (arch === 'laser') { ball.vy *= 0.2; ball.vz *= 1.3; spawnField('laser', 40 * lvRadMult, 1.4, '#00f2fe'); }
+                else if (arch === 'frost') { spawnField('frost', 85 * lvRadMult, 2.4, '#38bdf8'); }
+                else if (arch === 'toxin') { spawnField('toxin', 65 * lvRadMult, 3.0 * bMod.toxinDurMult, '#84cc16'); }
+                else if (arch === 'cyclone') { spawnField('cyclone', 68 * lvRadMult, 2.5, '#8b5cf6'); }
+                else if (arch === 'aqua') { ball.vz *= 0.88; spawnField('aqua', 90 * lvRadMult * bMod.aquaRadMult, 3.0, '#0ea5e9'); }
+                else if (arch === 'web') { spawnField('web', 75 * lvRadMult, 3.5 * bMod.webDurMult, '#cbd5e1'); }
                 else if (arch === 'nova') {
-                    spawnField('nova', 60 * lvRadMult, 1.5, '#fbbf24');
+                    spawnField('nova', 60 * lvRadMult, 1.5, '#f59e0b');
                     const bx = ball.x, bz = ball.z;
                     setTimeout(() => {
                         sfx.bounce(true);
-                        shockwaves.push({ x: bx, y: 2, z: bz, r: 10, maxR: 135, color: '#fbbf24', alpha: 1.0, isFlat: true });
+                        shockwaves.push({ x: bx, y: 2, z: bz, r: 10, maxR: 140, color: '#fde047', alpha: 1.0, isFlat: true });
                     }, 180);
                 }
-                else if (arch === 'oracle') { spawnField('oracle', 55 * lvRadMult, 3.0, '#f472b6'); }
+                else if (arch === 'oracle') { spawnField('oracle', 55 * lvRadMult, 3.0, '#ec4899'); }
                 else if (arch === 'void') { ball.voidTimer = 1.6; }
 
                 while (lingeringFields.length > 6) lingeringFields.shift();
             } else {
                 sfx.bounce(false);
-                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 5, maxR: 36, color: '#00f2fe', alpha: 0.7, isFlat: true });
+                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 5, maxR: 38, color: '#00f2fe', alpha: 0.75, isFlat: true });
             }
         }
 
-        // ================= 1.4 & 1.7：兩跳發球與 10:10 延長賽計分 =================
+        // ================= 需求二：正向爽快的計分與一鍵發球流程 =================
         function resolvePoint() {
             if (roundWaitTimer > 0) return;
             roundWaitTimer = 1;
             ball.showLandingRing = false;
             resonanceActive = false;
 
-            // 4.10 防不同步規則②：球場所在方判定失分
-            let winner = 'player';
-            if (ball.lastHitBy === 'player' && !ball.bouncedOnTarget) {
-                winner = 'ai'; // 玩家直接打飛出界或掛網
-            } else if (ball.z > 480 || (ball.z > 0 && ball.y < FLOOR_Y)) {
-                winner = 'ai';
-            }
-
-            if (winner === 'ai') {
+            const playerMissed = (ball.z > 480 || (ball.z > 0 && ball.y < FLOOR_Y));
+            if (playerMissed) {
                 skillChainCount = 0;
-                if (gamblerBet > 0) {
-                    mana.p = 0; gamblerBet = 0; updateContextBarUI();
-                    showSideToast('right', '🎲 GAMBLE LOST!', '賭局失分 · 能量歸零！', 'text-rose-400');
-                }
-                scorePoint('ai', !ball.bouncedOnTarget && ball.lastHitBy === 'player' ? 'OUT / NET (失誤)' : 'MISSED BALL');
+                if (gamblerBet > 0) { mana.p = 0; gamblerBet = 0; updateContextBarUI(); }
+                scorePoint('ai', 'RIVAL BREAKTHROUGH · 對手強襲得分！');
             } else {
-                scorePoint('player', 'WINNER SHOT');
+                scorePoint('player', 'HYPER WINNER · 絕殺得分！');
             }
         }
 
@@ -2197,11 +2060,11 @@
             if (winner === 'player') {
                 matchState.roundScores.p++;
                 document.getElementById('score-player').innerText = matchState.roundScores.p;
-                showTopToast('🏆 POINT WON!', reason);
+                showTopToast('🏆 HYPER POINT!', reason);
             } else {
                 matchState.roundScores.a++;
                 document.getElementById('score-ai').innerText = matchState.roundScores.a;
-                showTopToast('⚠️ OPPONENT SCORED', reason);
+                showTopToast('⚡ RIVAL SCORED!', reason);
             }
 
             if (gameMode === 'p2p') {
@@ -2213,7 +2076,6 @@
         function checkSetEnd() {
             const p = matchState.roundScores.p;
             const a = matchState.roundScores.a;
-            // 1.7 10:10 延長賽規則：需滿 11 分且領先 2 分才贏得該局！
             if ((p >= 11 || a >= 11) && Math.abs(p - a) >= 2) {
                 if (p > a) matchState.playerRounds++;
                 else matchState.aiRounds++;
@@ -2227,10 +2089,7 @@
                     setTimeout(nextRound, 1300);
                 }
             } else {
-                if (p >= 10 && a >= 10 && p === a) {
-                    showTopToast('🔥 DEUCE (延長賽)!', '10:10 平手 · 需連續領先 2 分獲勝！');
-                }
-                setTimeout(prepareServe, 1050);
+                setTimeout(prepareServe, 950);
             }
         }
 
@@ -2248,14 +2107,13 @@
             updateRoundHUD();
             updateHUD();
 
-            showTopToast(`⚡ ROUND ${matchState.round} START`, `局分 ${matchState.playerRounds}-${matchState.aiRounds} · 技能 LV.${skillLevel} 已繼承`);
-            setTimeout(prepareServe, 1350);
+            triggerAnimeCutIn('center', `⚡ ROUND ${matchState.round} START`, `總局分 ${matchState.playerRounds} - ${matchState.aiRounds} · 技能 LV.${skillLevel} 繼承！`, '#00f2fe');
+            setTimeout(prepareServe, 1250);
         }
 
         function updateRoundHUD() {
             const totalPts = matchState.roundScores.p + matchState.roundScores.a;
             const isDeuce = matchState.roundScores.p >= 10 && matchState.roundScores.a >= 10;
-            // 1.4 每 2 分換發球（Deuce 時每 1 分換發）
             const serverIdx = isDeuce ? (totalPts % 2) : (Math.floor(totalPts / 2) % 2);
             matchState.currentServer = serverIdx === 0 ? 'player' : 'ai';
 
@@ -2264,41 +2122,36 @@
             document.getElementById('hud-round-info').innerText = `R${matchState.round} · ${matchState.playerRounds}-${matchState.aiRounds}`;
         }
 
+        // 需求二 (1)：極簡一鍵開球（懸浮於己方半場，點擊或滑動即刻直接過網！）
         function prepareServe() {
             roundWaitTimer = 0;
             rallyCount = 0;
-            ball.state = null; ball.tier = 0; ball.spinType = 'flat';
+            ball.state = null; ball.secondaryArch = null; ball.tier = 0; ball.spinType = 'flat';
             ball.spinX = 0; ball.spinY = 0; ball.ax = 0; ball.ay = 0;
             ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false;
             ball.trail = [];
             updateRoundHUD();
 
             if (matchState.currentServer === 'player') {
-                // 玩家發球：球懸浮於玩家球拍前方，揮拍即發球（或 1.2s 後自動發球保持流暢節奏）
                 matchState.waitingForServe = true;
-                ball.x = pPaddle.x * 0.6;
-                ball.y = 58;
-                ball.z = 330;
+                ball.x = pPaddle.x * 0.5;
+                ball.y = 55;
+                ball.z = 320;
                 ball.vx = 0; ball.vy = 0; ball.vz = 0;
                 ball.showLandingRing = false;
-                showSideToast('left', '🏓 YOUR SERVE (輪到你發球)', '左鍵手勢發長球 · 右鍵發短球', 'text-cyan-300', 900);
                 setTimeout(() => {
                     if (matchState.waitingForServe && gameRunning && !isPaused) executePlayerServe();
-                }, 1350);
+                }, 900);
             } else if (gameMode === 'ai') {
                 matchState.waitingForServe = false;
                 ball.x = (Math.random() - 0.5) * 65;
-                ball.y = 68;
-                ball.z = -330;
+                ball.y = 65;
+                ball.z = -320;
                 ball.lastHitBy = 'ai';
-                const sTypes = ['topspin', 'backspin', 'sidespin', 'dead'];
-                ball.spinType = sTypes[Math.floor(Math.random() * sTypes.length)];
-                const isShort = Math.random() < 0.35;
-                const targetX = (Math.random() - 0.5) * T_W * 0.65;
-                const targetZ = isShort ? (135 + Math.random() * 45) : (220 + Math.random() * 65);
-                const sx = ball.spinType === 'sidespin' ? 0.14 : 0;
-                const sy = ball.spinType === 'topspin' ? -0.1 : (ball.spinType === 'backspin' ? 0.1 : 0);
-                launchBall3DSpin(targetX, targetZ, 42, sx, sy, false, true);
+                ball.spinType = 'topspin';
+                const targetX = (Math.random() - 0.5) * T_W * 0.6;
+                const targetZ = 215 + Math.random() * 60;
+                launchBall3DSpin(targetX, targetZ, 38, 0, -0.08, false);
                 sfx.bounce(false);
             }
         }
@@ -2306,66 +2159,59 @@
         function executePlayerServe() {
             if (!matchState.waitingForServe) return;
             matchState.waitingForServe = false;
-            ball.x = pPaddle.x * 0.6;
-            ball.y = 58;
-            ball.z = 330;
+            ball.x = pPaddle.x * 0.5;
+            ball.y = 55;
+            ball.z = 320;
             ball.lastHitBy = 'player';
-
-            const isShort = pPaddle.wantLob; // 右鍵發短球
             pPaddle.wantLob = false;
 
-            let spinType = 'topspin', sx = 0, sy = -0.1;
-            if (Math.abs(pPaddle.vx) > 4) { spinType = 'sidespin'; sx = Math.sign(pPaddle.vx) * 0.15; sy = 0; }
-            else if (pPaddle.vy < -2) { spinType = 'backspin'; sy = 0.11; }
-            else if (Math.hypot(pPaddle.vx, pPaddle.vy) < 2) { spinType = 'dead'; sy = 0; }
-
-            ball.spinType = spinType;
-            const targetX = Math.max(-T_W * 0.75, Math.min(T_W * 0.75, pPaddle.x * 0.5 + pPaddle.vx * 6));
-            const targetZ = isShort ? -145 : -265;
-            launchBall3DSpin(targetX, targetZ, 40, sx, sy, false, true);
-            sfx.hit(true, spinType);
+            ball.spinType = 'topspin';
+            const targetX = Math.max(-T_W * 0.75, Math.min(T_W * 0.75, pPaddle.x * 0.5 + pPaddle.vx * 5));
+            const targetZ = -255;
+            launchBall3DSpin(targetX, targetZ, 34, 0, -0.1, false);
+            sfx.hit(true, 'topspin');
+            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 18, 5);
 
             if (gameMode === 'p2p') {
                 sendP2P({
                     type: 'SERVE',
                     startX: ball.x, startY: ball.y, startZ: ball.z,
-                    targetX, targetZ, flightFrames: 40,
-                    spinX: sx, spinY: sy, spinType, isLob: false,
-                    ballState: null, ballTier: 0, isServe: true, isEdgeBall: false, timestamp: Date.now()
+                    targetX, targetZ, flightFrames: 34,
+                    spinX: 0, spinY: -0.1, spinType: 'topspin', isLob: false,
+                    ballState: null, ballTier: 0, timestamp: Date.now()
                 });
             }
         }
 
-        // ================= 需求 2：特效「看得清、看得爽、不擋眼」渲染引擎 =================
-        function spawnParticles(x, y, z, color, count, speedScale = 5) {
+        // ================= 需求三 & 四：高飽和度特效與 Canvas 電競斜切播報渲染 =================
+        function spawnParticles(x, y, z, color, count, speedScale = 5, shape = 'circle') {
             for (let i = 0; i < count; i++) {
                 const ang = Math.random() * Math.PI * 2;
                 const spd = (0.4 + Math.random() * 0.8) * speedScale;
                 particles.push({
                     x, y, z,
                     vx: Math.cos(ang) * spd, vy: Math.random() * spd + 2, vz: (Math.random() - 0.5) * spd,
-                    c: color, s: 2.5 + Math.random() * 3.8, a: 1.0, life: 0.35 + Math.random() * 0.22
+                    c: color, s: 3 + Math.random() * 4.5, a: 1.0, life: 0.38 + Math.random() * 0.25, shape
                 });
             }
         }
 
         function spawnSpeedLines(color) {
-            for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < 16; i++) {
                 const side = i % 2 === 0 ? 1 : -1;
                 speedLines.push({
-                    x: side * (viewW * 0.38 + Math.random() * viewW * 0.12),
+                    x: side * (viewW * 0.35 + Math.random() * viewW * 0.15),
                     y: Math.random() * viewH,
-                    len: 60 + Math.random() * 90,
-                    c: color, alpha: 0.85
+                    c: color, alpha: 0.9
                 });
             }
         }
 
-        function createLightningChain(x1, y1, z1, x2, y2, z2, color = '#fef08a') {
+        function createLightningChain(x1, y1, z1, x2, y2, z2, color = '#facc15') {
             const pts = [];
-            for (let i = 0; i <= 6; i++) {
-                const t = i / 6;
-                const jit = (i === 0 || i === 6) ? 0 : (Math.random() - 0.5) * 35;
+            for (let i = 0; i <= 7; i++) {
+                const t = i / 7;
+                const jit = (i === 0 || i === 7) ? 0 : (Math.random() - 0.5) * 44;
                 pts.push({ x: x1 + (x2 - x1) * t + jit, y: y1 + (y2 - y1) * t + Math.abs(jit * 0.5), z: z1 + (z2 - z1) * t });
             }
             ball.lightningBolts.push({ pts, alpha: 1.0, color });
@@ -2377,34 +2223,30 @@
                 if (p.a <= 0) particles.splice(i, 1);
             }
             for (let i = shockwaves.length - 1; i >= 0; i--) {
-                const sw = shockwaves[i]; sw.r += (sw.maxR - sw.r) * 0.22; sw.alpha -= dt * 2.2;
+                const sw = shockwaves[i]; sw.r += (sw.maxR - sw.r) * 0.24; sw.alpha -= dt * 2.1;
                 if (sw.alpha <= 0) shockwaves.splice(i, 1);
             }
             for (let i = lightPillars.length - 1; i >= 0; i--) {
-                lightPillars[i].alpha -= dt * 2.5;
+                lightPillars[i].alpha -= dt * 2.4;
                 if (lightPillars[i].alpha <= 0) lightPillars.splice(i, 1);
             }
             for (let i = speedLines.length - 1; i >= 0; i--) {
-                speedLines[i].alpha -= dt * 3.2;
+                speedLines[i].alpha -= dt * 3.0;
                 if (speedLines[i].alpha <= 0) speedLines.splice(i, 1);
             }
+            for (let i = shatterShards.length - 1; i >= 0; i--) {
+                const sh = shatterShards[i];
+                sh.x += sh.vx; sh.y += sh.vy; sh.rot += sh.vRot; sh.alpha -= dt * 1.6;
+                if (sh.alpha <= 0) shatterShards.splice(i, 1);
+            }
             for (let i = ball.lightningBolts.length - 1; i >= 0; i--) {
-                ball.lightningBolts[i].alpha -= dt * 3.8;
+                ball.lightningBolts[i].alpha -= dt * 3.5;
                 if (ball.lightningBolts[i].alpha <= 0) ball.lightningBolts.splice(i, 1);
             }
             for (let i = lingeringFields.length - 1; i >= 0; i--) {
                 lingeringFields[i].timer -= dt;
                 if (lingeringFields[i].timer <= 0) lingeringFields.splice(i, 1);
             }
-        }
-
-        // 2.3 計算特效與球的距離衰減係數，保證球周圍 120px 走廊絕對清晰！
-        function getCorridorAlpha(screenX, screenY, baseAlpha) {
-            const pb = project(ball.x, ball.y, ball.z);
-            const dist = Math.hypot(screenX - pb.x, screenY - pb.y);
-            // 規則④：球進玩家半場時，非必要環境特效淡出
-            const nearPlayerFade = (ball.vz > 0 && ball.z > 120) ? 0.55 : 1.0;
-            return Math.min(0.9, Math.max(0.18, dist / 180)) * baseAlpha * nearPlayerFade;
         }
 
         function drawScene() {
@@ -2423,7 +2265,7 @@
             drawRibbonBall3D();
             drawTwinAndOrb3D();
             drawPlayerPaddle3D();
-            drawEdgeVignetteAndSpeedLines();
+            drawFlashAndCanvasCutIn();
 
             ctx.restore();
         }
@@ -2432,19 +2274,18 @@
             const hy = viewH * CAM.horiz;
             const skyGrad = ctx.createLinearGradient(0, 0, 0, hy + 80);
             skyGrad.addColorStop(0, '#020308');
-            skyGrad.addColorStop(1, resonanceActive ? '#220932' : '#090e24');
+            skyGrad.addColorStop(1, resonanceActive ? '#260938' : '#0a1028');
             ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, viewW, hy + 80);
 
             const floorGrad = ctx.createLinearGradient(0, hy, 0, viewH);
-            floorGrad.addColorStop(0, resonanceActive ? '#180822' : '#070b1a');
-            floorGrad.addColorStop(0.5, chronoTimer > 0 ? '#071c30' : '#0d132c');
+            floorGrad.addColorStop(0, resonanceActive ? '#1b0826' : '#080c1e');
+            floorGrad.addColorStop(0.5, chronoTimer > 0 ? '#072038' : '#0f1632');
             floorGrad.addColorStop(1, '#03050c');
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, hy, viewW, viewH - hy);
 
-            // 2.2 背景網格對比度控制在 0.08
-            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.12)' : 'rgba(0, 242, 254, 0.07)';
+            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.15)' : 'rgba(0, 242, 254, 0.08)';
             ctx.lineWidth = 1;
             for (let x = -1200; x <= 1200; x += 120) {
                 const pN = project(x, FLOOR_Y, 640), pF = project(x, FLOOR_Y, -750);
@@ -2466,8 +2307,8 @@
                 const tR = project(pan.x2, FLOOR_Y + bH, pan.z2), tL = project(pan.x1, FLOOR_Y + bH, pan.z1);
                 if (bL.vis && bR.vis && tR.vis && tL.vis) {
                     ctx.beginPath(); ctx.moveTo(bL.x, bL.y); ctx.lineTo(bR.x, bR.y); ctx.lineTo(tR.x, tR.y); ctx.lineTo(tL.x, tL.y); ctx.closePath();
-                    ctx.fillStyle = 'rgba(12, 26, 62, 0.82)'; ctx.fill();
-                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.35)'; ctx.lineWidth = 1.8; ctx.stroke();
+                    ctx.fillStyle = 'rgba(12, 26, 62, 0.85)'; ctx.fill();
+                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.38)'; ctx.lineWidth = 1.8; ctx.stroke();
                 }
             });
         }
@@ -2479,16 +2320,11 @@
             ctx.beginPath(); ctx.moveTo(sNL.x, sNL.y); ctx.lineTo(sNR.x, sNR.y); ctx.lineTo(sFR.x, sFR.y); ctx.lineTo(sFL.x, sFL.y); ctx.closePath();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.55)'; ctx.fill();
 
-            [[-legX, farZ], [legX, farZ]].forEach(([lx, lz]) => {
-                const top = project(lx, -15, lz), bot = project(lx, FLOOR_Y, lz);
+            [[-legX, farZ], [legX, farZ], [-legX, nearZ], [legX, nearZ]].forEach(([lx, lz]) => {
+                const top = project(lx, -18, lz), bot = project(lx, FLOOR_Y, lz);
                 ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.lineTo(bot.x, bot.y);
-                ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 10 * top.scale; ctx.stroke();
+                ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(14, 12 * top.scale); ctx.stroke();
             });
-
-            const nLT = project(-legX, -18, nearZ), nLB = project(-legX, FLOOR_Y, nearZ);
-            const nRT = project(legX, -18, nearZ), nRB = project(legX, FLOOR_Y, nearZ);
-            ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 15 * nLT.scale;
-            ctx.beginPath(); ctx.moveTo(nLT.x, nLT.y); ctx.lineTo(nLB.x, nLB.y); ctx.moveTo(nRT.x, nRT.y); ctx.lineTo(nRB.x, nRB.y); ctx.stroke();
         }
 
         function drawTableSurface3D() {
@@ -2497,39 +2333,37 @@
 
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pFR.x, pFR.y); ctx.lineTo(pFL.x, pFL.y); ctx.closePath();
             const tGrad = ctx.createLinearGradient(0, pFL.y, 0, pNL.y);
-            tGrad.addColorStop(0, '#0f2756'); tGrad.addColorStop(0.5, '#163b82'); tGrad.addColorStop(1, '#1c499c');
+            tGrad.addColorStop(0, '#0f2756'); tGrad.addColorStop(0.5, '#163b82'); tGrad.addColorStop(1, '#1d4ed8');
             ctx.fillStyle = tGrad; ctx.fill();
 
-            // 2.2 環境染色 (0.06 透明度)
             if (ball.state && SKILL_META[ball.state]) {
                 ctx.fillStyle = SKILL_META[ball.state].color;
-                ctx.globalAlpha = 0.07;
+                ctx.globalAlpha = 0.09;
                 ctx.fill();
                 ctx.globalAlpha = 1.0;
             }
 
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3.5;
-            ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 10; ctx.stroke(); ctx.shadowBlur = 0;
+            ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 12; ctx.stroke(); ctx.shadowBlur = 0;
 
             const pCN = project(0, 0, T_L), pCF = project(0, 0, -T_L);
             ctx.beginPath(); ctx.moveTo(pCN.x, pCN.y); ctx.lineTo(pCF.x, pCF.y);
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.lineWidth = 2.5; ctx.stroke();
 
-            const pNLB = project(-T_W, -20, T_L), pNRB = project(T_W, -20, T_L);
+            const pNLB = project(-T_W, -18, T_L), pNRB = project(T_W, -18, T_L);
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pNRB.x, pNRB.y); ctx.lineTo(pNLB.x, pNLB.y); ctx.closePath();
             ctx.fillStyle = '#09152e'; ctx.fill(); ctx.strokeStyle = '#00f2fe'; ctx.lineWidth = 1.5; ctx.stroke();
 
-            // 繪製地形殘留場 (套用 2.3 近身自動淡出規則)
+            // 繪製高飽和度地形場（嚴格限制最大像素半徑 Math.min(58, ...) 防止遮擋畫面！）
             lingeringFields.forEach(f => {
                 const pf = project(f.x, 1, f.z);
                 if (pf.vis) {
-                    const rx = f.r * pf.scale, ry = rx * 0.45;
-                    const effAlpha = getCorridorAlpha(pf.x, pf.y, Math.min(0.42, f.timer * 0.22));
+                    const rx = Math.min(58, f.r * pf.scale), ry = rx * 0.45;
                     ctx.save(); ctx.translate(pf.x, pf.y);
                     ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = f.color; ctx.globalAlpha = effAlpha; ctx.fill();
-                    ctx.strokeStyle = f.color; ctx.globalAlpha = effAlpha * 1.8;
-                    ctx.lineWidth = 2.2; ctx.setLineDash([8, 6]); ctx.stroke();
+                    ctx.fillStyle = f.color; ctx.globalAlpha = 0.35; ctx.fill();
+                    ctx.strokeStyle = f.color; ctx.globalAlpha = 0.9;
+                    ctx.lineWidth = 2.5; ctx.setLineDash([8, 6]); ctx.stroke();
                     ctx.restore();
                 }
             });
@@ -2538,38 +2372,31 @@
                 const openX = aPaddle.x > 0 ? -T_W * 0.62 : T_W * 0.62;
                 const pO = project(openX, 1, -270);
                 if (pO.vis) {
+                    const rx = Math.min(34, 32 * pO.scale);
                     ctx.save();
-                    ctx.beginPath(); ctx.ellipse(pO.x, pO.y, 34 * pO.scale, 16 * pO.scale, 0, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.ellipse(pO.x, pO.y, rx, rx * 0.5, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.setLineDash([6, 4]);
                     ctx.stroke(); ctx.restore();
                 }
             }
 
-            // 2.1 第三層識別：落點預警圈（屬性色 + 技能圖標 + 旋轉紋路）
-            if (ball.showLandingRing && ball.ringDelayTimer <= 0) {
-                const dispX = Math.max(-T_W * 0.9, Math.min(T_W * 0.9, ball.targetX + ball.fakeRingOffsetX));
+            // 預警光圈（嚴格限制最大像素半徑 Math.min(32, ...) 絕不再巨大化！）
+            if (ball.showLandingRing) {
+                const dispX = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.targetX + ball.fakeRingOffsetX));
                 const pTarget = project(dispX, 0, ball.targetZ);
                 if (pTarget.vis) {
                     const sMeta = ball.state ? SKILL_META[ball.state] : null;
                     const ringColor = sMeta ? sMeta.color : (ball.vz < 0 ? '#fbbf24' : '#00f2fe');
-                    const pulse = 0.75 + 0.25 * Math.sin(performance.now() * 0.018);
-                    const ringR = 27 * pTarget.scale * pulse;
+                    const pulse = 0.78 + 0.22 * Math.sin(performance.now() * 0.018);
+                    const ringR = Math.min(32, 26 * pTarget.scale) * pulse;
 
                     ctx.save();
-                    ctx.beginPath(); ctx.ellipse(pTarget.x, pTarget.y, ringR * 1.45, ringR * 0.68, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = ringColor; ctx.lineWidth = 2.6;
-                    if (ball.spinType === 'backspin') ctx.setLineDash([6, 4]);
+                    ctx.beginPath(); ctx.ellipse(pTarget.x, pTarget.y, ringR * 1.4, ringR * 0.65, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = ringColor; ctx.lineWidth = 2.8;
                     ctx.shadowColor = ringColor; ctx.shadowBlur = 12; ctx.stroke();
-                    ctx.setLineDash([]);
 
-                    if (sMeta) {
-                        ctx.font = `${Math.max(11, Math.round(16 * pTarget.scale))}px sans-serif`;
-                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                        ctx.fillText(sMeta.name.slice(0, 2), pTarget.x, pTarget.y);
-                    } else {
-                        ctx.beginPath(); ctx.arc(pTarget.x, pTarget.y, 4 * pTarget.scale, 0, Math.PI * 2);
-                        ctx.fillStyle = '#fff'; ctx.fill();
-                    }
+                    ctx.beginPath(); ctx.arc(pTarget.x, pTarget.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff'; ctx.fill();
                     ctx.restore();
                 }
             }
@@ -2579,12 +2406,12 @@
             if (prismShield.player <= 0) return;
             const zPos = 385;
             const pL = project(-T_W * 0.95, 0, zPos), pR = project(T_W * 0.95, 0, zPos);
-            const pTR = project(T_W * 0.95, 68, zPos), pTL = project(-T_W * 0.95, 68, zPos);
+            const pTR = project(T_W * 0.95, 65, zPos), pTL = project(-T_W * 0.95, 65, zPos);
             if (pL.vis && pR.vis) {
                 ctx.save();
                 ctx.beginPath(); ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); ctx.lineTo(pTR.x, pTR.y); ctx.lineTo(pTL.x, pTL.y); ctx.closePath();
-                ctx.fillStyle = 'rgba(34, 211, 238, 0.18)'; ctx.fill();
-                ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.fillStyle = 'rgba(0, 242, 254, 0.22)'; ctx.fill();
+                ctx.strokeStyle = '#00f2fe'; ctx.lineWidth = 2.5; ctx.stroke();
                 ctx.restore();
             }
         }
@@ -2604,60 +2431,39 @@
         function drawAiEntity() {
             const pa = project(aPaddle.x, aPaddle.y, aPaddle.z + aPaddle.knockbackZ);
             if (!pa.vis) return;
+            const r = Math.min(32, aPaddle.rx * pa.scale);
             ctx.save(); ctx.translate(pa.x, pa.y); ctx.rotate(aPaddle.tilt);
             if (aPaddle.swingTimer > 0) ctx.scale(1.2, 1.2);
-            const r = aPaddle.rx * pa.scale;
 
             ctx.fillStyle = '#334155';
             ctx.fillRect(-r * 0.16, r * 0.7, r * 0.32, r * 0.65);
 
             ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
             ctx.fillStyle = aPaddle.stunTimer > 0 ? '#fde047' : '#e11d48';
-            ctx.strokeStyle = '#fda4af'; ctx.lineWidth = 2.5 * pa.scale;
-            ctx.shadowColor = '#fda4af'; ctx.shadowBlur = 14;
+            ctx.strokeStyle = '#fda4af'; ctx.lineWidth = 2.5;
+            ctx.shadowColor = '#f43f5e'; ctx.shadowBlur = 14;
             ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
-
-            ctx.strokeStyle = 'rgba(253, 164, 175, 0.55)';
-            ctx.lineWidth = 1.2 * pa.scale;
-            ctx.beginPath();
-            ctx.moveTo(-r * 0.6, 0); ctx.lineTo(r * 0.6, 0);
-            ctx.moveTo(0, -r * 0.6); ctx.lineTo(0, r * 0.6);
-            ctx.stroke();
-
-            // 1.5 觸球瞬間 0.2s 顯示拍面角度切線
-            if (paddleAngleFlashTimer > 0 && ball.lastHitBy === 'ai') {
-                ctx.strokeStyle = '#fde047';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(-r * 1.4, -r * 0.4 * lastContactAngle);
-                ctx.lineTo(r * 1.4, r * 0.4 * lastContactAngle);
-                ctx.stroke();
-            }
             ctx.restore();
         }
 
-        // 5.2 繪製雙子分身球拍與能量球
         function drawTwinAndOrb3D() {
             if (twinClone.active) {
                 const pt = project(twinClone.x, twinClone.y, twinClone.z);
                 if (pt.vis) {
-                    const r = 38 * pt.scale;
+                    const r = Math.min(36, 36 * pt.scale);
                     ctx.save(); ctx.translate(pt.x, pt.y);
                     ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(45, 212, 191, 0.45)';
+                    ctx.fillStyle = 'rgba(20, 184, 166, 0.5)';
                     ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 2.5;
                     ctx.setLineDash([6, 4]); ctx.stroke(); ctx.fill();
-                    ctx.setLineDash([]);
-                    ctx.fillStyle = '#fff'; ctx.font = 'bold 11px Orbitron'; ctx.textAlign = 'center';
-                    ctx.fillText(`${twinClone.timer.toFixed(1)}s`, 0, -r - 6);
                     ctx.restore();
                 }
             }
             if (twinClone.orbX !== null) {
-                const po = project(twinClone.orbX, 25, 425);
+                const po = project(twinClone.orbX, 25, 420);
                 if (po.vis) {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(po.x, po.y, 14 * po.scale, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.arc(po.x, po.y, Math.min(14, 14 * po.scale), 0, Math.PI * 2);
                     ctx.fillStyle = '#2dd4bf'; ctx.shadowColor = '#2dd4bf'; ctx.shadowBlur = 15;
                     ctx.fill();
                     ctx.restore();
@@ -2667,8 +2473,8 @@
 
         function drawPaddlePattern(ctx, arch, r) {
             ctx.save();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.42)';
-            ctx.lineWidth = Math.max(1.2, r * 0.055);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.48)';
+            ctx.lineWidth = Math.max(1.2, r * 0.06);
             if (['fire', 'thunder', 'sonic', 'gambler'].includes(arch)) {
                 ctx.beginPath();
                 ctx.moveTo(-r * 0.3, -r * 0.55); ctx.lineTo(r * 0.15, -r * 0.05);
@@ -2682,12 +2488,7 @@
                     if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
                 }
                 ctx.stroke();
-            } else if (['ghost', 'mirror', 'twin', 'thief'].includes(arch)) {
-                ctx.beginPath();
-                ctx.moveTo(-r * 0.4, r * 0.4); ctx.lineTo(r * 0.4, -r * 0.4);
-                ctx.moveTo(-r * 0.2, r * 0.5); ctx.lineTo(r * 0.5, r * 0.2);
-                ctx.stroke();
-            } else if (['prism', 'chrono', 'oracle', 'yinyang'].includes(arch)) {
+            } else {
                 ctx.beginPath();
                 for (let i = 0; i < 6; i++) {
                     const ang = (i * Math.PI) / 3;
@@ -2695,40 +2496,46 @@
                     if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
                 }
                 ctx.closePath(); ctx.stroke();
-            } else {
-                ctx.beginPath();
-                ctx.arc(0, 0, r * 0.42, 0, Math.PI * 2);
-                ctx.stroke();
             }
             ctx.restore();
         }
 
+        // 需求一 (2) & 四 (2)：限制玩家球拍最大像素半徑 Math.min(44, ...) 並加入滿能量電流/火焰環繞
         function drawPlayerPaddle3D() {
             const swingRatio = pPaddle.swingTimer / pPaddle.swingMax;
-            const lungeZ = pPaddle.swingTimer > 0 ? Math.sin(swingRatio * Math.PI) * 42 : 0;
+            const lungeZ = pPaddle.swingTimer > 0 ? Math.sin(swingRatio * Math.PI) * 35 : 0;
             const pp = project(pPaddle.x, pPaddle.y, pPaddle.z - lungeZ + pPaddle.knockbackZ);
             if (!pp.vis) return;
 
             const sMeta = SKILL_META[pPaddle.prechargedSkill || cfgSkill];
             const paddleColor = sMeta.color;
             const paddleGlow = sMeta.glow;
-            const r = pPaddle.rx * pp.scale;
+            const isPortrait = viewH > viewW;
+            // 強制限制球拍像素半徑上限為 36~44px，徹底解決截圖 1 球拍巨大化問題！
+            const r = Math.min(isPortrait ? 36 : 44, pPaddle.rx * pp.scale);
 
             ctx.save();
             ctx.translate(pp.x, pp.y);
 
             if (pPaddle.inStrikeZone) {
-                ctx.beginPath(); ctx.arc(0, 0, r * 1.36, 0, Math.PI * 2);
-                ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 2.8; ctx.setLineDash([10, 6]);
+                ctx.beginPath(); ctx.arc(0, 0, r * 1.35, 0, Math.PI * 2);
+                ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 3; ctx.setLineDash([8, 5]);
                 ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 14; ctx.stroke(); ctx.setLineDash([]);
             }
 
-            // 1.2 球拍旁弧形力量條 (Power Meter)
-            ctx.beginPath();
-            ctx.arc(0, 0, r * 1.16, Math.PI * 0.75, Math.PI * (0.75 + 0.5 * pPaddle.powerRatio));
-            ctx.strokeStyle = pPaddle.powerRatio > 0.8 ? '#f97316' : '#38bdf8';
-            ctx.lineWidth = 3.5;
-            ctx.stroke();
+            // 滿能量或上膛時，球拍周圍環繞旋轉電弧/光環
+            if (mana.p >= 100 || pPaddle.prechargedSkill) {
+                ctx.save();
+                ctx.rotate(performance.now() * 0.008);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, r * 1.28, r * 0.65, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2.5;
+                ctx.shadowColor = paddleColor;
+                ctx.shadowBlur = 16;
+                ctx.stroke();
+                ctx.restore();
+            }
 
             const swingAngle = pPaddle.swingTimer > 0 ? -Math.sin(swingRatio * Math.PI) * 0.48 : 0;
             ctx.rotate(pPaddle.tilt + swingAngle);
@@ -2737,31 +2544,31 @@
             ctx.strokeStyle = paddleColor;
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(-r * 0.18, r * 0.70, r * 0.36, r * 0.74, 4);
+            ctx.roundRect(-r * 0.18, r * 0.70, r * 0.36, r * 0.68, 4);
             ctx.fill(); ctx.stroke();
 
             ctx.fillStyle = paddleGlow;
-            ctx.font = `900 ${Math.max(8, Math.round(r * 0.22))}px Orbitron, sans-serif`;
+            ctx.font = `900 ${Math.min(11, Math.max(8, Math.round(r * 0.24)))}px Orbitron, sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText(`LV.${skillLevel}`, 0, r * 1.15);
+            ctx.fillText(`LV.${skillLevel}`, 0, r * 1.12);
 
             ctx.beginPath();
             ctx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
             ctx.fillStyle = paddleColor;
-            ctx.globalAlpha = 0.82;
+            ctx.globalAlpha = 0.86;
             ctx.shadowColor = paddleGlow;
-            ctx.shadowBlur = (pPaddle.swingTimer > 0 || pPaddle.prechargedSkill) ? 28 : 14;
+            ctx.shadowBlur = (pPaddle.swingTimer > 0 || mana.p >= 100) ? 26 : 14;
             ctx.fill();
             ctx.globalAlpha = 1.0;
             ctx.strokeStyle = pPaddle.prechargedSkill ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : paddleGlow);
-            ctx.lineWidth = 3.5 * pp.scale;
+            ctx.lineWidth = 3;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
             drawPaddlePattern(ctx, sMeta.arch, r);
 
             if (pPaddle.prechargedSkill || mana.p >= 100) {
-                ctx.font = `${Math.max(12, Math.round(r * 0.55))}px sans-serif`;
+                ctx.font = `${Math.min(20, Math.round(r * 0.52))}px sans-serif`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText(sMeta.name.slice(0, 2), 0, 0);
             }
@@ -2775,12 +2582,12 @@
             const pSh = project(ball.x, shadowY, ball.z);
             if (!pSh.vis) return;
             const h = Math.max(0, ball.y - shadowY);
-            const sr = Math.max(2.5, ball.r * 1.35 * pSh.scale * (1 / (1 + h * 0.006)));
+            const sr = Math.min(18, Math.max(3, ball.r * 1.3 * pSh.scale * (1 / (1 + h * 0.006))));
             ctx.beginPath(); ctx.ellipse(pSh.x, pSh.y, sr * 1.6, sr * 0.75, 0, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.14, 0.7 - h / 260)})`; ctx.fill();
+            ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.18, 0.72 - h / 260)})`; ctx.fill();
         }
 
-        // 1.5 & 2.1：球體四重視覺編碼（顏色 / 拖尾形狀 / 環繞圖標 / 脈動頻率）
+        // 需求三 (1, 3) & 五 (1)：發光能量球 + 涇渭分明的元素軌跡 + 融合質變雙軌跡
         function drawRibbonBall3D() {
             const pb = project(ball.x, ball.y, ball.z);
             if (!pb.vis) return;
@@ -2790,27 +2597,44 @@
                 if (Math.sin(performance.now() * 0.038) > 0.35) return;
             }
 
-            const pulseFreq = ball.tier >= 2 ? 0.025 : 0.012;
-            const pulseScale = 1.0 + (ball.state ? 0.12 * Math.sin(performance.now() * pulseFreq) : 0);
-            const br = Math.max(4, ball.r * pb.scale * pulseScale);
+            const pulseScale = 1.0 + (ball.state ? 0.14 * Math.sin(performance.now() * 0.025) : 0);
+            const br = Math.min(18, Math.max(5, ball.r * pb.scale * pulseScale));
 
-            // 1.5 根據旋轉類型決定高辨識度色彩
-            const spinColors = { topspin: '#fb923c', backspin: '#38bdf8', sidespin: '#34d399', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
+            const spinColors = { topspin: '#ff5500', backspin: '#38bdf8', sidespin: '#10b981', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
             const trailColor = sMeta ? sMeta.color : (spinColors[ball.spinType] || '#00f2fe');
+            const secColor = ball.secondaryArch && ARCH_STYLE[ball.secondaryArch] ? ARCH_STYLE[ball.secondaryArch].color : '#ffffff';
 
             if (ball.trail.length > 1) {
                 ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                if (ball.spinType === 'backspin' && !ball.state) ctx.setLineDash([6, 4]);
-                const wMult = ball.tier === 3 ? 3.4 : (ball.tier === 2 ? 2.7 : (ball.state ? 2.1 : 1.45));
+                const wMult = ball.tier === 3 ? 3.6 : (ball.tier === 2 ? 3.0 : (ball.state ? 2.4 : 1.7));
                 for (let i = 1; i < ball.trail.length; i++) {
                     const p0 = project(ball.trail[i - 1].x, ball.trail[i - 1].y, ball.trail[i - 1].z);
                     const p1 = project(ball.trail[i].x, ball.trail[i].y, ball.trail[i].z);
                     if (p0.vis && p1.vis) {
                         const ratio = i / ball.trail.length;
-                        ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
-                        ctx.strokeStyle = trailColor; ctx.lineWidth = br * wMult * ratio;
-                        ctx.globalAlpha = ratio * (ball.state ? 0.85 : 0.55);
-                        ctx.shadowColor = trailColor; ctx.shadowBlur = ball.tier >= 2 ? 22 : 10; ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(p0.x, p0.y);
+                        // 雷系軌跡加入閃電鋸齒折線效果
+                        if (sMeta && (sMeta.arch === 'thunder' || ball.secondaryArch === 'thunder')) {
+                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 10, p1.y + (Math.random() - 0.5) * 10);
+                        } else {
+                            ctx.lineTo(p1.x, p1.y);
+                        }
+                        ctx.strokeStyle = trailColor;
+                        ctx.lineWidth = br * wMult * ratio;
+                        ctx.globalAlpha = ratio * 0.9;
+                        ctx.shadowColor = trailColor;
+                        ctx.shadowBlur = 20;
+                        ctx.stroke();
+
+                        // 融合神技專屬：內層交錯第二元素能量芯
+                        ctx.beginPath();
+                        ctx.moveTo(p0.x, p0.y);
+                        ctx.lineTo(p1.x, p1.y);
+                        ctx.strokeStyle = ball.tier >= 2 ? secColor : '#ffffff';
+                        ctx.lineWidth = br * 0.85 * ratio;
+                        ctx.globalAlpha = ratio * 0.95;
+                        ctx.stroke();
                     }
                 }
                 ctx.restore();
@@ -2823,54 +2647,47 @@
                     const pg = project(ball.x + off.x, ball.y + off.y, ball.z);
                     if (pg.vis) {
                         ctx.beginPath(); ctx.arc(pg.x, pg.y, br * 0.95, 0, Math.PI * 2);
-                        ctx.fillStyle = idx % 2 === 0 ? 'rgba(232, 121, 249, 0.8)' : 'rgba(56, 189, 248, 0.8)';
+                        ctx.fillStyle = idx % 2 === 0 ? 'rgba(232, 121, 249, 0.85)' : 'rgba(56, 189, 248, 0.85)';
                         ctx.fill();
                     }
                 }
             }
 
-            // 2.1 飛行中球體環繞圖標與星環
             if (sMeta) {
                 ctx.save(); ctx.translate(pb.x, pb.y); ctx.rotate(ball.orbitalAngle);
-                ctx.beginPath(); ctx.ellipse(0, 0, br * 2.4, br * 0.85, 0, 0, Math.PI * 2);
-                ctx.strokeStyle = sMeta.glow; ctx.lineWidth = 2.2; ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = sMeta.glow; ctx.lineWidth = 2.5; ctx.stroke();
+                if (ball.tier >= 2) {
+                    ctx.rotate(Math.PI * 0.5);
+                    ctx.beginPath(); ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = secColor; ctx.stroke();
+                }
                 ctx.restore();
-
-                const iconX = pb.x + Math.cos(ball.orbitalAngle) * br * 2.1;
-                const iconY = pb.y + Math.sin(ball.orbitalAngle) * br * 1.1;
-                ctx.font = `${Math.max(10, Math.round(br * 1.1))}px sans-serif`;
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(sMeta.name.slice(0, 2), iconX, iconY);
             }
 
-            // 核心球體對比度 1.0 (2.2)
+            // 高亮發光能量球核心
             ctx.save();
-            ctx.beginPath(); ctx.arc(pb.x, pb.y, br * (ball.tier >= 2 ? 1.25 : 1.0), 0, Math.PI * 2);
-            const bGrad = ctx.createRadialGradient(pb.x - br * 0.3, pb.y - br * 0.3, br * 0.1, pb.x, pb.y, br * 1.3);
-            if (sMeta) {
-                bGrad.addColorStop(0, '#fff'); bGrad.addColorStop(0.5, sMeta.glow); bGrad.addColorStop(1, sMeta.color);
-                ctx.shadowColor = sMeta.color;
-            } else {
-                bGrad.addColorStop(0, '#fff'); bGrad.addColorStop(0.65, trailColor); bGrad.addColorStop(1, '#f59e0b');
-                ctx.shadowColor = trailColor;
-            }
-            ctx.shadowBlur = ball.tier >= 2 ? 28 : 16;
-            ctx.fillStyle = bGrad; ctx.fill();
+            ctx.beginPath(); ctx.arc(pb.x, pb.y, br * (ball.tier >= 2 ? 1.3 : 1.08), 0, Math.PI * 2);
+            const bGrad = ctx.createRadialGradient(pb.x - br * 0.25, pb.y - br * 0.25, br * 0.1, pb.x, pb.y, br * 1.3);
+            bGrad.addColorStop(0, '#ffffff');
+            bGrad.addColorStop(0.55, sMeta ? sMeta.glow : '#fde047');
+            bGrad.addColorStop(1, trailColor);
+            ctx.shadowColor = trailColor;
+            ctx.shadowBlur = 28;
+            ctx.fillStyle = bGrad;
+            ctx.fill();
             ctx.restore();
         }
 
         function drawAllEffects() {
-            const pbBall = project(ball.x, ball.y, ball.z);
             lightPillars.forEach(lp => {
                 const pb = project(lp.x, 0, lp.z), pt = project(lp.x, 320, lp.z);
-                // 2.3 規則①：若光柱擋在球體中央走廊 120px 內，自動降低透明度
                 if (pb.vis && pt.vis) {
-                    const effA = getCorridorAlpha(pb.x, pb.y, lp.alpha * 0.72);
                     ctx.save();
-                    const w = lp.r * pb.scale * lp.alpha;
+                    const w = Math.min(70, lp.r * pb.scale) * lp.alpha;
                     const grad = ctx.createLinearGradient(pb.x, pb.y, pt.x, pt.y);
                     grad.addColorStop(0, lp.color); grad.addColorStop(1, 'rgba(255,255,255,0)');
-                    ctx.fillStyle = grad; ctx.globalAlpha = effA;
+                    ctx.fillStyle = grad; ctx.globalAlpha = lp.alpha * 0.85;
                     ctx.fillRect(pb.x - w * 0.5, pt.y, w, pb.y - pt.y);
                     ctx.restore();
                 }
@@ -2880,10 +2697,10 @@
                 const pj = project(sw.x, sw.y, sw.z);
                 if (pj.vis) {
                     ctx.save(); ctx.beginPath();
-                    const rx = sw.r * pj.scale, ry = sw.isFlat ? rx * 0.45 : rx;
+                    const rx = Math.min(130, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
                     ctx.ellipse(pj.x, pj.y, rx, ry, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = sw.color; ctx.globalAlpha = Math.max(0, sw.alpha * 0.85);
-                    ctx.lineWidth = 2.8; ctx.stroke();
+                    ctx.strokeStyle = sw.color; ctx.globalAlpha = Math.max(0, sw.alpha);
+                    ctx.lineWidth = 3.2; ctx.shadowColor = sw.color; ctx.shadowBlur = 14; ctx.stroke();
                     ctx.restore();
                 }
             });
@@ -2894,66 +2711,104 @@
                     const pj = project(pt.x, pt.y, pt.z);
                     if (idx === 0) ctx.moveTo(pj.x, pj.y); else ctx.lineTo(pj.x, pj.y);
                 });
-                ctx.strokeStyle = bolt.color || '#fef08a'; ctx.lineWidth = 3;
-                ctx.globalAlpha = Math.max(0, bolt.alpha * 0.85); ctx.stroke();
+                ctx.strokeStyle = bolt.color || '#facc15'; ctx.lineWidth = 3.5;
+                ctx.globalAlpha = Math.max(0, bolt.alpha); ctx.shadowColor = bolt.color; ctx.shadowBlur = 16; ctx.stroke();
                 ctx.restore();
             });
 
             particles.forEach(p => {
                 const pj = project(p.x, p.y, p.z);
                 if (pj.vis) {
-                    ctx.save(); ctx.beginPath();
-                    ctx.arc(pj.x, pj.y, Math.max(1.5, p.s * pj.scale), 0, Math.PI * 2);
-                    ctx.fillStyle = p.c; ctx.globalAlpha = Math.max(0, p.a * 0.85);
-                    ctx.fill();
+                    const rad = Math.min(9, Math.max(2, p.s * pj.scale));
+                    ctx.save();
+                    ctx.fillStyle = p.c; ctx.strokeStyle = '#ffffff';
+                    ctx.globalAlpha = Math.max(0, p.a);
+                    ctx.shadowColor = p.c; ctx.shadowBlur = 8;
+                    if (p.shape === 'hex') {
+                        // 冰系六角雪花粒子
+                        ctx.translate(pj.x, pj.y);
+                        ctx.beginPath();
+                        for (let k = 0; k < 6; k++) {
+                            const a = (k * Math.PI) / 3;
+                            ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * rad * 1.4, Math.sin(a) * rad * 1.4);
+                        }
+                        ctx.lineWidth = 1.8; ctx.stroke();
+                    } else {
+                        ctx.beginPath(); ctx.arc(pj.x, pj.y, rad, 0, Math.PI * 2); ctx.fill();
+                    }
                     ctx.restore();
                 }
             });
         }
 
-        // 2.2 邊緣閃光 (Edge Vignette) 與速度線 (絕不遮擋中央球台)
-        function drawEdgeVignetteAndSpeedLines() {
-            if (edgeFlashAlpha > 0) {
+        // 需求四：全螢幕閃光、進化碎裂結晶與電競速度線渲染
+        function drawFlashAndCanvasCutIn() {
+            if (screenFlashAlpha > 0) {
                 ctx.save();
-                const grad = ctx.createRadialGradient(viewW * 0.5, viewH * 0.5, viewMin() * 0.32, viewW * 0.5, viewH * 0.5, Math.max(viewW, viewH) * 0.65);
-                grad.addColorStop(0, 'rgba(0,0,0,0)');
-                grad.addColorStop(1, edgeFlashColor);
-                ctx.fillStyle = grad;
-                ctx.globalAlpha = edgeFlashAlpha * 0.65;
+                ctx.fillStyle = screenFlashColor;
+                ctx.globalAlpha = screenFlashAlpha * 0.45;
                 ctx.fillRect(0, 0, viewW, viewH);
                 ctx.restore();
             }
+
             speedLines.forEach(sl => {
                 ctx.save();
                 ctx.strokeStyle = sl.c;
                 ctx.globalAlpha = sl.alpha;
-                ctx.lineWidth = 2.5;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
                 ctx.moveTo(viewW * 0.5 + sl.x, sl.y);
-                ctx.lineTo(viewW * 0.5 + sl.x * 1.18, sl.y + (sl.y - viewH * 0.5) * 0.2);
+                ctx.lineTo(viewW * 0.5 + sl.x * 1.22, sl.y + (sl.y - viewH * 0.5) * 0.25);
                 ctx.stroke();
                 ctx.restore();
             });
-        }
-        function viewMin() { return Math.min(viewW, viewH); }
 
-        // ================= UI 輔助與流程控制 =================
+            shatterShards.forEach(sh => {
+                ctx.save();
+                ctx.translate(sh.x, sh.y);
+                ctx.rotate(sh.rot);
+                ctx.fillStyle = sh.color;
+                ctx.globalAlpha = Math.max(0, sh.alpha);
+                ctx.shadowColor = sh.color; ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.moveTo(0, -sh.size);
+                ctx.lineTo(sh.size * 0.8, sh.size * 0.6);
+                ctx.lineTo(-sh.size * 0.7, sh.size * 0.4);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        // ================= 電競 Cut-in 播報觸發器 =================
         let leftToastTimer = null, rightToastTimer = null, topToastTimer = null;
 
-        function showSideToast(side, title, sub, colorClass = 'text-cyan-300', duration = 1000) {
+        function triggerAnimeCutIn(pos, title, sub, color = '#00f2fe') {
+            spawnSpeedLines(color);
+            if (pos === 'center') {
+                showTopToast(title, sub);
+            } else if (pos === 'left') {
+                showSideToast('left', title, sub, 'text-white', 1250);
+            } else {
+                showSideToast('right', title, sub, 'text-white', 1250);
+            }
+        }
+
+        function showSideToast(side, title, sub, colorClass = 'text-cyan-300', duration = 1100) {
             const isLeft = side === 'left';
             const box = document.getElementById(isLeft ? 'left-toast' : 'right-toast');
             const tEl = document.getElementById(isLeft ? 'left-toast-title' : 'right-toast-title');
             const sEl = document.getElementById(isLeft ? 'left-toast-sub' : 'right-toast-sub');
-            tEl.className = `text-base sm:text-lg font-black cyber-font ${colorClass}`;
-            tEl.innerText = title; sEl.innerText = sub;
-            box.classList.remove('opacity-0', isLeft ? '-translate-x-8' : 'translate-x-8');
+            tEl.className = `text-xl sm:text-3xl font-black cyber-font italic cutin-text-shadow tracking-wider ${colorClass}`;
+            tEl.innerText = title;
+            sEl.innerText = sub;
+            box.classList.remove('opacity-0', isLeft ? '-translate-x-16' : 'translate-x-16');
             if (isLeft) {
                 clearTimeout(leftToastTimer);
-                leftToastTimer = setTimeout(() => box.classList.add('opacity-0', '-translate-x-8'), duration);
+                leftToastTimer = setTimeout(() => box.classList.add('opacity-0', '-translate-x-16'), duration);
             } else {
                 clearTimeout(rightToastTimer);
-                rightToastTimer = setTimeout(() => box.classList.add('opacity-0', 'translate-x-8'), duration);
+                rightToastTimer = setTimeout(() => box.classList.add('opacity-0', 'translate-x-16'), duration);
             }
         }
 
@@ -2961,52 +2816,41 @@
             const box = document.getElementById('top-toast');
             document.getElementById('top-toast-title').innerText = title;
             document.getElementById('top-toast-sub').innerText = sub;
-            box.classList.remove('opacity-0', 'scale-90');
+            box.classList.remove('opacity-0', 'scale-75');
             clearTimeout(topToastTimer);
-            topToastTimer = setTimeout(() => box.classList.add('opacity-0', 'scale-90'), 1350);
+            topToastTimer = setTimeout(() => box.classList.add('opacity-0', 'scale-75'), 1450);
         }
 
-        // 3.4 手機技能按鈕三態 + 6.2 左上極簡 HUD 更新
         function updateHUD() {
             const pBar = document.getElementById('hud-mana-bar');
             const mBtn = document.getElementById('btn-mobile-skill');
             const mLbl = document.getElementById('btn-skill-label');
             const mEmo = document.getElementById('btn-skill-emoji');
-            const evBadge = document.getElementById('hud-evolve-badge');
+            const evBtn = document.getElementById('btn-evolve-prominent');
+            const evNext = document.getElementById('btn-evolve-next-lv');
 
             pBar.style.width = `${mana.p}%`;
             document.getElementById('hud-mana').innerText = `${Math.round(mana.p)}%`;
+
             const canEvolve = skillLevel < 5 && roundsEvolvedThisRound < 2 && mana.p >= 100;
-            evBadge.classList.toggle('hidden', !canEvolve);
+            evBtn.classList.toggle('hidden', !canEvolve);
+            if (canEvolve) evNext.innerText = `LV.${skillLevel + 1}`;
 
             const sMeta = SKILL_META[cfgSkill];
             mEmo.innerText = sMeta.name.slice(0, 2);
 
             if (pPaddle.prechargedSkill) {
-                mLbl.innerText = "已上膛(取消)";
-                mBtn.className = "pointer-events-auto w-[88px] h-[88px] rounded-3xl bg-amber-500/80 flex flex-col items-center justify-center border-2 border-white shadow-[0_0_25px_#fde047]";
+                mLbl.innerText = "已上膛";
+                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-amber-500/90 flex flex-col items-center justify-center border-2 border-white shadow-[0_0_25px_#fde047]";
             } else if (mana.p >= 80 && pPaddle.inStrikeZone) {
-                // 3.4 狀態三：球進擊球區 + 能量足夠 -> 金紅放大 1.15x「時機到！」
                 mLbl.innerText = "🔥時機到！";
-                mBtn.className = "pointer-events-auto w-[88px] h-[88px] rounded-3xl bg-gradient-to-br from-amber-400 via-red-500 to-pink-600 flex flex-col items-center justify-center border-2 border-white btn-strike-now";
+                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-gradient-to-br from-amber-400 via-red-500 to-pink-600 flex flex-col items-center justify-center border-2 border-white btn-strike-now";
             } else if (mana.p >= 80) {
-                // 3.4 狀態二：能量 >=80% 待機琥珀脈動
-                mLbl.innerText = mana.p >= 100 ? `必殺 LV.${skillLevel}` : `反制就緒`;
-                mBtn.className = "pointer-events-auto w-[88px] h-[88px] rounded-3xl bg-amber-500/30 flex flex-col items-center justify-center border-2 border-amber-400 mana-ready";
+                mLbl.innerText = mana.p >= 100 ? `必殺 LV.${skillLevel}` : `可反制`;
+                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl bg-amber-500/35 flex flex-col items-center justify-center border-2 border-amber-400 mana-ready";
             } else {
-                // 3.4 狀態一：能量 <80% 暗灰
                 mLbl.innerText = `${Math.round(mana.p)}%`;
-                mBtn.className = "pointer-events-auto w-[88px] h-[88px] rounded-3xl cyber-panel opacity-75 flex flex-col items-center justify-center border border-slate-600";
-            }
-        }
-
-        function updateRallyAndSpinUI(spinType, spinX, fusionName = '') {
-            const pill = document.getElementById('hud-context-pill');
-            if (fusionName || skillChainCount >= 2 || resonanceActive) {
-                pill.classList.remove('hidden');
-                pill.innerText = fusionName || (resonanceActive ? '⚡共鳴態' : `CHAIN x${skillChainCount}`);
-            } else {
-                pill.classList.add('hidden');
+                mBtn.className = "pointer-events-auto w-[86px] h-[86px] rounded-3xl cyber-panel opacity-80 flex flex-col items-center justify-center border border-slate-500";
             }
         }
 
@@ -3020,7 +2864,6 @@
             dr.classList.toggle('hidden');
         }
 
-        // 3.10 全螢幕相容 fallback
         function requestAppFullscreen() {
             const el = document.documentElement;
             const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
@@ -3052,16 +2895,16 @@
             document.getElementById('pause-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.remove('hidden');
 
-            const isMob = viewW < 920 || ('ontouchstart' in window);
+            const isMob = viewW < 900 || ('ontouchstart' in window);
             document.getElementById('mobile-controls').classList.toggle('hidden', !isMob);
 
-            // 6.5 桌面底部提示 5 秒後自動淡出
             const deskHint = document.getElementById('desktop-onboarding');
             deskHint.style.opacity = '1';
             setTimeout(() => { deskHint.style.opacity = '0'; }, 5000);
 
             const sMeta = SKILL_META[cfgSkill];
             document.getElementById('hud-skill-emoji').innerText = sMeta.name.slice(0, 2);
+            document.getElementById('hud-skill-icon-box').style.borderColor = sMeta.color;
 
             restartMatch();
         }
@@ -3127,8 +2970,8 @@
             const won = matchState.playerRounds > matchState.aiRounds;
             const title = document.getElementById('go-title');
             title.innerText = won ? "MATCH VICTORY!" : "DEFEATED";
-            title.className = `text-4xl font-black cyber-font mb-1 ${won ? 'text-cyan-400' : 'text-pink-500'}`;
-            document.getElementById('go-sub').innerText = won ? `你以 LV.${skillLevel} 超能球拍贏下 3局2勝 巔峰對決！` : "對手拿下了這場對決，再接再厲！";
+            title.className = `text-4xl font-black cyber-font italic mb-1 ${won ? 'text-cyan-400' : 'text-pink-500'}`;
+            document.getElementById('go-sub').innerText = won ? `你以 LV.${skillLevel} 超能球拍主宰了賽博競技場！` : "對手拿下了這場對決，再戰一局！";
             document.getElementById('go-p1').innerText = matchState.playerRounds;
             document.getElementById('go-ai').innerText = matchState.aiRounds;
             document.getElementById('go-round-details').innerText = `各局比分：${matchState.history.join('  /  ')}`;
