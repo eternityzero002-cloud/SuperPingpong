@@ -120,23 +120,6 @@
             </div>
         </div>
 
-        <!-- 📱 右下角專屬街機操控按鈕組（高球按鈕 56x56 + 殺球鈕 56x56 + 技能巨型按鈕 88x88） -->
-        <div id="mobile-action-cluster" class="fixed bottom-14 right-3 sm:right-5 z-30 flex flex-col items-center gap-2.5 pointer-events-auto hidden">
-            <button onclick="triggerLobShot()" class="w-[56px] h-[56px] rounded-full bg-slate-900/90 border-2 border-purple-400 shadow-lg flex flex-col items-center justify-center active:scale-90 transition">
-                <span class="text-base leading-none">🎈</span>
-                <span class="text-[10px] font-black text-purple-200 mt-0.5">高球</span>
-            </button>
-            <button onclick="triggerSmashAction()" class="w-[56px] h-[56px] rounded-full bg-rose-950/90 border-2 border-rose-400 shadow-lg flex flex-col items-center justify-center active:scale-90 transition">
-                <span class="text-base leading-none">💥</span>
-                <span class="text-[10px] font-black text-rose-200 mt-0.5">殺球</span>
-            </button>
-            <button onclick="castSkill(true)" id="mobile-skill-btn" class="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-cyan-500/90 via-blue-600/90 to-fuchsia-600/90 border-4 border-amber-300 shadow-2xl flex flex-col items-center justify-center active:scale-90 transition relative">
-                <span id="mobile-skill-emoji" class="text-2xl leading-none">⚡</span>
-                <span class="text-xs font-black text-white tracking-wider mt-0.5">必殺技</span>
-                <span id="mobile-skill-pct" class="text-[10px] font-black cyber-font text-amber-200">100%</span>
-            </button>
-        </div>
-
         <!-- 底部中央：超能力必殺能量槽與極致閃爍金色進化大按鈕 -->
         <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-3">
             <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
@@ -167,6 +150,13 @@
             <div><span class="text-slate-400">球拍耐久：</span><span id="info-hp-status" class="font-bold text-emerald-400">玩家 100% / 對手 100%</span></div>
             <div id="info-ai-brain" class="text-[11px] text-cyan-200">🧠 AI 解析度：取樣中...</div>
             <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
+<div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
+<!-- 👇 新增局內操作速查 -->
+<div class="p-2 rounded-lg bg-slate-950/90 border border-slate-800 text-[10px] space-y-1 text-slate-300">
+    <div class="font-black text-cyan-300">🎮 操作速查</div>
+    <div>📱 <b>手機</b>：單指滑動自動接球｜加第2指單擊=必殺｜第2指連點2下=殺球｜雙指上滑=高球｜雙指下滑=進化</div>
+    <div>💻 <b>電腦</b>：滑鼠移動｜左鍵/A=擊球｜空白鍵=必殺｜D或Ctrl+左鍵=殺球｜右鍵/S=高球｜E=進化</div>
+</div>
             <div class="pt-1 border-t border-slate-700 flex flex-col gap-1.5">
                 <button onclick="cycleFpsCap()" id="btn-drawer-fps" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-amber-300">⏱️ 幀率上限：不限幀 (144Hz+)</button>
                 <button onclick="togglePerformanceMode()" id="btn-drawer-perf" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-emerald-300">⚡ 渲染：極速電競模式 (推薦)</button>
@@ -307,7 +297,34 @@
                         </div>
                     </div>
                 </div>
-
+<!-- 🎮 雙端操作指南面板（PC 鍵鼠 & 手機全螢幕手勢） -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2.5 p-2.5 rounded-2xl bg-slate-950/90 border border-cyan-500/40 text-[11px]">
+    <div class="flex flex-col gap-1 pr-1 sm:border-r border-slate-800">
+        <div class="font-black text-cyan-300 cyber-font flex items-center gap-1.5">
+            <span>📱 手機版：全螢幕無按鈕直覺手勢</span>
+        </div>
+        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
+            <div>👉 <b class="text-white">單指按住滑動</b>：移動＋自動揮拍</div>
+            <div>⚡ <b class="text-amber-300">第二指點 1 下</b>：釋放超能必殺技</div>
+            <div>💥 <b class="text-rose-400">第二指連點 2 下</b>：雷霆重扣殺球</div>
+            <div>🎈 <b class="text-purple-300">雙指往上滑</b>：挑高吊球 (Lob)</div>
+            <div class="col-span-2">🌟 <b class="text-yellow-300">雙指往下滑 / 長按</b>：消耗滿能量進化 (LV UP)</div>
+        </div>
+    </div>
+    <div class="flex flex-col gap-1 pl-0 sm:pl-1">
+        <div class="font-black text-pink-400 cyber-font flex items-center gap-1.5">
+            <span>💻 電腦版：鍵鼠電競操控</span>
+        </div>
+        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
+            <div>🖱️ <b class="text-white">滑鼠移動</b>：控制球拍位置與前後</div>
+            <div>🏓 <b class="text-cyan-300">左鍵 / A 鍵</b>：一般揮拍擊球</div>
+            <div>⚡ <b class="text-amber-300">空白鍵 (Space)</b>：釋放超能必殺技</div>
+            <div>💥 <b class="text-rose-400">D 鍵 / Ctrl+左鍵</b>：雷霆重扣殺球</div>
+            <div>🎈 <b class="text-purple-300">右鍵 / S 鍵</b>：挑高吊球 (Lob)</div>
+            <div>🌟 <b class="text-yellow-300">E 鍵</b>：超能進化 (LV.1 ➔ LV.5)</div>
+        </div>
+    </div>
+</div>
                 <!-- 24 英雄球拍卡牌庫 -->
                 <div class="mb-2.5">
                     <div class="flex justify-between items-center mb-1">
@@ -1276,12 +1293,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 CAM.horiz = 0.26;
                 CAM.focal = Math.min(viewW * 0.47, viewH * 0.74);
             }
-
-            const cluster = document.getElementById('mobile-action-cluster');
-            if (cluster && gameRunning) {
-                const showCluster = isTouchMode || viewW < 900 || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
-                cluster.classList.toggle('hidden', !showCluster);
-            }
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
@@ -1300,10 +1311,11 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
         // ================= AI 難度與學習型記憶 =================
         const AI_PROFILES = {
-            easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
-            normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
-            hard:   { name: 'NEURAL INSANE', speed: 16.8, flightFrames: 29, spread: 0.86, saveRate: 0.86, clashRate: 0.85, learnRate: 1.0 }
-        };
+    easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
+    normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
+    // 👇 宗師模式全面強化：移速 16.8➔25.5、回球幀數 29➔20(超高速)、救球率 97%、反制融合率 96%、預判學習 1.4 倍
+    hard:   { name: 'NEURAL INSANE', speed: 25.5, flightFrames: 20, spread: 0.95, saveRate: 0.97, clashRate: 0.96, learnRate: 1.4 }
+};
         const AI_SKILL_POOL = [
             'fire', 'thunder', 'gravity', 'sonic', 'ghost', 'prism', 'chrono', 'leech',
             'mirror', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova',
@@ -1542,7 +1554,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             isTouchMode = true;
             if (!gameRunning || isPaused) return;
             sfx.init();
-            document.getElementById('mobile-action-cluster').classList.remove('hidden');
 
             if (rewindState.active) {
                 triggerRewindRestore();
@@ -2369,7 +2380,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 }
 
                 if (hasBallArch('ghost') || hasBallArch('void') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
-                    const confuse = (cfgDiff === 'hard' ? 0.45 : 0.85) * aiMod.aiErrorMult;
+                    const confuse = (cfgDiff === 'hard' ? 0.10 : 0.85) * aiMod.aiErrorMult;
                     desiredX += Math.sin(ball.z * 0.055) * 115 * confuse;
                 }
 
@@ -2430,7 +2441,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
                 if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player') {
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
-                    let reach = aPaddle.rx * (cfgDiff === 'hard' ? 2.45 : 1.85);
+                    let reach = aPaddle.rx * (cfgDiff === 'hard' ? 3.1 : 1.85);
 
                     const breakBonus = LV_BREAK[skillLevel - 1] + (hasBallArch('nova') ? 0.42 : 0) + (resonancePowerBoost ? 0.50 : 0) + (ball.isSmashShot ? 0.28 : 0);
                     resonancePowerBoost = false;
@@ -2457,11 +2468,12 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             const incomingSmash = ball.isSmashShot;
             const incomingPower = ball.shotPower || 1.0;
 
-            mana.a = Math.min(100, mana.a + (resonanceActive ? 30 : 22));
+            const aiManaGain = cfgDiff === 'hard' ? 38 : (resonanceActive ? 30 : 22);
+            mana.a = Math.min(100, mana.a + aiManaGain);
             const aiCanSkill = (incomingSkill && mana.a >= 80 && Math.random() < prof.clashRate) || (!incomingSkill && mana.a >= 100 && Math.random() < prof.clashRate);
 
             if (!aiCanSkill && (incomingSkill || incomingSmash || incomingPower >= 1.4)) {
-                const hpLoss = incomingPower * (hasBallArch('fire') ? 42 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15);
+                const hpLoss = incomingPower * (hasBallArch('fire') ? 42 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15) * (cfgDiff === 'hard' ? 0.55 : 1.0);
                 aPaddle.hp = Math.max(0, aPaddle.hp - hpLoss);
 
                 if (hasBallArch('fire') || novaBurstTimer > 0) {
@@ -2493,7 +2505,12 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.boomerangActive = false;
             ball.magnetActive = false;
             ball.mirrorTwin = null;
-            ball.isSmashShot = false;
+            const aiWantsSmash = (cfgDiff === 'hard') && (ball.lob || Math.random() < 0.48);
+            ball.isSmashShot = aiWantsSmash;
+            if (aiWantsSmash) {
+                sfx.smashHit();
+                spawnSpeedLines('#f43f5e');
+            }
             ball.spinChem = null;
             rallyCount++;
 
@@ -2508,7 +2525,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 aiNextSkill = fRes.id;
                 aiNextSecondary = fRes.secondaryArch;
                 fusionLabel = fRes.displayName;
-                aiNextTier = fRes.isHardTier3 ? 3 : 2;
+                aiNextTier = (cfgDiff === 'hard' || fRes.isHardTier3) ? 3 : 2;
 
                 sfx.fusionClash();
                 hitStopTimer = 0.095;
@@ -2582,8 +2599,9 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.spinX = aiSpinX;
             ball.spinY = aiSpinY;
 
-            if (aiNextTier >= 2) flightFrames = Math.max(22, flightFrames - 8);
-            else if (aiNextTier === 1) flightFrames = Math.max(25, flightFrames - 5);
+            if (aiNextTier >= 2) flightFrames = Math.max(13, flightFrames - 8);
+else if (aiNextTier === 1) flightFrames = Math.max(15, flightFrames - 5);
+if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72)); // 宗師殺球極速下砸
 
             launchBall3DSpin(targetX, targetZ, flightFrames, aiSpinX, aiSpinY, false);
         }
@@ -4257,22 +4275,19 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 statusText.innerText = `🔥 【${sMeta.name}】已上膛！100%絕對防禦破球並轟出必殺`;
                 statusText.className = 'text-amber-300 tracking-wider animate-pulse';
             } else if (mana.p >= 100) {
+    barContainer.classList.add('overdrive-ready');
+    statusText.innerText = isTouchMode
+        ? `🔥 超能全滿！【第二指單擊】釋放 ${sMeta.name} ·【雙指連點】殺球`
+        : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} ·【D鍵/Ctrl】殺球`;
+    statusText.className = 'text-amber-300 tracking-wider';
+} else if (mana.p >= 80) {
                 barContainer.classList.add('overdrive-ready');
-                if (mobBtn) mobBtn.classList.add('overdrive-ready');
                 statusText.innerText = isTouchMode
-                    ? `🔥 超能全滿！點擊右下角【必殺技】釋放 ${sMeta.name}`
-                    : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} ·【D鍵/Ctrl】殺球`;
-                statusText.className = 'text-amber-300 tracking-wider';
-            } else if (mana.p >= 80) {
-                barContainer.classList.add('overdrive-ready');
-                if (mobBtn) mobBtn.classList.add('overdrive-ready');
-                statusText.innerText = isTouchMode
-                    ? `⚡ 已達 80% 反制門檻！敵方開大時點擊【必殺技】觸發融合神技`
+                    ? `⚡ 已達 80% 反制門檻！敵方開大時【第二指單擊】觸發融合神技`
                     : `⚡ 已達 80% 反制門檻！敵方開大時按【空白鍵】觸發融合神技`;
                 statusText.className = 'text-cyan-200 tracking-wider';
             } else {
                 barContainer.classList.remove('overdrive-ready');
-                if (mobBtn) mobBtn.classList.remove('overdrive-ready');
                 statusText.innerText = `⚡ 超能核心蓄力中 (${pct}% · 80%反制必接 / 100%必殺)`;
                 statusText.className = 'text-slate-300 tracking-wider';
             }
@@ -4393,7 +4408,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.add('hidden');
             document.getElementById('bottom-overdrive-hud').classList.add('hidden');
-            document.getElementById('mobile-action-cluster').classList.add('hidden');
             document.getElementById('info-drawer').classList.add('hidden');
             document.getElementById('setup-modal').classList.remove('hidden');
         }
