@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER PONG 2077 - 144Hz極速電競×經典手感×24超能終極版</title>
+    <title>CYBER PONG 2077 - 144Hz極速電競×球勢殺球×32超能終極版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
@@ -37,25 +37,42 @@
         }
         .cyber-btn:active { transform: scale(0.94); }
         .brawl-card {
-            background: linear-gradient(160deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.90) 100%);
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.92) 100%);
             border: 2px solid rgba(148, 163, 184, 0.28);
-            transition: transform 0.15s ease, border-color 0.15s ease;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }
         .brawl-card:hover {
             transform: translateY(-2px);
             border-color: rgba(0, 242, 254, 0.75);
+            box-shadow: 0 4px 14px rgba(0, 242, 254, 0.25);
         }
         .brawl-card.active {
-            background: linear-gradient(160deg, rgba(8, 47, 73, 0.96) 0%, rgba(59, 7, 100, 0.92) 100%);
+            background: linear-gradient(160deg, rgba(8, 47, 73, 0.98) 0%, rgba(59, 7, 100, 0.94) 100%);
             border-color: #fde047;
-            box-shadow: 0 0 18px rgba(253, 224, 71, 0.5);
+            box-shadow: 0 0 18px rgba(253, 224, 71, 0.55);
             transform: translateY(-2px) scale(1.02);
+        }
+        .role-tab {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.12s ease;
+        }
+        .role-tab.active {
+            background: linear-gradient(90deg, #00f2fe 0%, #3b82f6 100%);
+            color: #020617;
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
         }
         @keyframes overdrivePulse {
             0%, 100% { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
             50% { border-color: #fde047; box-shadow: 0 0 22px rgba(253, 224, 71, 0.85); }
         }
         .overdrive-ready { animation: overdrivePulse 0.65s infinite ease-in-out; }
+        @keyframes smashPulse {
+            0%, 100% { border-color: #f43f5e; box-shadow: 0 0 10px rgba(244, 63, 94, 0.55); }
+            50% { border-color: #fde047; box-shadow: 0 0 22px rgba(253, 224, 71, 0.9); }
+        }
+        .smash-ready { animation: smashPulse 0.55s infinite ease-in-out; }
         @keyframes evolveBounce {
             0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 16px #f59e0b; }
             50% { transform: scale(1.08) translateY(-4px); box-shadow: 0 0 28px #fde047, 0 0 42px #ffffff; }
@@ -71,7 +88,7 @@
     <div id="game-container" class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#03050c]">
         <canvas id="gameCanvas" class="block w-full h-full cursor-none"></canvas>
 
-        <!-- 頂部極簡街機 HUD（含 5 分鐘計時器、即時 FPS 監測與球拍耐久） -->
+        <!-- 頂部極簡街機 HUD（含計時器、即時 FPS 監測與球拍耐久） -->
         <div id="in-game-hud" class="absolute top-2.5 inset-x-2.5 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
             <div class="flex flex-col gap-1.5">
                 <div class="cyber-panel px-3 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
@@ -92,12 +109,12 @@
                 <div id="hud-context-bar" class="hidden cyber-panel px-2.5 py-1 rounded-lg text-[10px] font-bold text-amber-200 flex items-center gap-2 pointer-events-auto"></div>
             </div>
 
-            <!-- 中央比分板 + 5 分鐘倒數計時器 + 即時 FPS 顯示 -->
+            <!-- 中央比分板 + 倒數計時器 + 即時 FPS 顯示 -->
             <div class="cyber-panel px-4 sm:px-6 py-1 rounded-2xl flex flex-col items-center">
                 <div class="flex items-center gap-1.5 mb-0.5">
                     <span id="hud-match-timer" class="cyber-font text-[11px] font-black text-cyan-300 tracking-widest bg-slate-950/90 px-2 py-0.2 rounded border border-cyan-500/40">⏱️ 05:00</span>
                     <span id="hud-fps-badge" onclick="cycleFpsCap()" class="pointer-events-auto cursor-pointer cyber-font text-[10px] font-black text-emerald-400 bg-slate-950/90 px-1.5 py-0.2 rounded border border-emerald-500/40" title="點擊切換幀率上限">🟢 60 FPS</span>
-                    <span id="hud-smash-ready" class="hidden text-[9px] px-1.5 py-0.2 rounded bg-rose-600 text-white font-black animate-pulse">💥 SMASH</span>
+                    <span id="hud-smash-ready" class="hidden text-[9px] px-1.5 py-0.2 rounded bg-rose-600 text-white font-black animate-pulse">💥 SMASH ARMED</span>
                 </div>
                 <div class="flex items-center gap-2.5 text-2xl sm:text-3xl font-black cyber-font leading-none">
                     <span id="serve-dot-p" class="text-xs text-amber-300">🏓</span>
@@ -120,19 +137,31 @@
             </div>
         </div>
 
-        <!-- 底部中央：超能力必殺能量槽與極致閃爍金色進化大按鈕 -->
-        <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-3">
-            <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
+        <!-- 底部中央：雙層賽博能量艙（上層：💥球勢殺球槽 ／ 下層：⚡超能必殺槽 ＆ 金色進化大按鈕） -->
+        <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1 pointer-events-none hidden px-3">
+            <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-5 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
                 <span>🌟 LEVEL UP! 點擊或按【E鍵】超能進化至</span>
                 <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full text-xs">LV.2</span>
             </button>
 
+            <!-- 上層：💥 球勢槽 (Smash Momentum Gauge) -->
+            <div onclick="triggerSmashAction()" id="smash-bar-container" class="pointer-events-auto cursor-pointer cyber-panel w-full max-w-md px-3.5 py-0.5 rounded-xl border border-rose-500/50 transition-all duration-150">
+                <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black mb-0.5">
+                    <span id="smash-status-text" class="text-rose-300 tracking-wider">💥 球勢累積中 (施放技能/有來有回對拉集氣 ➔ 100%解鎖殺球)</span>
+                    <span id="hud-smash-pct" class="cyber-font text-rose-300 text-[11px]">0%</span>
+                </div>
+                <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-white/15 p-[1px] relative">
+                    <div id="hud-smash-bar" class="h-full bg-gradient-to-r from-rose-600 via-orange-500 to-yellow-300 rounded-full transition-all duration-100" style="width:0%"></div>
+                </div>
+            </div>
+
+            <!-- 下層：⚡ 超能核心必殺槽 -->
             <div onclick="castSkill()" id="overdrive-bar-container" class="pointer-events-auto cursor-pointer cyber-panel w-full max-w-md px-3.5 py-1 rounded-2xl border-2 border-cyan-400/60 transition-all duration-150">
                 <div class="flex justify-between items-center text-[10px] sm:text-[11px] font-black mb-0.5">
                     <span id="overdrive-status-text" class="text-cyan-300 tracking-wider">⚡ 超能核心蓄力中 (80%反制必接 / 100%必殺)</span>
                     <span id="hud-mana" class="cyber-font text-amber-300 text-xs">100%</span>
                 </div>
-                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-white/20 p-[1px] relative">
+                <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-white/20 p-[1px] relative">
                     <div class="absolute left-[80%] top-0 bottom-0 w-[2px] bg-white/70 z-10" title="80% 反制融合門檻"></div>
                     <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-amber-300 rounded-full transition-all duration-100" style="width:100%"></div>
                 </div>
@@ -150,13 +179,11 @@
             <div><span class="text-slate-400">球拍耐久：</span><span id="info-hp-status" class="font-bold text-emerald-400">玩家 100% / 對手 100%</span></div>
             <div id="info-ai-brain" class="text-[11px] text-cyan-200">🧠 AI 解析度：取樣中...</div>
             <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
-<div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
-<!-- 👇 新增局內操作速查 -->
-<div class="p-2 rounded-lg bg-slate-950/90 border border-slate-800 text-[10px] space-y-1 text-slate-300">
-    <div class="font-black text-cyan-300">🎮 操作速查</div>
-    <div>📱 <b>手機</b>：單指滑動自動接球｜加第2指單擊=必殺｜第2指連點2下=殺球｜雙指上滑=高球｜雙指下滑=進化</div>
-    <div>💻 <b>電腦</b>：滑鼠移動｜左鍵/A=擊球｜空白鍵=必殺｜D或Ctrl+左鍵=殺球｜右鍵/S=高球｜E=進化</div>
-</div>
+            <div class="p-2 rounded-lg bg-slate-950/90 border border-slate-800 text-[10px] space-y-1 text-slate-300">
+                <div class="font-black text-cyan-300">🎮 操作速查 (100%球勢可殺球)</div>
+                <div>📱 <b>手機</b>：單指滑動自動接球｜加第2指單擊=必殺｜球勢滿時第2指連點2下(或點球勢條)=殺球｜雙指上滑=高球｜雙指下滑=進化</div>
+                <div>💻 <b>電腦</b>：滑鼠移動｜左鍵/A=擊球｜空白鍵=必殺｜球勢滿按D或Ctrl+左鍵=殺球｜右鍵/S=高球｜E=進化</div>
+            </div>
             <div class="pt-1 border-t border-slate-700 flex flex-col gap-1.5">
                 <button onclick="cycleFpsCap()" id="btn-drawer-fps" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-amber-300">⏱️ 幀率上限：不限幀 (144Hz+)</button>
                 <button onclick="togglePerformanceMode()" id="btn-drawer-perf" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-emerald-300">⚡ 渲染：極速電競模式 (推薦)</button>
@@ -199,7 +226,7 @@
             </div>
         </div>
 
-        <!-- 🏆 《荒野亂鬥》風戰前選角展櫃 UI -->
+        <!-- 🏆 《荒野亂鬥》風戰前選角展櫃 UI（32 超能球拍 + 分類篩選 + 選項設定清單） -->
         <div id="setup-modal" class="touch-scroll absolute inset-0 bg-gradient-to-b from-[#060b1e] via-[#091330] to-[#03050c] flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
             <div class="cyber-panel max-w-5xl w-full rounded-3xl p-3 sm:p-5 flex flex-col pointer-events-auto my-auto border-2 border-cyan-400/50 shadow-2xl">
                 <div class="flex flex-wrap justify-between items-center gap-2 pb-2 border-b border-slate-700/70">
@@ -211,10 +238,13 @@
                             <h1 class="text-lg sm:text-2xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-pink-400 leading-tight">
                                 CYBER PONG 2077 : HYPER BRAWL
                             </h1>
-                            <p class="text-slate-400 text-[10px] sm:text-[11px]">24款超能球拍展櫃 · 經典微磁吸手感 · 144Hz零卡頓電競引擎</p>
+                            <p class="text-slate-400 text-[10px] sm:text-[11px]">32款超能球拍展櫃 · 球勢殺球突變 · 144Hz零卡頓電競引擎</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                        <button onclick="openLobbySettingsModal()" class="cyber-btn px-3 py-1 rounded-xl text-[11px] font-black text-cyan-200 border border-cyan-400/60 flex items-center gap-1 shadow">
+                            ⚙️ 選項設定
+                        </button>
                         <button onclick="cycleFpsCap()" id="btn-lobby-fps" class="cyber-btn px-2.5 py-1 rounded-xl text-[11px] font-black text-amber-300">⏱️ 幀率：144Hz+ 不限</button>
                         <button onclick="togglePerformanceMode()" id="btn-lobby-perf" class="cyber-btn px-2.5 py-1 rounded-xl text-[11px] font-black text-emerald-300">⚡ 極速模式</button>
                         <div class="flex bg-slate-950/90 p-1 rounded-xl border border-cyan-500/40">
@@ -225,23 +255,23 @@
                 </div>
 
                 <!-- 荒野亂鬥風：中央 3D 球拍懸浮展示台 + 角色定位預覽 -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 my-2.5 items-center bg-gradient-to-r from-slate-950/85 via-blue-950/45 to-slate-950/85 p-3 rounded-2xl border border-cyan-500/30 relative overflow-hidden">
-                    <div class="lg:col-span-5 flex items-center justify-center relative h-36 sm:h-44">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 my-2 items-center bg-gradient-to-r from-slate-950/90 via-blue-950/45 to-slate-950/90 p-3 rounded-2xl border border-cyan-500/30 relative overflow-hidden">
+                    <div class="lg:col-span-5 flex items-center justify-center relative h-36 sm:h-40">
                         <button onclick="prevBrawler()" class="z-10 w-9 h-9 rounded-full cyber-btn flex items-center justify-center text-base font-black text-cyan-300 shadow-lg">◀</button>
                         <div onclick="openBrawlerDetailModal()" class="cursor-pointer relative flex flex-col items-center justify-center w-48 h-full group" title="點擊查看完整四維數值">
                             <canvas id="showcaseCanvas" width="200" height="165" class="block group-hover:scale-105 transition-transform duration-200"></canvas>
-                            <div class="absolute bottom-1 px-2.5 py-0.5 rounded-full bg-slate-900/90 border border-amber-400/70 text-[10px] font-black text-amber-300 shadow">
-                                🔍 點擊檢視球拍數值
+                            <div class="absolute bottom-0.5 px-2.5 py-0.5 rounded-full bg-slate-900/90 border border-amber-400/70 text-[10px] font-black text-amber-300 shadow">
+                                🔍 點擊檢視球拍數值與融合
                             </div>
                         </div>
                         <button onclick="nextBrawler()" class="z-10 w-9 h-9 rounded-full cyber-btn flex items-center justify-center text-base font-black text-cyan-300 shadow-lg">▶</button>
                     </div>
 
-                    <div class="lg:col-span-7 flex flex-col justify-between gap-2">
+                    <div class="lg:col-span-7 flex flex-col justify-between gap-1.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
                                 <span id="showcase-role-badge" class="px-2.5 py-0.5 rounded-md bg-rose-500/20 border border-rose-400 text-rose-300 text-[10px] font-black tracking-wider uppercase">破壞型 DESTRUCTION</span>
-                                <span class="text-[10px] font-bold text-amber-300 cyber-font">★ MYTHIC PADDLE</span>
+                                <span id="showcase-passive-badge" class="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/50 text-[10px] font-bold text-amber-300">✦ 被動：疊加態</span>
                             </div>
                             <button onclick="openBrawlerDetailModal()" class="px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500/30 to-fuchsia-500/30 hover:from-cyan-500/60 hover:to-fuchsia-500/60 border border-cyan-300 text-xs font-black text-white flex items-center gap-1 shadow-md transition">
                                 📊 詳細數值與殺球突變
@@ -297,41 +327,50 @@
                         </div>
                     </div>
                 </div>
-<!-- 🎮 雙端操作指南面板（PC 鍵鼠 & 手機全螢幕手勢） -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2.5 p-2.5 rounded-2xl bg-slate-950/90 border border-cyan-500/40 text-[11px]">
-    <div class="flex flex-col gap-1 pr-1 sm:border-r border-slate-800">
-        <div class="font-black text-cyan-300 cyber-font flex items-center gap-1.5">
-            <span>📱 手機版：全螢幕無按鈕直覺手勢</span>
-        </div>
-        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
-            <div>👉 <b class="text-white">單指按住滑動</b>：移動＋自動揮拍</div>
-            <div>⚡ <b class="text-amber-300">第二指點 1 下</b>：釋放超能必殺技</div>
-            <div>💥 <b class="text-rose-400">第二指連點 2 下</b>：雷霆重扣殺球</div>
-            <div>🎈 <b class="text-purple-300">雙指往上滑</b>：挑高吊球 (Lob)</div>
-            <div class="col-span-2">🌟 <b class="text-yellow-300">雙指往下滑 / 長按</b>：消耗滿能量進化 (LV UP)</div>
-        </div>
-    </div>
-    <div class="flex flex-col gap-1 pl-0 sm:pl-1">
-        <div class="font-black text-pink-400 cyber-font flex items-center gap-1.5">
-            <span>💻 電腦版：鍵鼠電競操控</span>
-        </div>
-        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
-            <div>🖱️ <b class="text-white">滑鼠移動</b>：控制球拍位置與前後</div>
-            <div>🏓 <b class="text-cyan-300">左鍵 / A 鍵</b>：一般揮拍擊球</div>
-            <div>⚡ <b class="text-amber-300">空白鍵 (Space)</b>：釋放超能必殺技</div>
-            <div>💥 <b class="text-rose-400">D 鍵 / Ctrl+左鍵</b>：雷霆重扣殺球</div>
-            <div>🎈 <b class="text-purple-300">右鍵 / S 鍵</b>：挑高吊球 (Lob)</div>
-            <div>🌟 <b class="text-yellow-300">E 鍵</b>：超能進化 (LV.1 ➔ LV.5)</div>
-        </div>
-    </div>
-</div>
-                <!-- 24 英雄球拍卡牌庫 -->
-                <div class="mb-2.5">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-[11px] font-black text-amber-300 uppercase tracking-wider">⚡ 選擇出戰球拍與超能核心 (24 BRAWLERS · 點擊選取 / 點擊🔍看詳情)</span>
-                        <span class="text-[10px] text-slate-400">支援滑鼠滾輪 / 手機上下滑動</span>
+
+                <!-- 🎮 雙端操作指南面板（PC 鍵鼠 & 手機全螢幕手勢） -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2 p-2.5 rounded-2xl bg-slate-950/90 border border-cyan-500/40 text-[11px]">
+                    <div class="flex flex-col gap-1 pr-1 sm:border-r border-slate-800">
+                        <div class="font-black text-cyan-300 cyber-font flex items-center gap-1.5">
+                            <span>📱 手機版：全螢幕直覺手勢 (攢滿100%球勢可殺球)</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
+                            <div>👉 <b class="text-white">單指按住滑動</b>：移動＋自動揮拍</div>
+                            <div>⚡ <b class="text-amber-300">第二指點 1 下</b>：釋放超能必殺技</div>
+                            <div>💥 <b class="text-rose-400">第二指連點 2 下</b>：滿球勢雷霆殺球</div>
+                            <div>🎈 <b class="text-purple-300">雙指往上滑</b>：挑高吊球 (Lob)</div>
+                            <div class="col-span-2">🌟 <b class="text-yellow-300">雙指往下滑 / 長按</b>：消耗滿能量進化 (LV UP)</div>
+                        </div>
                     </div>
-                    <div class="touch-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[28vh] sm:max-h-[30vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
+                    <div class="flex flex-col gap-1 pl-0 sm:pl-1">
+                        <div class="font-black text-pink-400 cyber-font flex items-center gap-1.5">
+                            <span>💻 電腦版：鍵鼠電競操控 (施放技能快速集滿球勢)</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-300">
+                            <div>🖱️ <b class="text-white">滑鼠移動</b>：控制球拍位置與前後</div>
+                            <div>🏓 <b class="text-cyan-300">左鍵 / A 鍵</b>：一般揮拍擊球</div>
+                            <div>⚡ <b class="text-amber-300">空白鍵 (Space)</b>：釋放超能必殺技</div>
+                            <div>💥 <b class="text-rose-400">D 鍵 / Ctrl+左鍵</b>：滿球勢雷霆殺球</div>
+                            <div>🎈 <b class="text-purple-300">右鍵 / S 鍵</b>：挑高吊球 (Lob)</div>
+                            <div>🌟 <b class="text-yellow-300">E 鍵</b>：超能進化 (LV.1 ➔ LV.5)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 32 英雄球拍精美卡牌庫（含定位分類篩選器） -->
+                <div class="mb-2">
+                    <div class="flex flex-wrap justify-between items-center gap-1.5 mb-1.5">
+                        <span class="text-[11px] font-black text-amber-300 uppercase tracking-wider">⚡ 選擇出戰球拍與超能核心 (32 BRAWLERS · 點擊選取 / 點擊🔍看詳情)</span>
+                        <div class="flex items-center gap-1 flex-wrap" id="role-filter-tabs">
+                            <button onclick="filterSkillRole('ALL')" id="rtab-ALL" class="role-tab active px-2 py-0.5 rounded-lg text-[10px] font-black">全部 (32)</button>
+                            <button onclick="filterSkillRole('破壞型')" id="rtab-破壞型" class="role-tab px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-300">💥 破壞</button>
+                            <button onclick="filterSkillRole('極速型')" id="rtab-極速型" class="role-tab px-2 py-0.5 rounded-lg text-[10px] font-bold text-cyan-300">⚡ 極速</button>
+                            <button onclick="filterSkillRole('控場型')" id="rtab-控場型" class="role-tab px-2 py-0.5 rounded-lg text-[10px] font-bold text-purple-300">🌪️ 控場</button>
+                            <button onclick="filterSkillRole('詭術型')" id="rtab-詭術型" class="role-tab px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-300">🌀 詭術</button>
+                            <button onclick="filterSkillRole('守護型')" id="rtab-守護型" class="role-tab px-2 py-0.5 rounded-lg text-[10px] font-bold text-emerald-300">🛡️ 守護</button>
+                        </div>
+                    </div>
+                    <div class="touch-scroll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 max-h-[26vh] sm:max-h-[28vh] overflow-y-auto pr-1 p-0.5" id="skill-grid-container"></div>
                 </div>
 
                 <!-- 底部：難度選擇 + 開戰按鈕 -->
@@ -351,6 +390,57 @@
                         ⚡ BATTLE! 開始對決
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- ⚙️ 大廳「賽事與系統選項清單」彈窗 -->
+        <div id="lobby-settings-modal" class="touch-scroll hidden absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 z-50 pointer-events-auto overflow-y-auto">
+            <div class="cyber-panel max-w-md w-full rounded-3xl p-5 border-2 border-cyan-400 space-y-3.5 my-auto shadow-2xl">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">⚙️</span>
+                        <h3 class="text-lg font-black cyber-font text-cyan-300">SYSTEM & MATCH OPTIONS</h3>
+                    </div>
+                    <button onclick="closeLobbySettingsModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-600 text-white font-black flex items-center justify-center">✕</button>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div class="bg-slate-950/90 p-3 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-[11px] font-black text-amber-300 uppercase">🏆 賽制規則設定 (MATCH RULES)</div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">⏱️ 單場比賽時限：</span>
+                            <button onclick="cycleMatchDuration()" id="opt-match-time" class="cyber-btn px-3 py-1 rounded-lg font-black text-cyan-300">5 分鐘 (標準)</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">🏓 每局獲勝分數：</span>
+                            <button onclick="cycleTargetScore()" id="opt-target-score" class="cyber-btn px-3 py-1 rounded-lg font-black text-pink-300">11 分制 (3局2勝)</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/90 p-3 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-[11px] font-black text-cyan-300 uppercase">🖥️ 顯示與音效設定 (AUDIO & DISPLAY)</div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">🔊 合成器音效：</span>
+                            <button onclick="toggleSound(); syncSettingsUI();" id="opt-sound-btn" class="cyber-btn px-3 py-1 rounded-lg font-black text-emerald-300">開啟 ON</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">📳 畫面震動特效：</span>
+                            <button onclick="toggleScreenShake()" id="opt-shake-btn" class="cyber-btn px-3 py-1 rounded-lg font-black text-emerald-300">強烈 HIGH</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">⏱️ 螢幕幀率上限：</span>
+                            <button onclick="cycleFpsCap(); syncSettingsUI();" id="opt-fps-btn" class="cyber-btn px-3 py-1 rounded-lg font-black text-amber-300">144Hz+ 不限</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">⚡ 畫質渲染引擎：</span>
+                            <button onclick="togglePerformanceMode(); syncSettingsUI();" id="opt-perf-btn" class="cyber-btn px-3 py-1 rounded-lg font-black text-emerald-300">極速電競模式</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeLobbySettingsModal()" class="w-full py-2.5 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black rounded-xl cyber-font text-sm shadow-lg">
+                    儲存並返回大廳 (SAVE & CLOSE)
+                </button>
             </div>
         </div>
 
@@ -391,7 +481,7 @@
                         <div id="detail-active-desc" class="text-slate-200"></div>
                     </div>
                     <div class="p-2.5 rounded-xl bg-rose-950/50 border border-rose-500/40">
-                        <div class="font-black text-rose-300 mb-0.5">💥 搭配殺球 (Smash) 突變效果：</div>
+                        <div class="font-black text-rose-300 mb-0.5">💥 攢滿【球勢】殺球 (Smash) 突變效果：</div>
                         <div id="detail-smash-desc" class="text-slate-200"></div>
                     </div>
                     <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/40">
@@ -431,32 +521,40 @@
     </div>
 
     <script>
-        // ================= 一、24 大超能球拍完整圖鑑（含高對比配色與專屬粒子幾何形狀） =================
+        // ================= 一、32 大超能球拍完整圖鑑（含高對比配色與專屬粒子幾何形狀） =================
         const ARCH_STYLE = {
-            fire:      { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400', shape: 'flame' },
-            thunder:   { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300', shape: 'bolt' },
-            gravity:   { color: '#9333ea', glow: '#e879f9', textCls: 'text-purple-300', shape: 'ring' },
+            fire:      { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400',   shape: 'flame' },
+            thunder:   { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300',  shape: 'bolt' },
+            gravity:   { color: '#9333ea', glow: '#e879f9', textCls: 'text-purple-300',  shape: 'ring' },
             sonic:     { color: '#10b981', glow: '#a7f3d0', textCls: 'text-emerald-300', shape: 'blade' },
             ghost:     { color: '#e879f9', glow: '#38bdf8', textCls: 'text-fuchsia-300', shape: 'star' },
-            prism:     { color: '#00f2fe', glow: '#ffffff', textCls: 'text-cyan-300', shape: 'cube' },
-            chrono:    { color: '#38bdf8', glow: '#fde047', textCls: 'text-sky-300', shape: 'ring' },
-            leech:     { color: '#f43f5e', glow: '#fda4af', textCls: 'text-rose-400', shape: 'star' },
-            mirror:    { color: '#f8fafc', glow: '#38bdf8', textCls: 'text-slate-200', shape: 'cube' },
-            laser:     { color: '#06b6d4', glow: '#f43f5e', textCls: 'text-cyan-200', shape: 'bolt' },
-            void:      { color: '#7e22ce', glow: '#c084fc', textCls: 'text-purple-300', shape: 'ring' },
-            frost:     { color: '#38bdf8', glow: '#ffffff', textCls: 'text-sky-200', shape: 'hex' },
-            toxin:     { color: '#84cc16', glow: '#d9f99d', textCls: 'text-lime-400', shape: 'skull' },
-            cyclone:   { color: '#8b5cf6', glow: '#f0abfc', textCls: 'text-violet-300', shape: 'blade' },
-            aqua:      { color: '#0ea5e9', glow: '#a5f3fc', textCls: 'text-cyan-200', shape: 'ring' },
-            nova:      { color: '#f59e0b', glow: '#fef08a', textCls: 'text-yellow-200', shape: 'star' },
-            web:       { color: '#cbd5e1', glow: '#ffffff', textCls: 'text-slate-300', shape: 'hex' },
-            twin:      { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300', shape: 'cube' },
-            rewind:    { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300', shape: 'ring' },
-            quantum:   { color: '#00f2fe', glow: '#f59e0b', textCls: 'text-cyan-300', shape: 'star' },
-            magnet:    { color: '#ef4444', glow: '#3b82f6', textCls: 'text-rose-300', shape: 'ring' },
-            boomerang: { color: '#eab308', glow: '#fef08a', textCls: 'text-amber-300', shape: 'blade' },
-            bomb:      { color: '#f97316', glow: '#ef4444', textCls: 'text-orange-400', shape: 'flame' },
-            pinball:   { color: '#d946ef', glow: '#fde047', textCls: 'text-fuchsia-300', shape: 'star' }
+            prism:     { color: '#00f2fe', glow: '#ffffff', textCls: 'text-cyan-300',    shape: 'cube' },
+            chrono:    { color: '#38bdf8', glow: '#fde047', textCls: 'text-sky-300',     shape: 'ring' },
+            leech:     { color: '#f43f5e', glow: '#fda4af', textCls: 'text-rose-400',    shape: 'star' },
+            mirror:    { color: '#f8fafc', glow: '#38bdf8', textCls: 'text-slate-200',   shape: 'cube' },
+            laser:     { color: '#06b6d4', glow: '#f43f5e', textCls: 'text-cyan-200',    shape: 'bolt' },
+            void:      { color: '#7e22ce', glow: '#c084fc', textCls: 'text-purple-300',  shape: 'ring' },
+            frost:     { color: '#38bdf8', glow: '#ffffff', textCls: 'text-sky-200',     shape: 'hex' },
+            toxin:     { color: '#84cc16', glow: '#d9f99d', textCls: 'text-lime-400',    shape: 'skull' },
+            cyclone:   { color: '#8b5cf6', glow: '#f0abfc', textCls: 'text-violet-300',  shape: 'blade' },
+            aqua:      { color: '#0ea5e9', glow: '#a5f3fc', textCls: 'text-cyan-200',    shape: 'ring' },
+            nova:      { color: '#f59e0b', glow: '#fef08a', textCls: 'text-yellow-200',  shape: 'star' },
+            web:       { color: '#cbd5e1', glow: '#ffffff', textCls: 'text-slate-300',   shape: 'hex' },
+            twin:      { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300',    shape: 'cube' },
+            rewind:    { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300',    shape: 'ring' },
+            quantum:   { color: '#00f2fe', glow: '#f59e0b', textCls: 'text-cyan-300',    shape: 'star' },
+            magnet:    { color: '#ef4444', glow: '#3b82f6', textCls: 'text-rose-300',    shape: 'ring' },
+            boomerang: { color: '#eab308', glow: '#fef08a', textCls: 'text-amber-300',   shape: 'blade' },
+            bomb:      { color: '#f97316', glow: '#ef4444', textCls: 'text-orange-400',  shape: 'flame' },
+            pinball:   { color: '#d946ef', glow: '#fde047', textCls: 'text-fuchsia-300', shape: 'star' },
+            dragon:    { color: '#dc2626', glow: '#fde047', textCls: 'text-red-400',     shape: 'flame' },
+            sakura:    { color: '#f472b6', glow: '#fce7f3', textCls: 'text-pink-300',    shape: 'star'  },
+            blade:     { color: '#eab308', glow: '#fef08a', textCls: 'text-yellow-300',  shape: 'blade' },
+            scorpion:  { color: '#7c2d12', glow: '#f97316', textCls: 'text-orange-400',  shape: 'skull' },
+            rhythm:    { color: '#ec4899', glow: '#fbcfe8', textCls: 'text-fuchsia-300', shape: 'ring'  },
+            eclipse:   { color: '#4338ca', glow: '#fbbf24', textCls: 'text-indigo-300',  shape: 'ring'  },
+            homing:    { color: '#f97316', glow: '#fbbf24', textCls: 'text-amber-300',   shape: 'bolt'  },
+            abyss:     { color: '#06b6d4', glow: '#c084fc', textCls: 'text-cyan-300',    shape: 'ring'  }
         };
 
         const BASE_SKILLS = [
@@ -483,7 +581,15 @@
             { id: 'magnet',    role: '控場型 CONTROLLER',stats: { pwr: 88, spd: 87, spn: 94, ctl: 91 }, name: '🧲 磁極反轉', desc: '球包裹紅藍U型磁場電弧，對手球拍越靠近，觸發【同極相斥】自動把球推開閃避', smashDesc: '極性瞬間翻轉為【異極強吸】：強行把對手球拍拉往落點相反方向！', passiveName: '磁浮', passiveDesc: '己方球拍具異極引力，自動微幅吸附來球', fusionTips: '推薦配對：⚡電磁軌道炮 / 🎱電磁彈珠台', arch: 'magnet' },
             { id: 'boomerang', role: '詭術型 TRICKSTER', stats: { pwr: 87, spd: 91, spn: 99, ctl: 84 }, name: '🪃 次元迴旋', desc: '球化為高速旋轉黃金光刃，在敵方桌面彈起後不往前飛，而是180度往球網倒飛', smashDesc: '化為【疾風風魔手裏劍】：落地後極速貼網倒飛，讓底線對手100%揮空！', passiveName: '迴旋', passiveDesc: '側旋球曲率額外提升25%', fusionTips: '推薦配對：💨音速光輪斬 / 🌪️龍捲手裏劍', arch: 'boomerang' },
             { id: 'bomb',      role: '破壞型 DESTROYER', stats: { pwr: 100, spd: 86, spn: 80, ctl: 78 }, name: '💣 定時星雷', desc: '球頂顯示3➔2➔1倒數炸彈，對拉中倒數歸零直接在當前半場引爆，炸飛球拍扣60%耐久', smashDesc: '殺球猛擊引信使炸彈倒數【立刻縮短0.8秒】，逼對手接下即將爆炸的星雷！', passiveName: '引信', passiveDesc: '每次使用殺球時，炸彈倒數自動加快0.6秒', fusionTips: '推薦配對：🔥熱核聚變星雷 / 💫超新星坍縮雷', arch: 'bomb' },
-            { id: 'pinball',   role: '極速型 ASSASSIN',  stats: { pwr: 90, spd: 96, spn: 95, ctl: 92 }, name: '🎱 星軌彈珠', desc: '球桌兩側升起紫金高壓彈射軌，球大角度撞擊邊軌後觸發彈珠音效並高速Z字折返', smashDesc: '邊軌高壓通電：撞擊軌道後升級為【3倍速雷暴彈珠】直射死角！', passiveName: '彈射', passiveDesc: '邊線極限控球·擦邊球觸發率大幅提升', fusionTips: '推薦配對：💎光稜彈珠矩陣 / ⚡高壓電弧彈珠', arch: 'pinball' }
+            { id: 'pinball',   role: '極速型 ASSASSIN',  stats: { pwr: 90, spd: 96, spn: 95, ctl: 92 }, name: '🎱 星軌彈珠', desc: '球桌兩側升起紫金高壓彈射軌，球大角度撞擊邊軌後觸發彈珠音效並高速Z字折返', smashDesc: '邊軌高壓通電：撞擊軌道後升級為【3倍速雷暴彈珠】直射死角！', passiveName: '彈射', passiveDesc: '邊線極限控球·擦邊球觸發率大幅提升', fusionTips: '推薦配對：💎光稜彈珠矩陣 / ⚡高壓電弧彈珠', arch: 'pinball' },
+            { id: 'dragon',    role: '破壞型 DESTROYER', stats: { pwr: 100, spd: 92, spn: 85, ctl: 90 }, name: '🐉 龍魂覺醒', desc: '【孤高龍皇】無主動技且不與外系聯動；換來每一擊皆為專屬【龍魂殺球】並伴隨龍吟與赤金龍息！', smashDesc: '常駐【龍魂殺球】：比一般殺球更強，完全無視甜區限制，遇敵方技能可耗80%能量以【龍威破萬法】硬撼！', passiveName: '真龍', passiveDesc: '球勢永久MAX·每拍必為龍魂殺球·僅能與自身融合【龍皇降臨】', fusionTips: '孤高唯一：🐉龍皇降臨·真龍形態 (拒絕一切外系聯動)', arch: 'dragon' },
+            { id: 'sakura',    role: '詭術型 TRICKSTER', stats: { pwr: 60, spd: 94, spn: 100, ctl: 96 }, name: '🌸 櫻花幻舞', desc: '釋放漫天櫻花使球變得極度輕飄飄且變幻莫測；高球＋技能可在空中【完全懸浮1.5秒】！', smashDesc: '【無聲落葉殺球】：輕飄飄的技巧型殺球，過網後急墜貼網並向側邊死角滑開！', passiveName: '卸力', passiveDesc: '太極卸力：將對手重球與殺球衝擊力卸除 50%，極難被破球', fusionTips: '推薦配對：⚔️散華櫻吹雪 / 🌀櫻花幻舞', arch: 'sakura' },
+            { id: 'blade',     role: '極速型 ASSASSIN',  stats: { pwr: 95, spd: 98, spn: 82, ctl: 84 }, name: '⚔️ 劍刃風暴', desc: '成長疊加型技能：對拉中每拍無限疊加【劍意】越打越強，聖劍光刃隨層數放大！', smashDesc: '【一劍破萬法】：濃縮所有劍意化為筆直黃金劍氣【直線貫穿】，附帶超高強制破球率！', passiveName: '劍意', passiveDesc: '每拍擊球無限疊加劍意（每層球速+8%、削耐久威力+12%）', fusionTips: '推薦配對：🌀螺旋聖劍鑽 / 🌸散華櫻吹雪', arch: 'blade' },
+            { id: 'scorpion',  role: '破壞型 DESTROYER', stats: { pwr: 94, spd: 86, spn: 92, ctl: 85 }, name: '🦂 蠍毒尾刺', desc: '施放技能為敵方無限疊加【蠍毒印記】：大幅弱化敵方回球球威與移速，疊滿3層直接麻痺！', smashDesc: '【蠍皇毒針】：瞬間引爆所有蠍毒印記，使敵拍強制麻痺鎖死 1.1 秒並腐蝕 40% 耐久！', passiveName: '劇毒', passiveDesc: '每層蠍毒弱化敵方 12% 球威與 15% 移速，並增加 25% 耐久損耗', fusionTips: '推薦配對：🎵劇毒鎮魂曲 / ☠️蠍毒深淵', arch: 'scorpion' },
+            { id: 'rhythm',    role: '控場型 CONTROLLER',stats: { pwr: 86, spd: 93, spn: 96, ctl: 90 }, name: '🎵 音律震盪', desc: '擊球奏出 Do-Re-Mi-Fa 音階！技能釋放全場大範圍音波震盪，使敵方陷入 4 秒【破防脆弱】！', smashDesc: '【死亡重音 Bass Drop】：轟出超低頻重音核爆，三重巨型音波直接震碎敵方防禦並強制震退！', passiveName: '音階', passiveDesc: '擊球演奏八度音階，音波命中使敵方承受耐久傷害 +60%', fusionTips: '推薦配對：🦂劇毒鎮魂曲 / ⚡雷音爆鳴', arch: 'rhythm' },
+            { id: 'eclipse',   role: '極速型 ASSASSIN',  stats: { pwr: 88, spd: 99, spn: 95, ctl: 85 }, name: '🌙 月蝕幻影', desc: '月蝕降臨全場光線暗淡，球體在月蝕陰影中瞬間閃現移動', smashDesc: '【月蝕降臨】黑暗吞噬全場，下一擊直接從對手拍下偷襲！', passiveName: '月影', passiveDesc: '光線昏暗時 AI 誤判提升，自身移動加速', fusionTips: '推薦配對：🌑混沌月蝕 / 👻月影幻身', arch: 'eclipse' },
+            { id: 'homing',    role: '極速型 ASSASSIN',  stats: { pwr: 86, spd: 96, spn: 92, ctl: 90 }, name: '🏹 追蹤箭矢', desc: '球化為高速追蹤箭矢，會主動追擊對手球拍移動軌跡', smashDesc: '【萬箭齊發】分裂出七道追蹤箭同時射向對手所有死角！', passiveName: '鎖定', passiveDesc: '無視對手位移，每擊球自動鎖定下一拍落點', fusionTips: '推薦配對：🎱追蹤彈珠 / 💎追蹤光矢', arch: 'homing' },
+            { id: 'abyss',     role: '控場型 CONTROLLER',stats: { pwr: 91, spd: 90, spn: 100, ctl: 89 }, name: '🌀 螺旋深淵', desc: '擊出極其誇張的【3D立體大螺旋魔球】，球體在空中大幅度圓周螺旋鑽行，落地劇烈側拐！', smashDesc: '【深淵巨鑽坍縮】：雙倍螺旋轉速鑽出深淵漩渦吸扯敵拍，球體卻往反方向極限大角度彈出！', passiveName: '渦流', passiveDesc: '所有旋球曲率常駐 +30%，且每次擊球額外累積 +5%【球勢】', fusionTips: '推薦配對：🌪️雙重螺旋龍捲 / ⚔️螺旋聖劍鑽', arch: 'abyss' }
         ];
 
         const SKILL_META = {};
@@ -648,7 +754,38 @@
             ['bomb+fire', 'thermo_nuke', '💣🔥 熱核聚變星雷', 'bomb'],
             ['bomb+nova', 'supernova_mine', '💣💫 超新星坍縮雷', 'bomb'],
             ['pinball+laser', 'prism_pinball', '🎱💎 光稜彈珠矩陣', 'pinball'],
-            ['pinball+thunder', 'volt_bumper', '🎱⚡ 高壓電弧彈珠', 'pinball']
+            ['pinball+thunder', 'volt_bumper', '🎱⚡ 高壓電弧彈珠', 'pinball'],
+            // ── 8 款新/重製技能自融（龍魂僅能自融） ──
+            ['dragon+dragon',     'dragon_emperor',  '🐉 龍皇降臨·真龍形態', 'dragon'],
+            ['sakura+sakura',     'sakura_storm',    '🌸 千本櫻·花吹雪',     'sakura'],
+            ['blade+blade',       'blade_judgement', '⚔️ 無限劍製·萬劍歸宗', 'blade'],
+            ['scorpion+scorpion', 'scorpion_nest',   '🦂 蠍皇毒巢·萬蠍噬心', 'scorpion'],
+            ['rhythm+rhythm',     'final_symphony',  '🎵 終焉交響曲·死亡重音', 'rhythm'],
+            ['eclipse+eclipse',   'total_eclipse',   '🌑 永恆月蝕·黑暗吞噬', 'eclipse'],
+            ['homing+homing',     'myriad_arrows',   '🏹 萬箭齊發·必中領域', 'homing'],
+            ['abyss+abyss',       'abyss_maelstrom', '🌀 深淵大漩渦·萬象螺旋', 'abyss'],
+            // ── 新/重製技能跨系融合（不含孤高龍魂） ──
+            ['sakura+ghost',      'sakura_illusion', '🌸👻 櫻花幻舞',       'sakura'],
+            ['sakura+void',       'sakura_void',     '🌸🌑 花瓣虛空',       'sakura'],
+            ['sakura+cyclone',    'sakura_petals',   '🌸🌪️ 花瓣風暴',      'sakura'],
+            ['sakura+blade',      'sakura_blade',    '🌸⚔️ 散華櫻吹雪',     'sakura'],
+            ['blade+thunder',     'blade_thunder',   '⚔️⚡ 雷霆劍舞',       'blade'],
+            ['blade+frost',       'blade_frost',     '⚔️❄️ 寒霜劍芒',      'blade'],
+            ['blade+laser',       'blade_laser',     '⚔️💎 光劍裂空',       'blade'],
+            ['scorpion+toxin',    'scorpion_venom',  '🦂☠️ 蠍毒深淵',       'scorpion'],
+            ['scorpion+leech',    'scorpion_leech',  '🦂🩸 毒蠍汲取',       'scorpion'],
+            ['scorpion+rhythm',   'scorpion_rhythm', '🦂🎵 劇毒鎮魂曲',     'scorpion'],
+            ['rhythm+sonic',      'rhythm_sonic',    '🎵💨 音波震盪',       'rhythm'],
+            ['rhythm+thunder',    'rhythm_thunder',  '🎵⚡ 雷音爆鳴',       'rhythm'],
+            ['eclipse+void',      'eclipse_void',    '🌑🕳️ 混沌月蝕',      'eclipse'],
+            ['eclipse+ghost',     'eclipse_ghost',   '🌑👻 月影幻身',       'eclipse'],
+            ['homing+pinball',    'homing_pinball',  '🏹🎱 追蹤彈珠',       'homing'],
+            ['homing+laser',      'homing_laser',    '🏹💎 追蹤光矢',       'homing'],
+            ['abyss+cyclone',     'abyss_cyclone',   '🌀🌪️ 雙重螺旋龍捲',   'abyss'],
+            ['abyss+gravity',     'abyss_gravity',   '🌀🪐 深淵引力鑽',     'abyss'],
+            ['abyss+aqua',        'abyss_aqua',      '🌀🌊 鳴門大渦流',     'abyss'],
+            ['abyss+blade',       'abyss_blade',     '🌀⚔️ 螺旋聖劍鑽',     'blade'],
+            ['abyss+thunder',     'abyss_thunder',   '🌀⚡ 雷電超電磁鑽',   'abyss']
         ];
 
         const FUSION_TABLE = {};
@@ -693,13 +830,27 @@
             mirror: 'infinite_mirror', laser: 'prism_matrix', void: 'void_devour', frost: 'absolute_zero',
             toxin: 'plague', cyclone: 'mega_tornado', aqua: 'tsunami', nova: 'supernova', web: 'cocoon',
             twin: 'legion_clone', rewind: 'eternal_loop', quantum: 'quantum_cat',
-            magnet: 'polar_storm', boomerang: 'infinity_blade', bomb: 'carpet_nuke', pinball: 'arcade_jackpot'
+            magnet: 'polar_storm', boomerang: 'infinity_blade', bomb: 'carpet_nuke', pinball: 'arcade_jackpot',
+            dragon: 'dragon_emperor', sakura: 'sakura_storm', blade: 'blade_judgement',
+            scorpion: 'scorpion_nest', rhythm: 'final_symphony', eclipse: 'total_eclipse',
+            homing: 'myriad_arrows', abyss: 'abyss_maelstrom'
         };
 
         function getFusedSkill(incoming, counter, spinType = 'flat') {
             let archA = SKILL_META[incoming]?.arch || incoming;
             let archB = counter === 'mirror' ? archA : (SKILL_META[counter]?.arch || counter);
             if (incoming === 'mirror') archA = archB;
+
+            // 🐉 龍魂覺醒孤高法則：不與任何外系技能聯動，僅能自融【龍皇降臨】
+            if (archB === 'dragon') {
+                return {
+                    id: 'dragon_emperor',
+                    displayName: SKILL_META.dragon_emperor.name,
+                    isHardTier3: true,
+                    secondaryArch: 'dragon'
+                };
+            }
+            if (archA === 'dragon') archA = archB;
 
             const key = [archA, archB].sort().join('+');
             const baseFusion = FUSION_TABLE[key] || SAME_ARCH_FALLBACK[archB] || 'inferno_overload';
@@ -723,30 +874,47 @@
             laser: 'void', void: 'frost', frost: 'toxin', toxin: 'laser',
             cyclone: 'aqua', aqua: 'nova', nova: 'web', web: 'magnet',
             magnet: 'boomerang', boomerang: 'bomb', bomb: 'pinball', pinball: 'twin',
-            twin: 'rewind', rewind: 'quantum', quantum: 'cyclone'
+            twin: 'rewind', rewind: 'quantum', quantum: 'cyclone',
+            sakura: 'ghost', blade: 'sakura', scorpion: 'leech', rhythm: 'sonic',
+            eclipse: 'abyss', abyss: 'magnet', homing: 'eclipse'
         };
 
         const RESONANCE_PAIRS = {
-            'fire+thunder':     { name: '⚡🔥 雷火共鳴', effect: 'nextPower' },
-            'gravity+sonic':    { name: '🪐💨 引力加速', effect: 'fastFlight' },
-            'leech+prism':      { name: '🛡️🩸 汲取壁壘', effect: 'instantMana' },
-            'ghost+mirror':     { name: '🌀🪞 幻鏡雙生', effect: 'autoClone' },
-            'chrono+frost':     { name: '⏳❄️ 時空凍結', effect: 'freezeAi' },
-            'laser+void':       { name: '💎🌑 湮滅光束', effect: 'ignoreAiPred' },
-            'aqua+frost':       { name: '🌊❄️ 冰河時代', effect: 'globalIce' },
-            'fire+nova':        { name: '💫🔥 超新星',   effect: 'superBreak' },
-            'toxin+web':        { name: '🕸️☠️ 毒網陷阱', effect: 'poisonWeb' },
-            'cyclone+sonic':    { name: '🌪️💨 龍捲疾風', effect: 'fastFlight' },
-            'leech+toxin':      { name: '🩸☠️ 腐蝕汲取', effect: 'drain40' },
-            'laser+prism':      { name: '🛡️💎 稜鏡加農', effect: 'autoClone' },
-            'nova+thunder':     { name: '💫⚡ 星雷爆',   effect: 'doubleBoom' },
-            'gravity+void':     { name: '🪐🌑 奇點降臨', effect: 'forceTier3' },
-            'ghost+web':        { name: '🌀🕸️ 幻網迷蹤', effect: 'fakeRings' },
-            'mirror+nova':      { name: '🪞💫 鏡爆星辰', effect: 'nextPower' },
-            'aqua+toxin':       { name: '🌊☠️ 劇毒狂潮', effect: 'poisonWeb' },
-            'cyclone+gravity':  { name: '🌪️🪐 渦流黑洞', effect: 'vortexPull' },
-            'bomb+fire':        { name: '💣🔥 爆裂引信', effect: 'instantBomb' },
-            'magnet+pinball':   { name: '🧲🎱 電磁彈珠台', effect: 'hyperPinball' }
+            'fire+thunder':     { name: '⚡🔥 雷火共鳴',   effect: 'nextPower' },
+            'gravity+sonic':    { name: '🪐💨 引力加速',   effect: 'fastFlight' },
+            'leech+prism':      { name: '🛡️🩸 汲取壁壘',   effect: 'instantMana' },
+            'ghost+mirror':     { name: '🌀🪞 幻鏡雙生',   effect: 'autoClone' },
+            'chrono+frost':     { name: '⏳❄️ 時空凍結',   effect: 'freezeAi' },
+            'laser+void':       { name: '💎🌑 湮滅光束',   effect: 'ignoreAiPred' },
+            'aqua+frost':       { name: '🌊❄️ 冰河時代',   effect: 'globalIce' },
+            'fire+nova':        { name: '💫🔥 超新星',     effect: 'superBreak' },
+            'toxin+web':        { name: '🕸️☠️ 毒網陷阱',   effect: 'poisonWeb' },
+            'cyclone+sonic':    { name: '🌪️💨 龍捲疾風',   effect: 'fastFlight' },
+            'leech+toxin':      { name: '🩸☠️ 腐蝕汲取',   effect: 'drain40' },
+            'laser+prism':      { name: '🛡️💎 稜鏡加農',   effect: 'autoClone' },
+            'nova+thunder':     { name: '💫⚡ 星雷爆',     effect: 'doubleBoom' },
+            'gravity+void':     { name: '🪐🌑 奇點降臨',   effect: 'forceTier3' },
+            'ghost+web':        { name: '🌀🕸️ 幻網迷蹤',   effect: 'fakeRings' },
+            'mirror+nova':      { name: '🪞💫 鏡爆星辰',   effect: 'nextPower' },
+            'aqua+toxin':       { name: '🌊☠️ 劇毒狂潮',   effect: 'poisonWeb' },
+            'cyclone+gravity':  { name: '🌪️🪐 渦流黑洞',   effect: 'vortexPull' },
+            'bomb+fire':        { name: '💣🔥 爆裂引信',   effect: 'instantBomb' },
+            'magnet+pinball':   { name: '🧲🎱 電磁彈珠台', effect: 'hyperPinball' },
+            'sakura+ghost':     { name: '🌸👻 花影迷蹤',   effect: 'fakeRings'   },
+            'sakura+void':      { name: '🌸🌑 花瓣隱形',   effect: 'ignoreAiPred'},
+            'blade+sakura':     { name: '🌸⚔️ 散華櫻吹雪', effect: 'nextPower'   },
+            'blade+thunder':    { name: '⚔️⚡ 雷霆劍心',   effect: 'fastFlight'  },
+            'blade+laser':      { name: '⚔️💎 光劍裂空',   effect: 'superBreak'  },
+            'scorpion+toxin':   { name: '🦂☠️ 蠍毒深淵',   effect: 'poisonWeb'   },
+            'scorpion+leech':   { name: '🦂🩸 毒蠍汲取',   effect: 'drain40'     },
+            'rhythm+scorpion':  { name: '🦂🎵 劇毒鎮魂曲', effect: 'poisonWeb'   },
+            'rhythm+sonic':     { name: '🎵💨 音波震盪',   effect: 'fastFlight'  },
+            'rhythm+thunder':   { name: '🎵⚡ 雷音爆鳴',   effect: 'doubleBoom'  },
+            'eclipse+void':     { name: '🌑🕳️ 混沌月蝕',   effect: 'ignoreAiPred'},
+            'homing+pinball':   { name: '🏹🎱 追蹤彈珠',   effect: 'hyperPinball' },
+            'homing+laser':     { name: '🏹💎 追蹤光矢',   effect: 'ignoreAiPred'},
+            'abyss+cyclone':    { name: '🌀🌪️ 雙重螺旋',   effect: 'vortexPull'  },
+            'abyss+blade':      { name: '🌀⚔️ 螺旋聖劍',   effect: 'superBreak'  }
         };
 
         const LV_MULT   = [1.0, 1.2, 1.5, 1.8, 2.2];
@@ -773,6 +941,10 @@
         let quantumPortal = { active: false, inX: 0, outX: 0, timer: 0, teleported: false };
         let novaBurstTimer = 0;
         let sonicRallyStacks = 0;
+        let bladeStacks = 0;
+        let rhythmNoteIdx = 0;
+        let eclipseDarkTimer = 0;
+        let lastPlayerHitDir = 0;
         let lastIncomingPower = 1.0;
 
         let skillVisuals = {
@@ -784,13 +956,68 @@
             icePillars: []
         };
 
-        // ================= 幀率上限與極速性能控制系統 =================
+        // ================= 幀率上限、賽事選項與極速性能控制系統 =================
         let gameMode = 'ai';
         let cfgDiff = 'normal';
         let cfgSkill = 'quantum';
-        let perfMode = 'turbo'; // 'turbo' = 零 shadowBlur 硬體雙描邊極速模式, 'quality' = 高畫質光影
-        let fpsCap = 0; // 0 = 無上限 (144Hz+), 120 = 120FPS, 60 = 60FPS
+        let currentRoleFilter = 'ALL';
+        let perfMode = 'turbo';
+        let fpsCap = 0;
+        let cfgMatchDuration = 300;
+        let cfgTargetScore = 11;
+        let cfgShakeMult = 1.0;
         let fpsFrameCount = 0, fpsLastStamp = performance.now(), currentFps = 60, lastFrameRenderTime = 0;
+
+        function openLobbySettingsModal() {
+            sfx.init(); sfx.bounce(false);
+            syncSettingsUI();
+            document.getElementById('lobby-settings-modal').classList.remove('hidden');
+        }
+        function closeLobbySettingsModal() {
+            document.getElementById('lobby-settings-modal').classList.add('hidden');
+        }
+        function cycleMatchDuration() {
+            sfx.init(); sfx.swing();
+            if (cfgMatchDuration === 300) cfgMatchDuration = 180;
+            else if (cfgMatchDuration === 180) cfgMatchDuration = 9999;
+            else cfgMatchDuration = 300;
+            syncSettingsUI();
+        }
+        function cycleTargetScore() {
+            sfx.init(); sfx.swing();
+            if (cfgTargetScore === 11) cfgTargetScore = 7;
+            else if (cfgTargetScore === 7) cfgTargetScore = 21;
+            else cfgTargetScore = 11;
+            syncSettingsUI();
+        }
+        function toggleScreenShake() {
+            sfx.init(); sfx.swing();
+            if (cfgShakeMult === 1.0) cfgShakeMult = 0.4;
+            else if (cfgShakeMult === 0.4) cfgShakeMult = 0;
+            else cfgShakeMult = 1.0;
+            syncSettingsUI();
+        }
+        function syncSettingsUI() {
+            const durText = cfgMatchDuration === 300 ? '5 分鐘 (標準)' : (cfgMatchDuration === 180 ? '3 分鐘 (快節奏)' : '♾️ 無限時間');
+            const scoreText = `${cfgTargetScore} 分制 (3局2勝)`;
+            const shakeText = cfgShakeMult === 1.0 ? '強烈 HIGH' : (cfgShakeMult === 0.4 ? '輕微 LOW' : '關閉 OFF');
+            const fpsLabel = fpsCap === 0 ? '144Hz+ 不限' : `${fpsCap} FPS`;
+            const perfLabel = perfMode === 'turbo' ? '極速電競模式' : '特效全開模式';
+
+            const elTime = document.getElementById('opt-match-time');
+            const elScore = document.getElementById('opt-target-score');
+            const elSound = document.getElementById('opt-sound-btn');
+            const elShake = document.getElementById('opt-shake-btn');
+            const elFps = document.getElementById('opt-fps-btn');
+            const elPerf = document.getElementById('opt-perf-btn');
+
+            if (elTime) elTime.innerText = durText;
+            if (elScore) elScore.innerText = scoreText;
+            if (elSound) elSound.innerText = sfx.muted ? '關閉 OFF' : '開啟 ON';
+            if (elShake) elShake.innerText = shakeText;
+            if (elFps) elFps.innerText = fpsLabel;
+            if (elPerf) elPerf.innerText = perfLabel;
+        }
 
         function cycleFpsCap() {
             if (fpsCap === 0) fpsCap = 120;
@@ -804,6 +1031,7 @@
             if (lobbyBtn) lobbyBtn.innerText = `⏱️ 幀率：${label}`;
             if (pauseBtn) pauseBtn.innerText = `⏱️ 幀率上限：${label}`;
             if (drawerBtn) drawerBtn.innerText = `⏱️ 幀率上限：${label}`;
+            syncSettingsUI();
         }
 
         function togglePerformanceMode() {
@@ -815,6 +1043,7 @@
             if (lobbyBtn) lobbyBtn.innerText = perfMode === 'turbo' ? '⚡ 極速模式' : '🎨 高畫質';
             if (pauseBtn) pauseBtn.innerText = `渲染：${label}`;
             if (drawerBtn) drawerBtn.innerText = `渲染：${label}`;
+            syncSettingsUI();
             resizeCanvas();
         }
 
@@ -824,23 +1053,24 @@
 
         function applyPassive(skillId, stage) {
             if (stage === 'paddle') {
-                let sweetMult = (hasPassive('gravity') ? 1.12 : 1.0) * (hasPassive('laser') ? 1.12 : 1.0);
+                let sweetMult = (hasPassive('gravity') ? 1.12 : 1.0) * (hasPassive('laser') ? 1.12 : 1.0) * (hasPassive('dragon') ? 1.35 : 1.0);
+                let moveMult = (hasPassive('thunder') ? 1.12 : 1.0) * (hasPassive('eclipse') ? 1.12 : 1.0);
                 return {
-                    moveSpeedMult: hasPassive('thunder') ? 1.12 : 1.0,
+                    moveSpeedMult: moveMult,
                     sweetSpotMult: sweetMult,
                     swingMaxMult:  hasPassive('sonic') ? 0.85 : 1.0,
-                    stunDurationMult: hasPassive('prism') ? 0.50 : 1.0
+                    stunDurationMult: (hasPassive('prism') || hasPassive('sakura')) ? 0.50 : 1.0
                 };
             }
             if (stage === 'return') {
-                if (['fire', 'chrono', 'leech', 'cyclone', 'nova', 'quantum', 'boomerang', 'pinball'].some(hasPassive)) flashPassiveHUD();
+                if (['fire', 'chrono', 'leech', 'cyclone', 'nova', 'quantum', 'boomerang', 'pinball', 'dragon', 'sakura', 'blade', 'scorpion', 'rhythm', 'eclipse', 'homing', 'abyss'].some(hasPassive)) flashPassiveHUD();
                 let manaMult = hasPassive('chrono') ? 1.15 : 1.0;
                 let frameMult = hasPassive('nova') ? 0.88 : 1.0;
                 return {
                     flatManaBonus: (hasPassive('fire') ? 5 : 0) + (hasPassive('quantum') ? 6 : 0),
                     manaGainMult:  manaMult,
                     leechSteal:    hasPassive('leech') ? 4 : 0,
-                    spinCurveMult: (hasPassive('cyclone') ? 1.25 : 1.0) * (hasPassive('boomerang') ? 1.25 : 1.0),
+                    spinCurveMult: (hasPassive('cyclone') ? 1.25 : 1.0) * (hasPassive('boomerang') ? 1.25 : 1.0) * (hasPassive('sakura') ? 1.20 : 1.0) * (hasPassive('abyss') ? 1.30 : 1.0),
                     flightFrameMult: frameMult
                 };
             }
@@ -854,9 +1084,9 @@
                 };
             }
             if (stage === 'ai') {
-                return {
-                    aiErrorMult: hasPassive('void') ? 1.18 : (hasPassive('ghost') ? 1.18 : 1.0)
-                };
+                let err = 1.0;
+                if (hasPassive('void') || hasPassive('ghost') || hasPassive('eclipse') || hasPassive('sakura') || hasPassive('abyss')) err = 1.18;
+                return { aiErrorMult: err };
             }
             if (stage === 'cast') {
                 return {
@@ -866,14 +1096,14 @@
             return {};
         }
 
-        // ================= 荒野亂鬥風 3D 球拍展櫃與卡牌系統 =================
+        // ================= 荒野亂鬥風 3D 球拍展櫃與精美卡牌系統 =================
         const showcaseCanvas = document.getElementById('showcaseCanvas');
         const sCtx = showcaseCanvas.getContext('2d');
 
         function drawPaddlePattern(targetCtx, arch, r) {
             targetCtx.save();
-            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.38)';
-            targetCtx.lineWidth = Math.max(1.4, r * 0.055);
+            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.42)';
+            targetCtx.lineWidth = Math.max(1.5, r * 0.055);
             if (arch === 'quantum' || arch === 'pinball') {
                 targetCtx.beginPath();
                 targetCtx.ellipse(0, 0, r * 0.62, r * 0.24, Math.PI / 4, 0, Math.PI * 2);
@@ -881,15 +1111,20 @@
                 targetCtx.beginPath();
                 targetCtx.ellipse(0, 0, r * 0.62, r * 0.24, -Math.PI / 4, 0, Math.PI * 2);
                 targetCtx.stroke();
-            } else if (['fire', 'thunder', 'sonic', 'bomb'].includes(arch)) {
+            } else if (['fire', 'thunder', 'sonic', 'bomb', 'dragon', 'homing'].includes(arch)) {
                 targetCtx.beginPath();
                 targetCtx.moveTo(-r * 0.28, -r * 0.50); targetCtx.lineTo(r * 0.14, -r * 0.05);
                 targetCtx.lineTo(-r * 0.14, r * 0.08); targetCtx.lineTo(r * 0.28, r * 0.50);
                 targetCtx.stroke();
-            } else if (['gravity', 'void', 'rewind', 'boomerang', 'magnet'].includes(arch)) {
+            } else if (['blade', 'sakura'].includes(arch)) {
                 targetCtx.beginPath();
-                for (let a = 0; a < Math.PI * 3.5; a += 0.25) {
-                    const rad = (a / (Math.PI * 3.5)) * r * 0.64;
+                targetCtx.moveTo(-r * 0.48, -r * 0.48); targetCtx.lineTo(r * 0.48, r * 0.48);
+                targetCtx.moveTo(r * 0.48, -r * 0.48); targetCtx.lineTo(-r * 0.48, r * 0.48);
+                targetCtx.stroke();
+            } else if (['gravity', 'void', 'rewind', 'boomerang', 'magnet', 'eclipse', 'rhythm', 'abyss'].includes(arch)) {
+                targetCtx.beginPath();
+                for (let a = 0; a < Math.PI * 4.2; a += 0.22) {
+                    const rad = (a / (Math.PI * 4.2)) * r * 0.66;
                     const px = Math.cos(a) * rad, py = Math.sin(a) * rad;
                     if (a === 0) targetCtx.moveTo(px, py); else targetCtx.lineTo(px, py);
                 }
@@ -906,21 +1141,58 @@
             targetCtx.restore();
         }
 
+        function filterSkillRole(rolePrefix) {
+            sfx.init(); sfx.swing();
+            currentRoleFilter = rolePrefix;
+            ['ALL', '破壞型', '極速型', '控場型', '詭術型', '守護型'].forEach(k => {
+                const btn = document.getElementById('rtab-' + k);
+                if (btn) btn.classList.toggle('active', k === rolePrefix);
+            });
+            renderSkillGrid();
+        }
+
         function renderSkillGrid() {
             const container = document.getElementById('skill-grid-container');
-            container.innerHTML = BASE_SKILLS.map(s => `
-                <div onclick="selectSkill('${s.id}')" id="skill-${s.id}" class="brawl-card cursor-pointer ${s.id === cfgSkill ? 'active' : ''} p-2 rounded-2xl flex flex-col justify-between gap-1 relative">
-                    <div class="flex items-center justify-between gap-1">
-                        <span class="font-black text-xs ${SKILL_META[s.id].textCls} truncate">${s.name}</span>
-                        <button onclick="event.stopPropagation(); selectSkill('${s.id}'); openBrawlerDetailModal();" class="w-5 h-5 rounded-full bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-[10px] flex items-center justify-center shrink-0" title="詳細數值">🔍</button>
+            const filtered = currentRoleFilter === 'ALL'
+                ? BASE_SKILLS
+                : BASE_SKILLS.filter(s => s.role.startsWith(currentRoleFilter));
+
+            container.innerHTML = filtered.map((s, idx) => {
+                const meta = SKILL_META[s.id];
+                const emoji = s.name.slice(0, 2);
+                const shortName = s.name.slice(3);
+                const roleShort = s.role.split(' ')[0];
+                return `
+                <div onclick="selectSkill('${s.id}')" id="skill-${s.id}" class="brawl-card cursor-pointer ${s.id === cfgSkill ? 'active' : ''} p-2.5 rounded-2xl flex flex-col justify-between gap-1.5 relative">
+                    <div class="flex items-center justify-between gap-1.5">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <div class="w-7 h-7 rounded-lg bg-slate-950 border flex items-center justify-center text-sm shrink-0 shadow" style="border-color:${meta.color}">
+                                ${emoji}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-black text-xs ${meta.textCls} truncate leading-tight">${shortName}</div>
+                                <div class="text-[9px] text-slate-400 font-bold">${roleShort}</div>
+                            </div>
+                        </div>
+                        <button onclick="event.stopPropagation(); selectSkill('${s.id}'); openBrawlerDetailModal();" class="w-5 h-5 rounded-full bg-slate-800/90 hover:bg-cyan-500 hover:text-slate-950 text-[10px] flex items-center justify-center shrink-0 border border-slate-600" title="詳細數值">🔍</button>
                     </div>
-                    <div class="text-[10px] text-slate-300 truncate">${s.desc}</div>
-                    <div class="flex items-center justify-between text-[9px] pt-0.5 border-t border-slate-800">
-                        <span class="text-amber-300 font-bold">✦${s.passiveName}</span>
-                        <span class="text-cyan-300 cyber-font font-bold">PWR ${s.stats.pwr}</span>
+                    <div class="text-[10px] text-slate-300 line-clamp-1">${s.desc}</div>
+                    <div class="grid grid-cols-2 gap-1 pt-1 border-t border-slate-800/80 text-[9px]">
+                        <div class="flex items-center gap-1">
+                            <span class="text-rose-400 font-bold">💥${s.stats.pwr}</span>
+                            <div class="flex-1 bg-slate-950 h-1 rounded-full overflow-hidden"><div class="bg-rose-500 h-full" style="width:${s.stats.pwr}%"></div></div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-cyan-300 font-bold">⚡${s.stats.spd}</span>
+                            <div class="flex-1 bg-slate-950 h-1 rounded-full overflow-hidden"><div class="bg-cyan-400 h-full" style="width:${s.stats.spd}%"></div></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[9px]">
+                        <span class="text-amber-300 font-bold truncate">✦ 被動：${s.passiveName}</span>
+                        <span class="text-emerald-300 cyber-font font-bold">SPN ${s.stats.spn}</span>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             updateShowcaseUI();
         }
 
@@ -928,10 +1200,12 @@
             const s = BASE_SKILLS.find(k => k.id === cfgSkill) || BASE_SKILLS[0];
             const meta = SKILL_META[s.id];
             document.getElementById('showcase-role-badge').innerText = s.role;
+            const pBadge = document.getElementById('showcase-passive-badge');
+            if (pBadge) pBadge.innerText = `✦ ${s.passiveName}：${s.passiveDesc}`;
             document.getElementById('showcase-title').innerText = s.name;
             document.getElementById('showcase-title').className = `text-xl sm:text-2xl font-black cyber-font ${meta.textCls}`;
-            document.getElementById('showcase-desc').innerText = `⚡ 主動技：${s.desc}`;
-            document.getElementById('showcase-smash').innerText = `💥 殺球突變：${s.smashDesc}`;
+            document.getElementById('showcase-desc').innerText = `⚡ 技能機制：${s.desc}`;
+            document.getElementById('showcase-smash').innerText = `💥 球勢殺球突變：${s.smashDesc}`;
 
             document.getElementById('mini-stat-pwr').innerText = s.stats.pwr;
             document.getElementById('mini-bar-pwr').style.width = `${s.stats.pwr}%`;
@@ -1161,7 +1435,10 @@
             }
         }
 
-        // ================= 音效引擎 =================
+        // ================= 音效引擎（新增龍吟咆哮、Do-Re-Mi 八度音階與重低音 Bass Drop） =================
+        const RHYTHM_SCALE_FREQS = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+        const RHYTHM_SCALE_NAMES = ['♪ Do', '♪ Re', '♪ Mi', '♪ Fa', '♪ Sol', '♪ La', '♪ Ti', '♪ High Do!'];
+
         class AudioEngine {
             constructor() { this.ctx = null; this.muted = false; }
             init() {
@@ -1194,6 +1471,22 @@
                 this.playTone('sawtooth', 520, 65, 0.22, 0.65, 0, ball.x);
                 this.playTone('square', 980, 180, 0.18, 0.5, 0.02, ball.x);
             }
+            dragonRoar() {
+                // 🐉 專屬霸氣龍吟咆哮合成音效
+                this.playTone('sawtooth', 165, 42, 0.42, 0.68, 0, ball.x);
+                this.playTone('triangle', 330, 88, 0.38, 0.55, 0.03, ball.x);
+                this.playTone('square', 880, 220, 0.25, 0.35, 0.05, ball.x);
+            }
+            playRhythmScale(idx) {
+                // 🎵 音律震盪專屬 Do-Re-Mi-Fa-Sol-La-Ti-Do 清脆合成器音階
+                const freq = RHYTHM_SCALE_FREQS[idx % RHYTHM_SCALE_FREQS.length];
+                this.playTone('triangle', freq, freq * 1.01, 0.22, 0.55, 0, ball.x);
+                this.playTone('sine', freq * 2, freq * 2, 0.18, 0.32, 0.02, ball.x);
+            }
+            bassDrop() {
+                this.playTone('sawtooth', 130, 28, 0.55, 0.72, 0, ball.x);
+                this.playTone('sine', 90, 24, 0.55, 0.75, 0.02, ball.x);
+            }
             pinballDing() {
                 this.playTone('sine', 1318.5, 1975.5, 0.12, 0.45, 0, ball.x);
                 this.playTone('triangle', 2637, 2093, 0.15, 0.35, 0.05, ball.x);
@@ -1213,21 +1506,20 @@
                 }
             }
             skillCast(arch = 'fire') {
-                if (arch === 'fire' || arch === 'nova' || arch === 'bomb') {
+                if (arch === 'dragon') {
+                    this.dragonRoar();
+                } else if (['fire', 'nova', 'bomb'].includes(arch)) {
                     this.playTone('sawtooth', 220, 42, 0.42, 0.6);
                     this.playTone('square', 440, 85, 0.32, 0.4, 0.03);
-                } else if (arch === 'thunder' || arch === 'laser' || arch === 'pinball') {
+                } else if (['thunder', 'laser', 'pinball', 'blade', 'homing'].includes(arch)) {
                     this.playTone('sawtooth', 1680, 220, 0.16, 0.55);
                     this.playTone('square', 1240, 160, 0.22, 0.45, 0.04);
-                } else if (arch === 'frost' || arch === 'aqua' || arch === 'prism') {
+                } else if (['frost', 'aqua', 'prism', 'sakura', 'rhythm'].includes(arch)) {
                     this.playTone('sine', 1046.5, 2093, 0.22, 0.45);
                     this.playTone('triangle', 1567.98, 3135.96, 0.25, 0.35, 0.05);
-                } else if (arch === 'gravity' || arch === 'void' || arch === 'magnet') {
+                } else if (['gravity', 'void', 'magnet', 'eclipse', 'scorpion', 'abyss'].includes(arch)) {
                     this.playTone('sine', 150, 35, 0.5, 0.65);
                     this.playTone('sawtooth', 95, 28, 0.45, 0.45, 0.04);
-                } else if (arch === 'quantum' || arch === 'boomerang') {
-                    this.playTone('sine', 440, 1760, 0.18, 0.5);
-                    this.playTone('triangle', 1760, 440, 0.22, 0.45, 0.08);
                 } else {
                     this.playTone('triangle', 340, 1360, 0.26, 0.5);
                     this.playTone('sine', 680, 1360, 0.25, 0.38, 0.03);
@@ -1258,18 +1550,16 @@
 
         // ================= 相機自適應（螢幕寬度 <900px 強制鎖定 2.5D 廣角，杜絕無限放大） =================
         const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d', { alpha: false });
-const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
-let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
-const CAM = { z: 650, y: 215, horiz: 0.26, focal: 540 };
+        const ctx = canvas.getContext('2d', { alpha: false });
+        const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
+        let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
+        const CAM = { z: 650, y: 215, horiz: 0.26, focal: 540 };
 
-// 👇 把這一行搬到 resizeCanvas() 上面
-let gameRunning = false, isPaused = false, isTouchMode = false;
+        let gameRunning = false, isPaused = false, isTouchMode = false;
 
         function resizeCanvas() {
             viewW = window.innerWidth;
             viewH = window.innerHeight;
-            // 智慧動態 DPR：在極速模式下將高分屏 DPR 限制在 1.0~1.25，徹底解放電腦與筆電 GPU 幀率
             const maxDpr = perfMode === 'turbo' ? (viewW > 1080 ? 1.0 : 1.25) : 1.65;
             dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
             canvas.width = Math.round(viewW * dpr);
@@ -1278,7 +1568,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             const isPortrait = viewH > viewW;
             if (isPortrait || viewW < 900) {
-                // 固定 2.5D 廣角俯視比例，確保球桌完整呈現在畫面中央且絕不放大遮擋
                 CAM.z = isPortrait ? 625 : 640;
                 const rZNear = CAM.z - T_L;
                 CAM.focal = isPortrait
@@ -1299,7 +1588,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
         function project(x, y, z) {
             const rZ = Math.max(95, CAM.z - z);
-            // 強制 Math.min 鎖定最大透視縮放倍率為 2.25，任何特效或模型皆不可能無限放大
             const scale = Math.min(2.25, CAM.focal / rZ);
             return {
                 x: viewW * 0.5 + x * scale,
@@ -1309,17 +1597,17 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             };
         }
 
-        // ================= AI 難度與學習型記憶 =================
+        // ================= AI 難度與學習型記憶（強化宗師 AI 反應與新技能適應） =================
         const AI_PROFILES = {
-    easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
-    normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
-    // 👇 宗師模式全面強化：移速 16.8➔25.5、回球幀數 29➔20(超高速)、救球率 97%、反制融合率 96%、預判學習 1.4 倍
-    hard:   { name: 'NEURAL INSANE', speed: 25.5, flightFrames: 20, spread: 0.95, saveRate: 0.97, clashRate: 0.96, learnRate: 1.4 }
-};
+            easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
+            normal: { name: 'NORMAL',        speed: 11.2, flightFrames: 34, spread: 0.78, saveRate: 0.62, clashRate: 0.52, learnRate: 0.65 },
+            hard:   { name: 'NEURAL INSANE', speed: 27.0, flightFrames: 19, spread: 0.96, saveRate: 0.98, clashRate: 0.97, learnRate: 1.5 }
+        };
         const AI_SKILL_POOL = [
             'fire', 'thunder', 'gravity', 'sonic', 'ghost', 'prism', 'chrono', 'leech',
             'mirror', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova',
-            'web', 'twin', 'rewind', 'quantum', 'magnet', 'boomerang', 'bomb', 'pinball'
+            'web', 'twin', 'rewind', 'quantum', 'magnet', 'boomerang', 'bomb', 'pinball',
+            'dragon', 'sakura', 'blade', 'scorpion', 'rhythm', 'eclipse', 'homing', 'abyss'
         ];
 
         const aiMemory = {
@@ -1344,8 +1632,9 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             }
         };
 
-        // ================= 遊戲狀態變數 =================
+        // ================= 遊戲狀態變數（含全新 💥 球勢 smashGauge） =================
         let mana = { p: 100, a: 30 };
+        let smashGauge = { p: 0, a: 0 };
         let rallyCount = 0, shake = 0, screenFlashAlpha = 0, screenFlashColor = '#00f2fe';
         let hitStopTimer = 0, roundWaitTimer = 0;
         let matchTimer = 300;
@@ -1372,14 +1661,14 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             x: 0, y: 42, z: 385, rx: 44, ry: 44, vx: 0, vy: 0, vz: 0, tilt: 0,
             hp: 100, luck: 0.22,
             swingTimer: 0, swingMax: 0.30, hasHitThisSwing: false,
-            stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, reverseTimer: 0, iceSlideVx: 0,
+            stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, scorpionStacks: 0, armorBreakTimer: 0, reverseTimer: 0, iceSlideVx: 0,
             inStrikeZone: false, wantLob: false, wantSmash: false, prechargedSkill: null
         };
 
         const aPaddle = {
             x: 0, y: 42, z: -415, rx: 42, ry: 42, tilt: 0,
             hp: 100, luck: 0.18,
-            swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, reverseTimer: 0, iceSlideVx: 0
+            swingTimer: 0, stunTimer: 0, webRootTimer: 0, knockbackZ: 0, poisonStacks: 0, scorpionStacks: 0, armorBreakTimer: 0, reverseTimer: 0, iceSlideVx: 0
         };
 
         const ball = {
@@ -1389,7 +1678,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             bounceCountOnSide: 0, flightTimer: 0,
             targetX: 0, targetZ: 0, showLandingRing: false, fakeRingOffsetX: 0,
             state: null, secondaryArch: null, tier: 0, voidTimer: 0, cycloneWave: false, trail: [],
-            isSmashShot: false, shotPower: 1.0, faultType: null, strokeStyle: 'mid',
+            isSmashShot: false, isDragonShot: false, shotPower: 1.0, faultType: null, strokeStyle: 'mid',
             spinChem: null,
             ghostOffsets: [{ x: -135, y: 0 }, { x: -45, y: 0 }, { x: 45, y: 0 }, { x: 135, y: 0 }],
             ghostSwapped: false,
@@ -1397,6 +1686,10 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             sonicBoomDone: false,
             chronoFreezeTimer: 0,
             chronoFrozenDone: false,
+            sakuraHoverTimer: 0,
+            sakuraHoverDone: false,
+            sakuraFloat: false,
+            abyssHelix: false,
             rewindTrickArm: false,
             rewindTrickDone: false,
             boomerangActive: false,
@@ -1405,6 +1698,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             magnetPolarity: 'repel',
             bombTimer: 0,
             pinballBounces: 0,
+            homingActive: false,
             mirrorTwin: null,
             lightningBolts: [], orbitalAngle: 0
         };
@@ -1417,14 +1711,35 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             return (m && m.arch === targetArch) || ball.secondaryArch === targetArch;
         }
 
+        function addSmashMomentum(who, amount) {
+            if (who === 'player') {
+                if (cfgSkill === 'dragon') {
+                    smashGauge.p = 100;
+                } else {
+                    const prev = smashGauge.p;
+                    smashGauge.p = Math.min(100, smashGauge.p + amount);
+                    if (prev < 100 && smashGauge.p >= 100) {
+                        vibrate([40, 30, 50]);
+                        showSideToast('left', '💥 球勢已滿 100%！SMASH READY', isTouchMode ? '雙指連點 2 下或點擊球勢條發動雷霆殺球！' : '按【D鍵 / Ctrl+左鍵】發動雷霆殺球！', 'text-rose-400');
+                    }
+                }
+            } else {
+                smashGauge.a = Math.min(100, smashGauge.a + amount);
+            }
+            updateHUD();
+        }
+
         function updateTimerAndHpUI() {
-            const mins = Math.floor(Math.max(0, matchTimer) / 60);
-            const secs = Math.floor(Math.max(0, matchTimer) % 60);
             const tEl = document.getElementById('hud-match-timer');
             if (suddenDeath) {
                 tEl.innerText = '⚡ GOLDEN POINT';
                 tEl.className = 'cyber-font text-[11px] font-black text-amber-300 tracking-widest bg-rose-950/90 px-2 py-0.2 rounded border border-amber-400 animate-pulse';
+            } else if (cfgMatchDuration >= 9000) {
+                tEl.innerText = '⏱️ ♾️ FREE';
+                tEl.className = 'cyber-font text-[11px] font-black text-cyan-300 tracking-widest bg-slate-950/90 px-2 py-0.2 rounded border border-cyan-500/40';
             } else {
+                const mins = Math.floor(Math.max(0, matchTimer) / 60);
+                const secs = Math.floor(Math.max(0, matchTimer) % 60);
                 tEl.innerText = `⏱️ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                 tEl.className = `cyber-font text-[11px] font-black ${matchTimer < 60 ? 'text-rose-400 animate-pulse' : 'text-cyan-300'} tracking-widest bg-slate-950/90 px-2 py-0.2 rounded border border-cyan-500/40`;
             }
@@ -1450,6 +1765,8 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.sonicBoomDone = false;
             ball.chronoFrozenDone = false;
             ball.chronoFreezeTimer = 0;
+            ball.sakuraHoverDone = false;
+            ball.sakuraHoverTimer = 0;
             ball.boomerangTurned = false;
             ball.faultType = null;
 
@@ -1460,7 +1777,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
 
-            // 自動計算過網安全高度，100% 杜絕掛網
             const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
             if (framesToNet > 0 && framesToNet < frames) {
                 const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
@@ -1472,10 +1788,10 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.targetZ = safeZ;
             ball.bouncedOnTarget = false;
             ball.showLandingRing = true;
-            ball.fakeRingOffsetX = (ball.state && (ball.spinType === 'dead' || hasBallArch('ghost'))) ? 65 : 0;
+            ball.fakeRingOffsetX = (ball.state && (ball.spinType === 'dead' || hasBallArch('ghost') || hasBallArch('sakura'))) ? 65 : 0;
         }
 
-        // ================= 雙端輸入系統：電腦 ASD/滑鼠 + 手機全區拖曳與右下角按鈕 =================
+        // ================= 雙端輸入系統：電腦 ASD/滑鼠 + 手機全區無按鈕手勢 =================
         const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.72 };
         let singleTouchStart = null;
         let twoFingerStart = null;
@@ -1490,7 +1806,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
         window.addEventListener('mousedown', e => {
             if (!gameRunning || isPaused) return;
             const t = e.target;
-            if (t && (t.tagName === 'BUTTON' || (t.closest && t.closest('button')))) return;
+            if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('#smash-bar-container') || t.closest('#overdrive-bar-container'))))) return;
             isTouchMode = false;
             sfx.init();
             if (rewindState.active) {
@@ -1500,7 +1816,10 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             }
             if (e.button === 0) {
                 pPaddle.wantLob = false;
-                if (e.ctrlKey) pPaddle.wantSmash = true;
+                if (e.ctrlKey) {
+                    triggerSmashAction();
+                    return;
+                }
                 triggerPlayerSwing();
             } else if (e.button === 2) {
                 pPaddle.wantLob = true;
@@ -1539,18 +1858,25 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
         function triggerSmashAction() {
             if (!gameRunning || isPaused) return;
             sfx.init();
+
+            if (cfgSkill !== 'dragon' && smashGauge.p < 100 && !pPaddle.wantSmash) {
+                sfx.failBuzz();
+                showSideToast('left', `💥 球勢不足 (${Math.round(smashGauge.p)}%)`, '需透過施放技能或來回對拉攢滿 100% 球勢！', 'text-rose-400', 950);
+                pPaddle.wantSmash = false;
+                triggerPlayerSwing();
+                return;
+            }
+
             pPaddle.wantSmash = true;
             pPaddle.wantLob = false;
             document.getElementById('hud-smash-ready').classList.remove('hidden');
+            updateHUD();
             triggerPlayerSwing();
-            setTimeout(() => {
-                document.getElementById('hud-smash-ready').classList.add('hidden');
-            }, 450);
         }
 
         window.addEventListener('touchstart', e => {
             const t = e.target;
-            if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('.touch-scroll'))))) return;
+            if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('.touch-scroll') || t.closest('#smash-bar-container') || t.closest('#overdrive-bar-container'))))) return;
             isTouchMode = true;
             if (!gameRunning || isPaused) return;
             sfx.init();
@@ -1649,6 +1975,12 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             const reqMana = incomingEnemySkill ? 80 : 100;
             const sMeta = SKILL_META[cfgSkill];
 
+            if (cfgSkill === 'dragon' && !incomingEnemySkill) {
+                sfx.dragonRoar();
+                showSideToast('left', '🐉 龍魂常駐解放中！', '每一擊皆為【龍魂殺球】· 滿能量可下滑進化', 'text-amber-300', 950);
+                return;
+            }
+
             if (mana.p < reqMana) {
                 if (pPaddle.prechargedSkill) return;
                 sfx.failBuzz();
@@ -1710,6 +2042,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             mana.p = 0;
             skillLevel++;
             roundsEvolvedThisRound++;
+            addSmashMomentum('player', 35);
             vibrate([80, 40, 120]);
 
             const stars = skillLevel === 5 ? '★★★' : (skillLevel >= 3 ? '★★' : '★');
@@ -1717,7 +2050,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             const sMeta = SKILL_META[cfgSkill];
             sfx.levelUp();
-            shake = 26;
+            shake = 26 * cfgShakeMult;
             screenFlashColor = '#fde047';
             screenFlashAlpha = 0.7;
             spawnShatterEffect(sMeta.color);
@@ -1730,6 +2063,15 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
         function castSkill(fromGesture = false) {
             if (!gameRunning || isPaused) return;
 
+            const incomingEnemySkill = (ball.vz > 0 && ball.state !== null);
+
+            // 🐉 龍魂覺醒：無主動技，僅能在敵方技能來襲時耗 80% 能量發動【龍威破萬法】或自融【龍皇降臨】
+            if (cfgSkill === 'dragon' && !incomingEnemySkill) {
+                sfx.dragonRoar();
+                showSideToast('left', '🐉 龍魂常駐解放！', '無需開大，每一擊皆為【龍魂殺球】！(滿能量可按E進化)', 'text-amber-300');
+                return;
+            }
+
             if (pPaddle.prechargedSkill && !fromGesture) {
                 pPaddle.prechargedSkill = null;
                 showSideToast('left', '已取消必殺待命', 'SKILL CANCELLED', 'text-slate-400');
@@ -1737,7 +2079,6 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 return;
             }
 
-            const incomingEnemySkill = (ball.vz > 0 && ball.state !== null);
             const reqMana = incomingEnemySkill ? 80 : 100;
 
             if (mana.p < reqMana) {
@@ -1748,6 +2089,8 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             vibrate(55);
             mana.p = incomingEnemySkill ? Math.max(15, mana.p - 80) : 0;
+            // 施放技能大幅增加【球勢】
+            addSmashMomentum('player', incomingEnemySkill ? 45 : 40);
 
             if (cfgSkill === 'twin') {
                 twinClone.active = true;
@@ -1772,18 +2115,22 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             pPaddle.prechargedSkill = cfgSkill;
             const sMeta = SKILL_META[cfgSkill];
             sfx.skillCast(sMeta.arch);
-            triggerAnimeCutIn('left', `超能必殺發動！${sMeta.name.slice(3)}`, '球抵達瞬間將100%防禦破球並轟出必殺！', sMeta.color);
+            triggerAnimeCutIn('left', cfgSkill === 'dragon' ? '🐉 龍威破萬法待命！' : `超能必殺發動！${sMeta.name.slice(3)}`, '球抵達瞬間將100%防禦破球並轟出必殺！', sMeta.color);
             updateHUD();
         }
 
         function updateContextBarUI() {
             const bar = document.getElementById('hud-context-bar');
-            if (novaBurstTimer > 0) {
+            const tags = [];
+            if (novaBurstTimer > 0) tags.push(`💫 星核爆發 ${novaBurstTimer.toFixed(1)}s`);
+            if (sonicRallyStacks > 0 && cfgSkill === 'sonic') tags.push(`💨 音速 x${sonicRallyStacks} (+${sonicRallyStacks * 15}%)`);
+            if (bladeStacks > 0 && cfgSkill === 'blade') tags.push(`⚔️ 劍意 x${bladeStacks} (威力+${bladeStacks * 12}%)`);
+            if (aPaddle.scorpionStacks > 0) tags.push(`🦂 敵方蠍毒 x${aPaddle.scorpionStacks}`);
+            if (aPaddle.armorBreakTimer > 0) tags.push(`🎵 敵方破防 ${aPaddle.armorBreakTimer.toFixed(1)}s`);
+
+            if (tags.length > 0) {
                 bar.classList.remove('hidden');
-                bar.innerText = `💫 星核爆發期：剩餘 ${novaBurstTimer.toFixed(1)}s (每拍連續震飛敵拍)`;
-            } else if (sonicRallyStacks > 0 && cfgSkill === 'sonic') {
-                bar.classList.remove('hidden');
-                bar.innerText = `💨 音速疊層：x${sonicRallyStacks} (球速+${sonicRallyStacks * 15}%)`;
+                bar.innerText = tags.join(' ｜ ');
             } else {
                 bar.classList.add('hidden');
             }
@@ -1817,11 +2164,11 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 return;
             }
 
-            let fieldSlow = 1.0;
+            let fieldSlow = Math.max(0.45, 1.0 - pPaddle.scorpionStacks * 0.15);
             let onIceField = false;
             lingeringFields.forEach(f => {
                 if (f.z > 0 && Math.hypot(pPaddle.x - f.x, pPaddle.z - f.z) < f.r * 1.25) {
-                    if (f.type === 'gravity') pPaddle.x += (f.x - pPaddle.x) * 0.09;
+                    if (f.type === 'gravity' || f.type === 'abyss') pPaddle.x += (f.x - pPaddle.x) * 0.10;
                     if (f.type === 'cyclone') pPaddle.x += Math.sign(pPaddle.x - f.x || 1) * 10.5;
                     if (f.type === 'frost') { fieldSlow = bMod.frostSlowMult; onIceField = true; }
                     if (f.type === 'aqua') fieldSlow = 0.40;
@@ -1850,6 +2197,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             });
 
             if (pPaddle.reverseTimer > 0) pPaddle.reverseTimer -= dt;
+            if (pPaddle.armorBreakTimer > 0) pPaddle.armorBreakTimer = Math.max(0, pPaddle.armorBreakTimer - dt);
 
             const followRate = Math.min(0.95, (pPaddle.stunTimer > 0 ? 0.25 : 0.88) * pMod.moveSpeedMult * fieldSlow);
             const nextZ = pPaddle.z + (targetZ - pPaddle.z) * followRate;
@@ -1923,13 +2271,12 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
         function checkPlayerHitBall(forceSkill = false) {
             if (pPaddle.swingTimer <= 0 || pPaddle.hasHitThisSwing) return;
             if (isBallHittableByPlayer(0)) {
-                // 經典微磁吸校準 (Magnetic Snap Assist)：觸球瞬間微調拍心對準來球，消除近距離揮空感
                 pPaddle.x += (ball.x - pPaddle.x) * 0.42;
                 executePlayerReturn(forceSkill || Boolean(pPaddle.prechargedSkill));
             }
         }
-        // ====== 【第 1 段結束位置：請將第 2 段直接貼在此行下方】 ======
-// ================= 玩家回球：破球檢定、長拉/擺短、四維旋球、殺球突變與100%過網保證 =================
+        // ====== 【第 1 段結束位置：請輸入「繼續」生成第 2 段】 ======
+// ================= 玩家回球：球勢殺球、32技能突變、龍魂常駐殺球與100%過網保證 =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
@@ -1943,17 +2290,21 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             const hasActiveSwipe = !isTouchMode || swipeSpeed >= 1.8;
             const dist = Math.hypot(ball.x - pPaddle.x, (ball.y - Math.max(25, pPaddle.y)) * 0.75);
             const sweetThreshold = (chronoTimer > 0 ? 78 : 62) * pMod.sweetSpotMult;
-            const isSweetSpot = guaranteedPerfect || (hasActiveSwipe && dist <= sweetThreshold);
+            // 🐉 龍魂覺醒：完全無視甜區限制，每一拍皆視為完美甜區擊球
+            const isSweetSpot = cfgSkill === 'dragon' || guaranteedPerfect || (hasActiveSwipe && dist <= sweetThreshold);
             guaranteedPerfect = false;
 
-            // 1. 球拍耐久度扣減與「破球震飛 (Ball Break)」判定（開技能可 100% 絕對防禦）
+            // 1. 球拍耐久度扣減與「破球震飛 (Ball Break)」判定（開技能可 100% 絕對防禦；🌸櫻花被動卸力 50%）
             if (!activeSkill && (ball.state !== null || ball.isSmashShot || ball.shotPower >= 1.45)) {
                 const incomingPower = ball.shotPower * (ball.tier >= 2 ? 1.6 : (ball.state ? 1.3 : 1.0)) * (ball.isSmashShot ? 1.35 : 1.0);
-                const hpLoss = incomingPower * (isSweetSpot ? 14 : 28) * (hasPassive('prism') ? 0.6 : 1.0);
+                const sakuraMitigation = hasPassive('sakura') ? 0.50 : 1.0;
+                const prismMitigation = hasPassive('prism') ? 0.60 : 1.0;
+                const vulnMult = (pPaddle.armorBreakTimer > 0 ? 1.60 : 1.0) * (1.0 + pPaddle.scorpionStacks * 0.25);
+                const hpLoss = incomingPower * (isSweetSpot ? 14 : 28) * prismMitigation * sakuraMitigation * vulnMult;
                 pPaddle.hp = Math.max(0, pPaddle.hp - hpLoss);
                 updateTimerAndHpUI();
 
-                const breakChance = (incomingPower - 1.15) * 0.42 + (pPaddle.hp <= 0 ? 0.75 : (100 - pPaddle.hp) * 0.004) - (isSweetSpot ? 0.38 : 0) - pPaddle.luck;
+                const breakChance = ((incomingPower * sakuraMitigation) - 1.15) * 0.42 + (pPaddle.hp <= 0 ? 0.75 : (100 - pPaddle.hp) * 0.004) - (isSweetSpot ? 0.38 : 0) - pPaddle.luck - (hasPassive('sakura') ? 0.35 : 0);
                 if (Math.random() < breakChance) {
                     sfx.guardBreak();
                     vibrate([120, 40, 150]);
@@ -1966,17 +2317,39 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     ball.vz = 18;
                     ball.vy = 6;
                     return;
+                } else if (hasPassive('sakura') && (ball.isSmashShot || ball.state)) {
+                    showSideToast('left', '🌸 櫻花太極卸力！', '輕柔化解敵方 50% 重擊威力！', 'text-pink-300');
                 }
             }
 
             lastIncomingPower = ball.shotPower || 1.0;
 
-            let isSmash = pPaddle.wantSmash;
             let isLob = pPaddle.wantLob;
-            pPaddle.wantSmash = false;
             pPaddle.wantLob = false;
 
-            // 🪐 黑洞重力球壓制挑高球：強行把高吊球壓平為中路平球（不掛網自爆，保持對拉爽快感）
+            // 💥 檢查【球勢】殺球條件與 🐉 龍魂覺醒常駐龍魂殺球
+            let isSmash = false;
+            let isDragonAutoSmash = false;
+            if (cfgSkill === 'dragon') {
+                isSmash = !isLob;
+                isDragonAutoSmash = !isLob;
+                smashGauge.p = 100;
+                pPaddle.wantSmash = false;
+                document.getElementById('hud-smash-ready').classList.add('hidden');
+            } else if (pPaddle.wantSmash && smashGauge.p >= 100) {
+                isSmash = true;
+                smashGauge.p = 0;
+                pPaddle.wantSmash = false;
+                document.getElementById('hud-smash-ready').classList.add('hidden');
+            } else {
+                pPaddle.wantSmash = false;
+                document.getElementById('hud-smash-ready').classList.add('hidden');
+                // 來回對拉累積【球勢】
+                const momentumGain = (isSweetSpot ? 10 : 6) + (hasPassive('abyss') ? 5 : 0);
+                addSmashMomentum('player', momentumGain);
+            }
+
+            // 🪐 黑洞重力球壓制挑高球：強行把高吊球壓平為中路平球
             let gravitySuppressed = false;
             if (isLob && hasBallArch('gravity')) {
                 isLob = false;
@@ -2007,7 +2380,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     skillAwakened = true;
                     triggerAnimeCutIn('center', `🌟 覺醒解放！${SKILL_META[cfgSkill].name}`, '威力永久 +50% · 融合保底三階！', SKILL_META[cfgSkill].color);
                 }
-                if (lastPlayerCastSkill) {
+                if (lastPlayerCastSkill && cfgSkill !== 'dragon' && lastPlayerCastSkill !== 'dragon') {
                     const pairKey = [lastPlayerCastSkill, activeSkill].sort().join('+');
                     const pairInfo = RESONANCE_PAIRS[pairKey];
                     if (pairInfo) {
@@ -2106,7 +2479,8 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     screenFlashAlpha = 0.82;
                     resonanceActive = true;
 
-                    triggerAnimeCutIn('center', `${isSmash ? '☄️ 融合殺球！' : '次元突破！'}${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}雙重屬性＋旋球異變降臨！`, fMeta.color);
+                    const cutTitle = activeSkill === 'dragon' ? `🐉 龍皇降臨！真龍破萬法` : `${isSmash ? '☄️ 融合殺球！' : '次元突破！'}${displayFusionTitle}`;
+                    triggerAnimeCutIn('center', cutTitle, `${isCounter ? '【屬性克制 +30%】' : ''}雙重超能激盪 · 球勢 +45%！`, fMeta.color);
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 12, maxR: 250, color: fMeta.color, alpha: 1.0 });
                     lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 50, alpha: 1.0 });
                     spawnShatterEffect(fMeta.color);
@@ -2118,7 +2492,8 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     showSideToast('right', '💥 破防震退!', '敵方超能球威力強大', 'text-rose-400');
                 } else {
                     mana.p = Math.min(100, mana.p + 35);
-                    triggerAnimeCutIn('left', '🛡️ 完美格擋！PERFECT PARRY', '精準卸力 · 能量 +35%', '#00f2fe');
+                    addSmashMomentum('player', 20);
+                    triggerAnimeCutIn('left', '🛡️ 完美格擋！PERFECT PARRY', '精準卸力 · 能量 +35% 球勢 +20%', '#00f2fe');
                 }
             } else if (activeSkill || novaBurstTimer > 0) {
                 const castId = activeSkill || 'nova';
@@ -2136,7 +2511,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 } else if (activeSkill) {
                     const sm = SKILL_META[castId] || SKILL_META[cfgSkill];
                     sfx.skillCast(sm.arch);
-                    triggerAnimeCutIn('left', `${isSmash ? '💥 技能殺球！' : '領域展開！'}${sm.name.slice(3)}`, `LV.${skillLevel} 超能釋放 ${GENERIC_SPIN_SUFFIX[spinType] || ''}`, sm.color);
+                    triggerAnimeCutIn('left', `${isSmash ? '💥 技能殺球突變！' : '領域展開！'}${sm.name.slice(3)}`, `LV.${skillLevel} 超能釋放 · 球勢大幅提升！`, sm.color);
                 }
 
                 const sm = SKILL_META[nextSkillState] || SKILL_META[cfgSkill];
@@ -2155,6 +2530,14 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                         updateTimerAndHpUI();
                     }
                     skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.9, color: '#f43f5e' };
+                } else if (castId === 'eclipse') {
+                    eclipseDarkTimer = 2.6;
+                } else if (castId === 'rhythm') {
+                    // 🎵 音律震盪技能：全場大範圍音波震盪 + 遠距離削減敵方防禦
+                    aPaddle.armorBreakTimer = 4.2;
+                    aPaddle.x += (Math.random() - 0.5) * 65;
+                    shockwaves.push({ x: 0, y: 15, z: 0, r: 20, maxR: 320, color: '#ec4899', alpha: 1.0, isFlat: true });
+                    shockwaves.push({ x: aPaddle.x, y: 15, z: aPaddle.z, r: 10, maxR: 180, color: '#fbcfe8', alpha: 1.0, isFlat: true });
                 }
                 hitStopTimer = isSmash ? 0.075 : 0.045;
             }
@@ -2167,13 +2550,17 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.spinY = spinAccY;
             ball.lastHitBy = 'player';
             ball.isSmashShot = isSmash;
+            ball.isDragonShot = isDragonAutoSmash || hasBallArch('dragon');
             ball.faultType = null;
             ball.cycloneWave = false;
+            ball.sakuraFloat = false;
+            ball.abyssHelix = false;
             ball.thunderZigs = 0;
             ball.rewindTrickArm = false;
             ball.rewindTrickDone = false;
             ball.boomerangActive = false;
             ball.magnetActive = false;
+            ball.homingActive = false;
             ball.magnetPolarity = isSmash ? 'attract' : 'repel';
             ball.mirrorTwin = null;
             ball.spinChem = nextSkillState ? spinType : null;
@@ -2181,22 +2568,38 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             if (hasBallArch('sonic') || cfgSkill === 'sonic') {
                 sonicRallyStacks = Math.min(8, sonicRallyStacks + 1);
-                updateContextBarUI();
             } else {
                 sonicRallyStacks = 0;
             }
+            // ⚔️ 劍刃風暴：無限疊加【劍意】越打越強
+            if (hasBallArch('blade') || cfgSkill === 'blade') {
+                bladeStacks++;
+            } else {
+                bladeStacks = 0;
+            }
+            updateContextBarUI();
 
-            let calcPower = (isSmash ? 1.65 : 1.0) * (strokeStyle === 'long' ? 1.2 : 1.0) * (twinDoubleHit ? 1.8 : 1.0) * LV_MULT[skillLevel - 1];
+            let aimX = (ball.x - pPaddle.x) * 1.28 + pPaddle.vx * 9.0 + pPaddle.x * 0.35;
+            let targetX = gravitySuppressed ? 0 : Math.max(-T_W * 0.84, Math.min(T_W * 0.84, aimX));
+
+            const selfWeakMult = Math.max(0.45, 1.0 - pPaddle.scorpionStacks * 0.12);
+            let calcPower = (isSmash ? 1.65 : 1.0) * (strokeStyle === 'long' ? 1.2 : 1.0) * (twinDoubleHit ? 1.8 : 1.0) * LV_MULT[skillLevel - 1] * selfWeakMult;
+
+            if (ball.isDragonShot) calcPower *= 1.45;
+            if (bladeStacks > 0) calcPower *= (1 + bladeStacks * 0.12);
+            if (hasBallArch('sakura') || cfgSkill === 'sakura') calcPower *= 0.62;
             if (hasBallArch('leech')) {
                 calcPower *= (1.25 + lastIncomingPower * 0.45);
                 showSideToast('left', `🩸 熵能轉化！威力×${calcPower.toFixed(1)}`, isSmash ? '鮮血斬擊恢復35%球拍耐久！' : '吸收敵方球威反哺自身！', 'text-rose-400');
             }
             if (hasBallArch('fire')) calcPower *= (isSmash ? 1.75 : 1.35);
-            if (hasBallArch('gravity')) calcPower *= 1.35;
+            if (hasBallArch('gravity') || hasBallArch('scorpion')) calcPower *= 1.35;
             ball.shotPower = calcPower;
 
-            let aimX = (ball.x - pPaddle.x) * 1.28 + pPaddle.vx * 9.0 + pPaddle.x * 0.35;
-            let targetX = gravitySuppressed ? 0 : Math.max(-T_W * 0.84, Math.min(T_W * 0.84, aimX));
+            if (hasPassive('sakura') || hasBallArch('sakura')) {
+                targetX = (targetX >= 0 ? 1 : -1) * Math.max(Math.abs(targetX), T_W * 0.78);
+            }
+
             let targetZ = strokeStyle === 'short' ? (-130 - Math.random() * 35) : (strokeStyle === 'long' ? (-295 - Math.random() * 45) : -250);
             let flightFrames = gravitySuppressed ? 36 : (isSweetSpot ? 26 : 31);
 
@@ -2211,16 +2614,43 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 targetZ = -135;
             }
 
-            const strokeLabel = isSmash ? '💥 殺球 SMASH' : (strokeStyle === 'long' ? '⚡ 退台長拉 LONG' : (strokeStyle === 'short' ? '🎯 台內擺短 SHORT' : `🏓 ${spinType.toUpperCase()}`));
+            const strokeLabel = ball.isDragonShot ? '🐉 龍魂殺球 DRAGON SMASH' : (isSmash ? '💥 雷霆殺球 SMASH' : (strokeStyle === 'long' ? '⚡ 退台長拉 LONG' : (strokeStyle === 'short' ? '🎯 台內擺短 SHORT' : `🏓 ${spinType.toUpperCase()}`)));
             document.getElementById('hud-stroke-tag').innerText = strokeLabel;
 
-            // 4. 24 大技能專屬飛行屬性與【殺球突變】初始化
+            // 4. 32 大技能專屬飛行屬性與【殺球突變】初始化
             if (hasBallArch('laser')) {
                 spinAccX = 0; spinAccY = 0; ball.spinX = 0;
                 targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
                 flightFrames = isSmash ? 7 : 9;
                 ball.shotPower = isSmash ? 1.35 : 0.85;
                 skillVisuals.laserBeam = { x1: ball.x, y1: ball.y, z1: ball.z, x2: targetX, y2: 0, z2: targetZ, timer: 0.75, color: '#00f2fe', wide: isSmash };
+            }
+            // ⚔️ 劍刃風暴 + 殺球 = 【一劍破萬法】筆直黃金劍氣直線破球
+            if (hasBallArch('blade') && isSmash) {
+                spinAccX = 0; spinAccY = 0; ball.spinX = 0; ball.cycloneWave = false;
+                targetX = aPaddle.x > 0 ? -T_W * 0.80 : T_W * 0.80;
+                targetZ = -290;
+                flightFrames = 8;
+                ball.shotPower *= 1.55;
+                skillVisuals.laserBeam = { x1: ball.x, y1: ball.y, z1: ball.z, x2: targetX, y2: 0, z2: targetZ, timer: 0.85, color: '#eab308', wide: true };
+                triggerAnimeCutIn('left', `⚔️ 一劍破萬法！劍意x${bladeStacks}`, '黃金聖劍直線貫穿 · 超高強制破球率！', '#fde047');
+            }
+            // 🌸 櫻花幻舞：輕飄飄變幻莫測 ＆ 殺球落葉斬
+            if (hasBallArch('sakura')) {
+                ball.sakuraFloat = true;
+                ball.cycloneWave = true;
+                if (isSmash) {
+                    // 輕飄飄的技巧型落葉殺球：貼網短球＋大角度側滑
+                    targetZ = -128;
+                    targetX = aPaddle.x >= 0 ? -T_W * 0.84 : T_W * 0.84;
+                    spinAccX = (targetX >= 0 ? 1 : -1) * 0.48;
+                    flightFrames = 32;
+                    showSideToast('left', '🌸 無聲落葉殺球！', '輕飄貼網急墜並滑向死角！', 'text-pink-300');
+                }
+            }
+            // 🌀 螺旋深淵：極致誇張 3D 大螺旋魔球
+            if (hasBallArch('abyss')) {
+                ball.abyssHelix = true;
             }
             if (hasBallArch('web')) {
                 spinAccX = 0; spinAccY = 0; ball.spinX = 0;
@@ -2229,15 +2659,16 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 spinAccX = (spinAccX >= 0 ? 1 : -1) * 0.38;
                 ball.spinX = spinAccX;
             }
-            if (hasBallArch('cyclone')) {
+            if (hasBallArch('cyclone') || hasBallArch('rhythm')) {
                 ball.cycloneWave = true;
             }
             if (hasBallArch('aqua')) {
                 spinAccY = -0.22;
                 aquaSlowNextReturn = true;
             }
-            if (hasBallArch('void')) {
+            if (hasBallArch('void') || hasBallArch('eclipse')) {
                 ball.voidTimer = 1.8;
+                if (hasBallArch('eclipse')) eclipseDarkTimer = 2.6;
             }
             if (hasBallArch('thunder')) {
                 ball.thunderZigs = 3;
@@ -2251,6 +2682,9 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             }
             if (hasBallArch('magnet')) {
                 ball.magnetActive = true;
+            }
+            if (hasBallArch('homing')) {
+                ball.homingActive = true;
             }
             if (hasBallArch('bomb')) {
                 if (ball.bombTimer <= 0) ball.bombTimer = 3.0;
@@ -2287,36 +2721,67 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             const lvSpeedFactor = skillLevel >= 2 ? 0.90 : 1.0;
             const sonicSpeedFactor = Math.max(0.50, 1.0 - sonicRallyStacks * 0.09);
-            if (!hasBallArch('laser')) {
-                if (ball.tier >= 2) flightFrames = Math.round(17 * lvSpeedFactor * sonicSpeedFactor * rMod.flightFrameMult / cMod.fusionPowerMult);
-                else if (ball.state) flightFrames = Math.round((hasBallArch('frost') ? 23 : 19) * lvSpeedFactor * sonicSpeedFactor * rMod.flightFrameMult);
-                else flightFrames = Math.round(flightFrames * sonicSpeedFactor * rMod.flightFrameMult);
+            const bladeSpeedFactor = Math.max(0.55, 1.0 - bladeStacks * 0.06);
+            const scorpionSlowFactor = 1.0 + pPaddle.scorpionStacks * 0.12;
+
+            if (!hasBallArch('laser') && !(hasBallArch('blade') && isSmash)) {
+                if (hasBallArch('sakura')) {
+                    // 🌸 櫻花幻舞：輕飄飄慢速變幻球路
+                    flightFrames = Math.round(35 * scorpionSlowFactor);
+                } else if (ball.tier >= 2) {
+                    flightFrames = Math.round(17 * lvSpeedFactor * sonicSpeedFactor * bladeSpeedFactor * scorpionSlowFactor * rMod.flightFrameMult / cMod.fusionPowerMult);
+                } else if (ball.state) {
+                    flightFrames = Math.round((hasBallArch('frost') ? 23 : 19) * lvSpeedFactor * sonicSpeedFactor * bladeSpeedFactor * scorpionSlowFactor * rMod.flightFrameMult);
+                } else {
+                    flightFrames = Math.round(flightFrames * sonicSpeedFactor * bladeSpeedFactor * scorpionSlowFactor * rMod.flightFrameMult);
+                }
             }
-            if (isSmash) flightFrames = Math.max(9, Math.round(flightFrames * 0.70));
+            if (isSmash && !hasBallArch('sakura') && !(hasBallArch('blade') && isSmash)) {
+                flightFrames = Math.max(9, Math.round(flightFrames * (ball.isDragonShot ? 0.68 : 0.72)));
+            }
             if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.78); resonanceFastFlight = false; }
+
+            // 🎵 音律震盪擊球：奏出 Do-Re-Mi-Fa-Sol-La-Ti-Do 八度音階
+            if (cfgSkill === 'rhythm' || hasBallArch('rhythm')) {
+                const noteName = RHYTHM_SCALE_NAMES[rhythmNoteIdx % RHYTHM_SCALE_NAMES.length];
+                sfx.playRhythmScale(rhythmNoteIdx);
+                rhythmNoteIdx++;
+                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 18, 6, 'ring');
+                if (!activeSkill) showSideToast('left', `🎵 音律節拍 ${noteName}`, '音波共振 · 連擊音階提升球威！', 'text-fuchsia-300', 750);
+            }
 
             if (ball.state) {
                 const m = SKILL_META[ball.state] || SKILL_META.fire;
                 spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 42 : 28, 9, m.shape);
-                if (hasBallArch('thunder') || hasBallArch('laser')) {
+                if (hasBallArch('thunder') || hasBallArch('laser') || hasBallArch('homing')) {
                     createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.glow);
                 }
                 spawnSpeedLines(m.color);
             } else {
-                if (isSmash) {
+                if (ball.isDragonShot) {
+                    // 🐉 龍魂覺醒：每一拍平擊/旋球都是霸氣龍魂殺球！
+                    sfx.dragonRoar();
+                    shake = 18;
+                    spawnSpeedLines('#dc2626');
+                    spawnParticles(ball.x, ball.y, ball.z, '#dc2626', 30, 8.5, 'flame');
+                    spawnParticles(ball.x, ball.y, ball.z, '#fde047', 16, 7.5, 'star');
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 120, color: '#dc2626', alpha: 0.9 });
+                } else if (isSmash) {
                     sfx.smashHit();
-                    shake = 15;
+                    shake = 16;
                     spawnSpeedLines('#f43f5e');
-                    showSideToast('left', '💥 雷霆殺球！SMASH', '球速暴增 · 強力削減敵拍耐久', 'text-rose-400');
+                    showSideToast('left', '💥 滿球勢！雷霆殺球 SMASH', '消耗 100% 球勢 · 毀滅性重扣破防！', 'text-rose-400');
+                    spawnParticles(ball.x, ball.y, ball.z, '#f43f5e', 28, 7.5, 'star');
                 } else {
-                    sfx.hit(isSweetSpot, spinType);
+                    if (cfgSkill !== 'rhythm') sfx.hit(isSweetSpot, spinType);
                     shake = isSweetSpot ? 6 : 3;
-                    if (isSweetSpot && spinType !== 'flat') {
+                    if (isSweetSpot && spinType !== 'flat' && cfgSkill !== 'rhythm') {
                         const spinNames = { topspin: '🔥 極速上旋抽擊！', backspin: '❄️ 極寒削球急停！', sidespin: '🌪️ C字弧光側旋！', lob: '🎈 蒼穹高吊球！' };
-                        showSideToast('left', spinNames[spinType] || '⚡ 強力旋球!', `${strokeStyle === 'long' ? '退台長拉' : (strokeStyle === 'short' ? '台內擺短' : '滑動暴擊')} · 能量 +28%`, 'text-cyan-300');
+                        showSideToast('left', spinNames[spinType] || '⚡ 強力旋球!', `${strokeStyle === 'long' ? '退台長拉' : (strokeStyle === 'short' ? '台內擺短' : '滑動暴擊')} · 能量+28% 球勢+10%`, 'text-cyan-300');
                     }
+                    spawnParticles(ball.x, ball.y, ball.z, isSweetSpot ? '#00f2fe' : '#fff', 16, 6.0, 'circle');
                 }
-                spawnParticles(ball.x, ball.y, ball.z, isSmash ? '#f43f5e' : (isSweetSpot ? '#00f2fe' : '#fff'), isSmash ? 26 : 16, 6.5, isSmash ? 'star' : 'circle');
+
                 const prevMana = mana.p;
                 const baseGain = isSweetSpot ? 28 : (hasActiveSwipe ? 20 : 14);
                 const gain = baseGain * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
@@ -2324,7 +2789,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 if (prevMana < 100 && mana.p >= 100) {
                     vibrate([30, 50, 30]);
                     sfx.levelUp();
-                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', isTouchMode ? '點擊右下角必殺鈕或進化！' : '按空白鍵放必殺 · 按E鍵進化！', '#fde047');
+                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', cfgSkill === 'dragon' ? '龍魂能量全滿 · 按 E 鍵或雙指下滑超能進化！' : (isTouchMode ? '第二指單擊放必殺 · 雙指下滑進化！' : '按空白鍵放必殺 · 按E鍵進化！'), '#fde047');
                 }
             }
 
@@ -2344,7 +2809,7 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             }
         }
 
-        // ================= AI 走位、雙球招架、磁極斥力與破球判定 =================
+        // ================= AI 走位、雙球招架、球勢殺球與破球判定（宗師 AI 全面強化） =================
         function updateAI(dt) {
             if (gameMode === 'p2p') {
                 aPaddle.x += (remotePaddleTarget.x - aPaddle.x) * 0.25;
@@ -2359,6 +2824,10 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             if (aPaddle.stunTimer > 0) aPaddle.stunTimer -= dt;
             if (aPaddle.reverseTimer > 0) aPaddle.reverseTimer -= dt;
+            if (aPaddle.armorBreakTimer > 0) {
+                aPaddle.armorBreakTimer = Math.max(0, aPaddle.armorBreakTimer - dt);
+                if (aPaddle.armorBreakTimer === 0) updateContextBarUI();
+            }
             if (aPaddle.webRootTimer > 0) { aPaddle.webRootTimer -= dt; return; }
             if (aPaddle.knockbackZ < 0) aPaddle.knockbackZ = Math.min(0, aPaddle.knockbackZ + dt * 95);
 
@@ -2379,8 +2848,13 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     desiredX = desiredX * 0.5 + ball.mirrorTwin.x * 0.5;
                 }
 
-                if (hasBallArch('ghost') || hasBallArch('void') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
-                    const confuse = (cfgDiff === 'hard' ? 0.10 : 0.85) * aiMod.aiErrorMult;
+                // 🌸 櫻花 1.5 秒高空懸浮期間，非宗師 AI 會因為時間差被騙走位
+                if (ball.sakuraHoverTimer > 0 && cfgDiff !== 'hard') {
+                    desiredX += Math.sin(performance.now() * 0.015) * 140;
+                }
+
+                if (hasBallArch('ghost') || hasBallArch('void') || hasBallArch('cyclone') || hasBallArch('quantum') || hasBallArch('sakura') || hasBallArch('eclipse') || hasBallArch('abyss') || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
+                    const confuse = (cfgDiff === 'hard' ? 0.08 : 0.85) * aiMod.aiErrorMult;
                     desiredX += Math.sin(ball.z * 0.055) * 115 * confuse;
                 }
 
@@ -2398,11 +2872,12 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     }
                 }
 
-                let fieldSlow = 1.0;
+                // 🦂 蠍毒印記減速與場地減速
+                let fieldSlow = Math.max(0.40, 1.0 - aPaddle.scorpionStacks * 0.15);
                 let onIce = false;
                 lingeringFields.forEach(f => {
                     if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.45) {
-                        if (f.type === 'gravity') desiredX = f.x;
+                        if (f.type === 'gravity' || f.type === 'abyss') desiredX = f.x;
                         if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 12.0 * timeScale;
                         if (f.type === 'frost') { fieldSlow = 0.32; onIce = true; }
                         if (f.type === 'aqua') fieldSlow = 0.32;
@@ -2441,9 +2916,9 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
                 if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player') {
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
-                    let reach = aPaddle.rx * (cfgDiff === 'hard' ? 3.1 : 1.85);
+                    let reach = aPaddle.rx * (cfgDiff === 'hard' ? 3.25 : 1.85);
 
-                    const breakBonus = LV_BREAK[skillLevel - 1] + (hasBallArch('nova') ? 0.42 : 0) + (resonancePowerBoost ? 0.50 : 0) + (ball.isSmashShot ? 0.28 : 0);
+                    const breakBonus = LV_BREAK[skillLevel - 1] + (hasBallArch('nova') || ball.isDragonShot || (hasBallArch('blade') && ball.isSmashShot) ? 0.45 : 0) + (resonancePowerBoost ? 0.50 : 0) + (ball.isSmashShot ? 0.28 : 0);
                     resonancePowerBoost = false;
                     ignoreNextAiPred = false;
 
@@ -2468,21 +2943,30 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             const incomingSmash = ball.isSmashShot;
             const incomingPower = ball.shotPower || 1.0;
 
-            const aiManaGain = cfgDiff === 'hard' ? 38 : (resonanceActive ? 30 : 22);
+            const aiManaGain = cfgDiff === 'hard' ? 40 : (resonanceActive ? 32 : 24);
             mana.a = Math.min(100, mana.a + aiManaGain);
-            const aiCanSkill = (incomingSkill && mana.a >= 80 && Math.random() < prof.clashRate) || (!incomingSkill && mana.a >= 100 && Math.random() < prof.clashRate);
+            addSmashMomentum('ai', cfgDiff === 'hard' ? 18 : 10);
 
-            if (!aiCanSkill && (incomingSkill || incomingSmash || incomingPower >= 1.4)) {
-                const hpLoss = incomingPower * (hasBallArch('fire') ? 42 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15) * (cfgDiff === 'hard' ? 0.55 : 1.0);
+            // 宗師 AI 在中蠍毒或音律破防時，會積極開大反制解圍
+            const aiUnderDebuff = aPaddle.scorpionStacks >= 2 || aPaddle.armorBreakTimer > 0;
+            const effectiveClashRate = Math.min(0.99, prof.clashRate + (aiUnderDebuff ? 0.25 : 0));
+            const aiCanSkill = (incomingSkill && mana.a >= 80 && Math.random() < effectiveClashRate) || (!incomingSkill && mana.a >= 100 && Math.random() < effectiveClashRate);
+
+            if (!aiCanSkill && (incomingSkill || incomingSmash || incomingPower >= 1.4 || hasPassive('scorpion'))) {
+                const scorpVuln = 1.0 + aPaddle.scorpionStacks * 0.25;
+                const rhythmVuln = aPaddle.armorBreakTimer > 0 ? 1.60 : 1.0;
+                const bladeBonus = (hasBallArch('blade') && incomingSmash) ? 1.50 : 1.0;
+                const hpLoss = incomingPower * scorpVuln * rhythmVuln * bladeBonus * (hasBallArch('fire') || ball.isDragonShot ? 45 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15) * (cfgDiff === 'hard' ? 0.55 : 1.0);
                 aPaddle.hp = Math.max(0, aPaddle.hp - hpLoss);
 
-                if (hasBallArch('fire') || novaBurstTimer > 0) {
+                if (hasBallArch('fire') || ball.isDragonShot || hasBallArch('rhythm') || novaBurstTimer > 0) {
                     aPaddle.knockbackZ = -80;
                     aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 98;
                 }
 
-                const aiSweet = distToAi < 32;
-                const breakProb = (incomingPower - 1.1) * 0.38 + (aPaddle.hp <= 0 ? 0.80 : (100 - aPaddle.hp) * 0.0045) - (aiSweet ? 0.35 : 0) - aPaddle.luck;
+                // 🐉 龍魂殺球與 ⚔️ 劍刃直線殺球強制無視敵方甜區減免
+                const aiSweet = (ball.isDragonShot || (hasBallArch('blade') && incomingSmash)) ? false : (distToAi < 32);
+                const breakProb = (incomingPower - 1.1) * 0.38 + ((hasBallArch('blade') && incomingSmash) ? 0.42 : 0) + (aPaddle.hp <= 0 ? 0.80 : (100 - aPaddle.hp) * 0.0045) - (aiSweet ? 0.35 : 0) - aPaddle.luck;
                 if (Math.random() < breakProb) {
                     sfx.guardBreak();
                     vibrate([90, 30, 120]);
@@ -2501,16 +2985,13 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.lastHitBy = 'ai';
             aPaddle.swingTimer = 0.25;
             ball.cycloneWave = false;
+            ball.sakuraFloat = false;
+            ball.abyssHelix = false;
             ball.rewindTrickArm = false;
             ball.boomerangActive = false;
             ball.magnetActive = false;
+            ball.homingActive = false;
             ball.mirrorTwin = null;
-            const aiWantsSmash = (cfgDiff === 'hard') && (ball.lob || Math.random() < 0.48);
-            ball.isSmashShot = aiWantsSmash;
-            if (aiWantsSmash) {
-                sfx.smashHit();
-                spawnSpeedLines('#f43f5e');
-            }
             ball.spinChem = null;
             rallyCount++;
 
@@ -2518,6 +2999,13 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
 
             if (incomingSkill && aiCanSkill) {
                 mana.a = 0;
+                addSmashMomentum('ai', 45);
+                addSmashMomentum('player', 18); // 場上能量激盪，玩家也獲得 18% 球勢
+                // 若敵方處於減益，清除自身蠍毒與破防
+                aPaddle.scorpionStacks = 0;
+                aPaddle.armorBreakTimer = 0;
+                updateContextBarUI();
+
                 const counterSkill = AI_SKILL_POOL[Math.floor(Math.random() * AI_SKILL_POOL.length)];
                 aiMemory.lastAiSkill = counterSkill;
                 const aiSpin = ['topspin', 'sidespin', 'backspin'][Math.floor(Math.random() * 3)];
@@ -2535,11 +3023,13 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                 screenFlashAlpha = 0.70;
                 resonanceActive = true;
 
-                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, isTouchMode ? '點擊右下角必殺鈕 100% 防破球反制！' : '按空白鍵 100% 防破球並反制！', fMeta.color);
+                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, isTouchMode ? '第二指單擊螢幕 100% 防破球反制！' : '按空白鍵 100% 防破球並反制！', fMeta.color);
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 200, color: fMeta.color, alpha: 1.0 });
                 lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 42, alpha: 1.0 });
             } else if (!incomingSkill && aiCanSkill) {
                 mana.a = 0;
+                addSmashMomentum('ai', 40);
+                addSmashMomentum('player', 15);
                 aiNextSkill = AI_SKILL_POOL[Math.floor(Math.random() * AI_SKILL_POOL.length)];
                 aiMemory.lastAiSkill = aiNextSkill;
                 aiNextTier = 1;
@@ -2550,29 +3040,54 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
                     mana.p = Math.max(0, mana.p - 28);
                     skillVisuals.leechBeam = { fromX: pPaddle.x, fromZ: pPaddle.z, toX: aPaddle.x, toZ: aPaddle.z, timer: 0.75, color: '#f43f5e' };
                 }
-                if (aiNextSkill === 'void') ball.voidTimer = 1.6;
-                if (aiNextSkill === 'cyclone') ball.cycloneWave = true;
+                if (aiNextSkill === 'void' || aiNextSkill === 'eclipse') ball.voidTimer = 1.6;
+                if (aiNextSkill === 'cyclone' || aiNextSkill === 'sakura' || aiNextSkill === 'rhythm') ball.cycloneWave = true;
+                if (aiNextSkill === 'sakura') ball.sakuraFloat = true;
+                if (aiNextSkill === 'abyss') ball.abyssHelix = true;
+                if (aiNextSkill === 'rhythm') pPaddle.armorBreakTimer = 4.0;
+                if (aiNextSkill === 'scorpion') pPaddle.scorpionStacks = Math.min(5, pPaddle.scorpionStacks + 1);
                 if (aiNextSkill === 'thunder') ball.thunderZigs = 3;
                 if (aiNextSkill === 'magnet') ball.magnetActive = true;
                 if (aiNextSkill === 'boomerang') ball.boomerangActive = true;
+                if (aiNextSkill === 'homing') ball.homingActive = true;
                 if (aiNextSkill === 'bomb' && ball.bombTimer <= 0) ball.bombTimer = 3.0;
-                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '點擊必殺鈕可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
+                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '第二指單擊螢幕可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
             } else {
                 if (hasBallArch('thunder')) aPaddle.stunTimer = 0.90;
                 sfx.hit(false, 'flat');
                 spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 14, 4.5, 'circle');
             }
 
+            // AI 球勢滿 100% 或抽到龍魂時，主動發動雷霆殺球
+            let aiWantsSmash = false;
+            if (aiNextSkill === 'dragon') {
+                aiWantsSmash = true;
+                ball.isDragonShot = true;
+            } else if (smashGauge.a >= 100 && (cfgDiff !== 'easy')) {
+                aiWantsSmash = true;
+                smashGauge.a = 0;
+                ball.isDragonShot = false;
+            } else {
+                ball.isDragonShot = false;
+            }
+            ball.isSmashShot = aiWantsSmash;
+            if (aiWantsSmash) {
+                sfx.smashHit();
+                spawnSpeedLines('#f43f5e');
+            }
+
+            // 🦂 AI 受到蠍毒弱化：降低回球球威與球速
+            const aiWeakFactor = Math.max(0.45, 1.0 - aPaddle.scorpionStacks * 0.12);
             ball.state = aiNextSkill;
             ball.secondaryArch = aiNextSecondary;
             ball.tier = aiNextTier;
-            ball.shotPower = aiNextTier >= 2 ? 1.85 : (aiNextTier === 1 ? 1.45 : 1.0);
+            ball.shotPower = (aiNextTier >= 2 ? 1.85 : (aiNextTier === 1 ? 1.45 : (aiWantsSmash ? 1.55 : 1.0))) * aiWeakFactor;
             updateHUD();
 
             const targetSide = pPaddle.x > 0 ? -1 : 1;
             let targetX = targetSide * (0.25 + Math.random() * 0.42) * T_W * prof.spread;
             let targetZ = 195 + Math.random() * 95;
-            let flightFrames = prof.flightFrames;
+            let flightFrames = Math.round(prof.flightFrames * (1.0 + aPaddle.scorpionStacks * 0.12));
 
             if (aquaSlowNextReturn || hasPassive('aqua')) {
                 flightFrames = Math.round(flightFrames * (aquaSlowNextReturn ? 1.48 : 1.20));
@@ -2600,8 +3115,8 @@ let gameRunning = false, isPaused = false, isTouchMode = false;
             ball.spinY = aiSpinY;
 
             if (aiNextTier >= 2) flightFrames = Math.max(13, flightFrames - 8);
-else if (aiNextTier === 1) flightFrames = Math.max(15, flightFrames - 5);
-if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72)); // 宗師殺球極速下砸
+            else if (aiNextTier === 1) flightFrames = Math.max(15, flightFrames - 5);
+            if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72));
 
             launchBall3DSpin(targetX, targetZ, flightFrames, aiSpinX, aiSpinY, false);
         }
@@ -2618,9 +3133,32 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             rewindState.active = false;
         }
 
-        // ================= 物理步進（內建高刷螢幕 Delta-Time 時間步長校準，60Hz/144Hz 速度完全一致） =================
+        // ================= 物理步進（含 🌸櫻花1.5秒滯空、🌀螺旋深淵大螺旋、⏳時滯暴衝） =================
         function stepBallPhysics(simSpeed, dt = 0.0166) {
             const stepScale = simSpeed * Math.min(2.2, dt * 60);
+
+            // 🌸 櫻花幻舞【高球＋技能】史無前例的 1.5 秒空中完全懸浮！
+            if (ball.sakuraHoverTimer > 0) {
+                ball.sakuraHoverTimer -= dt;
+                ball.y += Math.sin(performance.now() * 0.012) * 0.45;
+                ball.x += Math.cos(performance.now() * 0.010) * 0.85;
+                if (Math.random() < 0.75) spawnParticles(ball.x + (Math.random() - 0.5) * 55, ball.y, ball.z, '#f472b6', 2, 3.0, 'star');
+                if (ball.sakuraHoverTimer <= 0) {
+                    sfx.skillCast('sakura');
+                    ball.vy = -6.5;
+                    ball.vz *= 0.85;
+                    showSideToast(ball.vz < 0 ? 'left' : 'right', '🌸 花吹雪墜落！', '1.5秒無重力滯空結束 · 輕飄垂直墜桌！', 'text-pink-300');
+                }
+                return;
+            }
+            if (hasBallArch('sakura') && ball.lob && !ball.sakuraHoverDone && ((ball.vz < 0 && ball.z <= -115) || (ball.vz > 0 && ball.z >= 115))) {
+                ball.sakuraHoverDone = true;
+                ball.sakuraHoverTimer = 1.50;
+                sfx.skillCast('sakura');
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 150, color: '#f472b6', alpha: 1.0 });
+                triggerAnimeCutIn(ball.vz < 0 ? 'left' : 'right', '🌸 櫻花幻舞·無重力懸浮！', '高球×櫻花技能 · 空中完全滯空 1.5 秒！', '#f472b6');
+                return;
+            }
 
             if (ball.chronoFreezeTimer > 0) {
                 ball.chronoFreezeTimer -= dt;
@@ -2678,12 +3216,32 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
             ball.vx += ball.ax * stepScale;
             ball.x += ball.vx * stepScale;
-            if (ball.cycloneWave && !ball.bouncedOnTarget) {
+
+            // 🌀 螺旋深淵：極其誇張的 3D 立體大螺旋軌跡（X軸與Y軸同步大幅度圓周螺旋鑽行）
+            if ((ball.abyssHelix || hasBallArch('abyss')) && !ball.bouncedOnTarget) {
+                const helixMult = ball.isSmashShot ? 1.65 : 1.25;
+                const phase = ball.z * 0.075;
+                ball.x += Math.cos(phase) * 16.5 * helixMult * stepScale;
+                ball.y = Math.max(8, ball.y + Math.sin(phase) * 9.5 * helixMult * stepScale);
+            } else if (ball.sakuraFloat && !ball.bouncedOnTarget) {
+                // 🌸 櫻花幻舞：輕飄飄隨風搖曳變向
+                ball.x += (Math.sin(ball.z * 0.06) * 8.5 + Math.cos(ball.flightTimer * 18) * 5.5) * stepScale;
+            } else if (ball.cycloneWave && !ball.bouncedOnTarget) {
                 ball.x += Math.cos(ball.z * 0.045) * 9.2 * stepScale;
+            }
+
+            if ((ball.homingActive || hasBallArch('homing')) && !ball.bouncedOnTarget) {
+                if (ball.vz < 0) {
+                    const chaseTarget = ball.isSmashShot ? (aPaddle.x > 0 ? -T_W * 0.82 : T_W * 0.82) : aPaddle.x;
+                    ball.x += (chaseTarget - ball.x) * 0.055 * stepScale;
+                } else {
+                    ball.x += (pPaddle.x - ball.x) * 0.045 * stepScale;
+                }
+                ball.targetX = Math.max(-T_W * 0.86, Math.min(T_W * 0.86, ball.x));
             }
             ball.y += ball.vy * stepScale;
             ball.z += ball.vz * stepScale;
-            ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * stepScale;
+            ball.vy += ((ball.lob ? -0.48 : (ball.sakuraFloat ? -0.26 : -0.42)) + ball.ay) * stepScale;
 
             if ((hasBallArch('pinball') || skillVisuals.pinballRailsTimer > 0) && Math.abs(ball.x) >= T_W * 0.86) {
                 ball.x = Math.sign(ball.x) * T_W * 0.85;
@@ -2737,11 +3295,11 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 return;
             }
 
-            if (hasBallArch('ghost') && !ball.ghostSwapped && !ball.bouncedOnTarget && ball.y <= 24 && Math.abs(ball.z) > 120) {
+            if ((hasBallArch('ghost') || hasBallArch('sakura')) && !ball.ghostSwapped && !ball.bouncedOnTarget && ball.y <= 24 && Math.abs(ball.z) > 120) {
                 ball.ghostSwapped = true;
                 const pick = ball.ghostOffsets[Math.floor(Math.random() * 4)];
                 if (pick) {
-                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 18, 6, 'star');
+                    spawnParticles(ball.x, ball.y, ball.z, hasBallArch('sakura') ? '#f472b6' : '#e879f9', 18, 6, 'star');
                     ball.x = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, ball.x + pick.x * 0.75));
                     ball.targetX = ball.x;
                     spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 18, 6, 'star');
@@ -2813,6 +3371,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             drawShowcasePaddle();
 
             if (chronoTimer > 0) chronoTimer = Math.max(0, chronoTimer - rawDt);
+            if (eclipseDarkTimer > 0) eclipseDarkTimer = Math.max(0, eclipseDarkTimer - rawDt);
             if (prismShield.player > 0) prismShield.player = Math.max(0, prismShield.player - rawDt);
             if (ball.voidTimer > 0) ball.voidTimer = Math.max(0, ball.voidTimer - rawDt);
             if (novaBurstTimer > 0) {
@@ -2866,7 +3425,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             const simSpeed = chronoTimer > 0 ? 0.52 : 1.0;
 
             if (gameRunning && !isPaused) {
-                if (!suddenDeath && matchTimer > 0) {
+                if (!suddenDeath && cfgMatchDuration < 9000 && matchTimer > 0) {
                     matchTimer = Math.max(0, matchTimer - rawDt);
                     updateTimerAndHpUI();
                     if (matchTimer <= 0) {
@@ -2920,18 +3479,18 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                             if (f.type === 'fire') ball.vz *= 1.015;
                             if (f.type === 'frost') ball.vz *= 0.96;
                             if (f.type === 'aqua') ball.vz *= 0.92;
-                            if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.55;
+                            if (f.type === 'cyclone' || f.type === 'abyss') ball.vx += Math.sin(ball.z * 0.05) * 0.65;
                         }
                     });
 
                     ball.trail.push({ x: ball.x, y: ball.y, z: ball.z });
-                    const maxTrail = perfMode === 'turbo' ? (ball.tier >= 2 ? 20 : 14) : (ball.tier >= 2 ? 26 : 18);
+                    const maxTrail = perfMode === 'turbo' ? (ball.tier >= 2 || ball.abyssHelix ? 22 : 14) : (ball.tier >= 2 ? 28 : 18);
                     while (ball.trail.length > maxTrail) ball.trail.shift();
 
                     updateActiveSkillFlight(rawDt);
                     updateAI(rawDt);
 
-                    if (ball.z > 575 || ball.z < -575 || ball.y < FLOOR_Y || ball.bounceCountOnSide >= 2 || ball.flightTimer > 3.8) {
+                    if (ball.z > 575 || ball.z < -575 || ball.y < FLOOR_Y || ball.bounceCountOnSide >= 2 || ball.flightTimer > 4.6) {
                         resolvePoint();
                     }
                 }
@@ -2946,43 +3505,52 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
         function handleMatchTimeUp() {
             if (matchState.playerRounds !== matchState.aiRounds) {
-                showGameOver('⏱️ 5 分鐘時間到！依總局分裁定勝負');
+                showGameOver('⏱️ 比賽時間到！依總局分裁定勝負');
             } else if (matchState.roundScores.p !== matchState.roundScores.a) {
                 if (matchState.roundScores.p > matchState.roundScores.a) matchState.playerRounds++;
                 else matchState.aiRounds++;
-                showGameOver('⏱️ 5 分鐘時間到！依當前比分裁定勝負');
+                showGameOver('⏱️ 比賽時間到！依當前比分裁定勝負');
             } else {
                 suddenDeath = true;
                 updateTimerAndHpUI();
-                triggerAnimeCutIn('center', '⚡ GOLDEN POINT! 黃金驟死球', '5 分鐘平手！下一球直接決定最終勝負！', '#fde047');
+                triggerAnimeCutIn('center', '⚡ GOLDEN POINT! 黃金驟死球', '時間到平手！下一球直接決定最終勝負！', '#fde047');
             }
         }
 
         function updateActiveSkillFlight(dt) {
+            if (ball.isDragonShot && Math.random() < 0.75) {
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.4 ? '#dc2626' : '#fde047', 2, 4.5, 'flame');
+            }
             if (!ball.state) return;
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
 
-            if (hasBallArch('fire') && Math.random() < 0.65) {
-                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 3 : 2, 4.5, 'flame');
+            if ((hasBallArch('fire') || hasBallArch('dragon')) && Math.random() < 0.65) {
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? meta.color : '#fde047', ball.tier >= 2 ? 3 : 2, 4.5, 'flame');
+            }
+            if (hasBallArch('sakura') && Math.random() < 0.75) {
+                spawnParticles(ball.x + (Math.random() - 0.5) * 45, ball.y, ball.z, '#f472b6', 2, 3.5, 'star');
+            }
+            if (hasBallArch('abyss') && Math.random() < 0.75) {
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.5 ? '#06b6d4' : '#c084fc', 2, 4.0, 'ring');
             }
             if (hasBallArch('frost') && Math.random() < 0.6) {
-                spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
+                spawnParticles(ball.x, ball.y, ball.z, meta.color, 2, 3, 'hex');
             }
-            if (hasBallArch('toxin') && Math.random() < 0.6) {
-                spawnParticles(ball.x, ball.y, ball.z, '#84cc16', 2, 3, 'skull');
+            if ((hasBallArch('toxin') || hasBallArch('scorpion')) && Math.random() < 0.6) {
+                spawnParticles(ball.x, ball.y, ball.z, meta.color, 2, 3, 'skull');
             }
-            if (hasBallArch('gravity') || hasBallArch('void')) {
-                if (Math.random() < 0.35) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 44, maxR: 6, color: '#a855f7', alpha: 0.85 });
+            if (hasBallArch('gravity') || hasBallArch('void') || hasBallArch('eclipse') || hasBallArch('abyss')) {
+                if (Math.random() < 0.40) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 44, maxR: 6, color: meta.color, alpha: 0.85 });
                 }
             }
-            if (hasBallArch('boomerang') && Math.random() < 0.6) {
+            if ((hasBallArch('boomerang') || hasBallArch('blade')) && Math.random() < 0.65) {
                 spawnParticles(ball.x, ball.y, ball.z, '#fde047', 1, 4, 'blade');
             }
-            if (hasBallArch('magnet') && Math.random() < 0.35) {
-                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.5 ? '#ef4444' : '#3b82f6', 1, 3.5, 'ring');
+            if ((hasBallArch('magnet') || hasBallArch('rhythm')) && Math.random() < 0.50) {
+                spawnParticles(ball.x, ball.y, ball.z, meta.color, 1, 3.5, 'ring');
             }
-            if (hasBallArch('ghost')) {
+            if (hasBallArch('ghost') || hasBallArch('sakura')) {
                 const w = Math.sin(ball.z * 0.04) * 28;
                 ball.ghostOffsets[0] = { x: -135 + w, y: Math.cos(ball.z * 0.05) * 14 };
                 ball.ghostOffsets[1] = { x: -52 - w,  y: -Math.cos(ball.z * 0.05) * 14 };
@@ -3003,9 +3571,13 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 65, color: '#facc15', alpha: 0.95 });
                 }
             }
-            if (hasBallArch('void') && ball.isSmashShot && !ball.bouncedOnTarget && Math.abs(ball.z) < 40 && Math.abs(ball.z) > 15) {
-                ball.x = -ball.x * 0.85;
+            if ((hasBallArch('void') || hasBallArch('eclipse')) && ball.isSmashShot && !ball.bouncedOnTarget && Math.abs(ball.z) < 40 && Math.abs(ball.z) > 15) {
+                ball.x = hasBallArch('eclipse') ? aPaddle.x : (-ball.x * 0.85);
                 ball.targetX = ball.x;
+                if (hasBallArch('eclipse') && ball.vz < 0) {
+                    ball.z = -240; ball.y = 8; ball.vy = -8;
+                    showSideToast('left', '🌙 月蝕降臨奇襲！', '黑暗吞噬全場 · 直接從對手拍下偷襲！', 'text-indigo-300');
+                }
             }
             if (hasBallArch('sonic') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.tier === 3) {
                 if (Math.random() < 0.35) {
@@ -3021,7 +3593,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ball.bounceCountOnSide++;
             ball.showLandingRing = false;
 
-            if (ball.spinChem === 'sidespin' || (Math.abs(ball.x) >= T_W * 0.80 && Math.random() < (hasPassive('pinball') ? 0.65 : 0.30))) {
+            if (ball.spinChem === 'sidespin' || (Math.abs(ball.x) >= T_W * 0.80 && Math.random() < (hasPassive('pinball') || hasPassive('sakura') || hasPassive('abyss') ? 0.65 : 0.30))) {
                 sfx.pinballDing();
                 ball.vx += Math.sign(ball.x || ball.spinX || 1) * 6.2;
                 ball.vy = 2.0;
@@ -3074,6 +3646,20 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ball.vy = Math.max(1.4, ball.vy);
             ball.vx = Math.max(-9.5, Math.min(9.5, ball.vx));
 
+            // 🐉 常駐龍魂殺球落地火柱特效
+            if (ball.isDragonShot && !ball.state) {
+                sfx.bounce(true);
+                lightPillars.push({ x: ball.x, z: ball.z, color: '#dc2626', r: 38, alpha: 0.95 });
+                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 8, maxR: 95, color: '#fde047', alpha: 0.9, isFlat: true });
+                ball.vz *= 1.28;
+            }
+
+            // 🦂 被動或技能命中敵方半場時疊加【蠍毒印記】
+            if (ball.z < 0 && (hasPassive('scorpion') || hasBallArch('scorpion'))) {
+                aPaddle.scorpionStacks = Math.min(6, aPaddle.scorpionStacks + 1);
+                updateContextBarUI();
+            }
+
             if (ball.state) {
                 const meta = SKILL_META[ball.state] || SKILL_META.fire;
                 const lvRadMult = LV_RADIUS[skillLevel - 1] * (ball.spinType === 'lob' ? 1.35 : 1.0);
@@ -3104,15 +3690,82 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                         showSideToast('left', '🪐 引力坍縮殺球！', '強制將對手球拍吸向黑洞中心！', 'text-purple-300');
                     }
                 }
-                if (hasBallArch('fire')) {
+                if (hasBallArch('fire') || hasBallArch('dragon')) {
                     ball.vz *= 1.45;
-                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ff3b00', r: 48, alpha: 1.0 });
-                    spawnField('fire', fieldR, 2.5, '#ff3b00');
+                    const fCol = hasBallArch('dragon') ? '#dc2626' : '#ff3b00';
+                    lightPillars.push({ x: ball.x, z: ball.z, color: fCol, r: 52, alpha: 1.0 });
+                    spawnField('fire', fieldR * 1.15, 2.6, fCol);
                     if (ball.isSmashShot && ball.z < 0) {
-                        aPaddle.hp = Math.max(0, aPaddle.hp - 45);
-                        aPaddle.knockbackZ = -85;
-                        showSideToast('left', '🔥 熔岩斷頭台！', '殺球突變直接轟穿敵方 45% 球拍耐久！', 'text-amber-400');
+                        aPaddle.hp = Math.max(0, aPaddle.hp - (hasBallArch('dragon') ? 55 : 45));
+                        aPaddle.knockbackZ = -90;
+                        showSideToast('left', hasBallArch('dragon') ? '🐉 龍皇滅世炮！' : '🔥 熔岩斷頭台！', '殺球突變直接轟穿敵方大量球拍耐久！', 'text-amber-400');
                     }
+                }
+                if (hasBallArch('sakura')) {
+                    spawnParticles(ball.x, 12, ball.z, '#f472b6', 36, 9, 'star');
+                    ball.vy = 1.45;
+                    ball.vx += (ball.x >= 0 ? 1 : -1) * 4.5;
+                }
+                if (hasBallArch('blade')) {
+                    ball.vz *= 1.45;
+                    spawnField('cyclone', fieldR * 1.15, 2.8, '#eab308');
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.hp = Math.max(0, aPaddle.hp - (38 + bladeStacks * 6));
+                        aPaddle.knockbackZ = -85;
+                    }
+                }
+                // 🦂 蠍毒尾刺：疊滿 3 層或殺球直接引爆麻痺鎖死 1.1 秒
+                if (hasBallArch('scorpion')) {
+                    spawnField('toxin', fieldR * 1.1, 3.4, '#f97316');
+                    if (ball.z < 0) {
+                        aPaddle.scorpionStacks = Math.min(6, aPaddle.scorpionStacks + 1);
+                        aPaddle.hp = Math.max(0, aPaddle.hp - (ball.isSmashShot ? 40 : 22));
+                        if (ball.isSmashShot || aPaddle.scorpionStacks >= 3) {
+                            aPaddle.stunTimer = 1.10;
+                            aPaddle.scorpionStacks = 0;
+                            showSideToast('left', '🦂 蠍皇劇毒引爆！PARALYSIS', '敵拍麻痺鎖死 1.1 秒並大幅腐蝕耐久！', 'text-orange-400');
+                        } else {
+                            showSideToast('left', `🦂 蠍毒疊加 x${aPaddle.scorpionStacks}！`, '敵方球威與移速大幅弱化 (滿3層麻痺)', 'text-orange-300');
+                        }
+                        updateContextBarUI();
+                    }
+                }
+                // 🎵 音律震盪：全場大範圍音波破防 ＆ 死亡重音 Bass Drop
+                if (hasBallArch('rhythm')) {
+                    shockwaves.push({ x: ball.x, y: 2, z: ball.z, r: 18, maxR: 250, color: '#ec4899', alpha: 1.0, isFlat: true });
+                    shockwaves.push({ x: ball.x, y: 2, z: ball.z, r: 35, maxR: 180, color: '#00f2fe', alpha: 0.9, isFlat: true });
+                    if (ball.z < 0) {
+                        aPaddle.armorBreakTimer = 4.2;
+                        aPaddle.knockbackZ = -85;
+                        if (ball.isSmashShot) {
+                            sfx.bassDrop();
+                            aPaddle.stunTimer = 0.80;
+                            aPaddle.hp = Math.max(0, aPaddle.hp - 45);
+                            showSideToast('left', '🎵 死亡重音！BASS DROP', '三重低頻音爆震碎敵方防禦並強制震退！', 'text-fuchsia-300');
+                        } else {
+                            showSideToast('left', '🎵 音律破防震盪！', '遠距離音波干擾 · 敵方4秒內承受傷害+60%！', 'text-fuchsia-300');
+                        }
+                        updateContextBarUI();
+                    }
+                }
+                // 🌀 螺旋深淵：落地劇烈側拐 ＋ 殺球深淵巨鑽漩渦
+                if (hasBallArch('abyss')) {
+                    const kickDir = (ball.x >= 0 ? -1 : 1);
+                    ball.vx = kickDir * (ball.isSmashShot ? 9.2 : 7.5);
+                    ball.vy = 1.9;
+                    spawnField('abyss', fieldR * 1.25, 3.0, '#06b6d4');
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.x += (-kickDir * 95);
+                        aPaddle.hp = Math.max(0, aPaddle.hp - 38);
+                        showSideToast('left', '🌀 深淵巨鑽坍縮！', '漩渦將敵拍扯向反方向 · 螺旋球極限側拐！', 'text-cyan-300');
+                    }
+                }
+                if (hasBallArch('homing') && ball.isSmashShot) {
+                    [-90, -60, -30, 0, 30, 60, 90].forEach(ox => {
+                        createLightningChain(ball.x, 85, ball.z + 90, Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + ox)), 0, ball.z, '#f97316');
+                    });
+                    if (ball.z < 0) aPaddle.hp = Math.max(0, aPaddle.hp - 40);
+                    showSideToast('left', '🏹 萬箭齊發！', '七道追蹤光矢同時射向對手所有死角！', 'text-amber-300');
                 }
                 if (hasBallArch('thunder')) {
                     createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
@@ -3195,12 +3848,12 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                         }, delay);
                     });
                 }
-                if (hasBallArch('void')) {
+                if (hasBallArch('void') || hasBallArch('eclipse')) {
                     ball.voidTimer = 1.6;
                 }
 
                 while (lingeringFields.length > 8) lingeringFields.shift();
-            } else {
+            } else if (!ball.isDragonShot) {
                 sfx.bounce(false);
                 shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 5, maxR: 38, color: '#00f2fe', alpha: 0.75, isFlat: true });
             }
@@ -3213,6 +3866,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ball.showLandingRing = false;
             ball.mirrorTwin = null;
             ball.bombTimer = 0;
+            ball.sakuraHoverTimer = 0;
             resonanceActive = false;
 
             const playerMissed = (ball.z > 0 && !ball.boomerangTurned && ball.spinChem !== 'backspin');
@@ -3252,7 +3906,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
         function checkSetEnd() {
             const p = matchState.roundScores.p;
             const a = matchState.roundScores.a;
-            if ((p >= 11 || a >= 11) && Math.abs(p - a) >= 2) {
+            if ((p >= cfgTargetScore || a >= cfgTargetScore) && Math.abs(p - a) >= 2) {
                 if (p > a) matchState.playerRounds++;
                 else matchState.aiRounds++;
 
@@ -3275,6 +3929,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             roundsEvolvedThisRound = 0;
             rewindState.freeUsed = false;
             mana = { p: 100, a: 40 };
+            smashGauge = { p: cfgSkill === 'dragon' ? 100 : 0, a: 0 };
             lingeringFields = [];
             skillVisuals.icePillars = [];
             prismShield = { player: 0, ai: 0 };
@@ -3290,7 +3945,8 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
         function updateRoundHUD() {
             const totalPts = matchState.roundScores.p + matchState.roundScores.a;
-            const isDeuce = matchState.roundScores.p >= 10 && matchState.roundScores.a >= 10;
+            const deucePoint = Math.max(1, cfgTargetScore - 1);
+            const isDeuce = matchState.roundScores.p >= deucePoint && matchState.roundScores.a >= deucePoint;
             const serverIdx = isDeuce ? (totalPts % 2) : (Math.floor(totalPts / 2) % 2);
             matchState.currentServer = serverIdx === 0 ? 'player' : 'ai';
 
@@ -3303,20 +3959,24 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             roundWaitTimer = 0;
             rallyCount = 0;
             sonicRallyStacks = 0;
-            pPaddle.hp = 100;
-            aPaddle.hp = 100;
+            bladeStacks = 0;
+            pPaddle.hp = 100; pPaddle.scorpionStacks = 0; pPaddle.armorBreakTimer = 0;
+            aPaddle.hp = 100; aPaddle.scorpionStacks = 0; aPaddle.armorBreakTimer = 0;
+            if (cfgSkill === 'dragon') smashGauge.p = 100;
             updateTimerAndHpUI();
             updateContextBarUI();
 
             ball.state = null; ball.secondaryArch = null; ball.tier = 0; ball.spinType = 'flat';
             ball.spinX = 0; ball.spinY = 0; ball.ax = 0; ball.ay = 0;
-            ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false;
-            ball.isSmashShot = false; ball.shotPower = 1.0; ball.faultType = null; ball.spinChem = null;
+            ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false; ball.sakuraFloat = false; ball.abyssHelix = false;
+            ball.sakuraHoverTimer = 0; ball.sakuraHoverDone = false;
+            ball.isSmashShot = false; ball.isDragonShot = false; ball.shotPower = 1.0; ball.faultType = null; ball.spinChem = null;
             ball.mirrorTwin = null; ball.rewindTrickArm = false;
-            ball.boomerangActive = false; ball.magnetActive = false; ball.bombTimer = 0;
+            ball.boomerangActive = false; ball.magnetActive = false; ball.homingActive = false; ball.bombTimer = 0;
             ball.bounceCountOnSide = 0; ball.flightTimer = 0;
             ball.trail = [];
             updateRoundHUD();
+            updateHUD();
 
             if (matchState.currentServer === 'player') {
                 matchState.waitingForServe = true;
@@ -3352,15 +4012,27 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ball.spinType = 'topspin';
             const targetX = Math.max(-T_W * 0.75, Math.min(T_W * 0.75, pPaddle.x * 0.5 + pPaddle.vx * 5));
             const targetZ = -255;
-            launchBall3DSpin(targetX, targetZ, 33, 0, -0.1, false);
-            sfx.hit(true, 'topspin');
-            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 16, 5, 'circle');
+
+            if (cfgSkill === 'dragon') {
+                ball.isSmashShot = true;
+                ball.isDragonShot = true;
+                ball.shotPower = 1.45;
+                sfx.dragonRoar();
+                spawnParticles(ball.x, ball.y, ball.z, '#dc2626', 24, 7, 'flame');
+                launchBall3DSpin(targetX, targetZ, 24, 0, -0.14, false);
+            } else {
+                addSmashMomentum('player', 8);
+                if (cfgSkill === 'rhythm') sfx.playRhythmScale(rhythmNoteIdx++);
+                else sfx.hit(true, 'topspin');
+                spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 16, 5, 'circle');
+                launchBall3DSpin(targetX, targetZ, 33, 0, -0.1, false);
+            }
 
             if (gameMode === 'p2p') {
                 sendP2P({
                     type: 'SERVE',
                     startX: ball.x, startY: ball.y, startZ: ball.z,
-                    targetX, targetZ, flightFrames: 33,
+                    targetX, targetZ, flightFrames: cfgSkill === 'dragon' ? 24 : 33,
                     spinX: 0, spinY: -0.1, spinType: 'topspin', isLob: false,
                     ballState: null, ballTier: 0, timestamp: Date.now()
                 });
@@ -3446,7 +4118,9 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
         function drawScene() {
             ctx.save();
-            if (shake > 0) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+            if (shake > 0 && cfgShakeMult > 0) {
+                ctx.translate((Math.random() - 0.5) * shake * cfgShakeMult, (Math.random() - 0.5) * shake * cfgShakeMult);
+            }
 
             drawCyberArena();
             drawArenaBarriers();
@@ -3469,11 +4143,11 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
         function drawCyberArena() {
             const hy = viewH * CAM.horiz;
-            ctx.fillStyle = resonanceActive ? '#140624' : '#050814';
+            ctx.fillStyle = eclipseDarkTimer > 0 ? '#010206' : (resonanceActive ? '#140624' : '#050814');
             ctx.fillRect(0, 0, viewW, viewH);
 
             const floorGrad = ctx.createLinearGradient(0, hy, 0, viewH);
-            floorGrad.addColorStop(0, resonanceActive ? '#1b0826' : '#080c1e');
+            floorGrad.addColorStop(0, eclipseDarkTimer > 0 ? '#04030f' : (resonanceActive ? '#1b0826' : '#080c1e'));
             floorGrad.addColorStop(0.5, chronoTimer > 0 ? '#072038' : '#0e1530');
             floorGrad.addColorStop(1, '#03050c');
             ctx.fillStyle = floorGrad;
@@ -3546,7 +4220,9 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pFR.x, pFR.y); ctx.lineTo(pFL.x, pFL.y); ctx.closePath();
             const tGrad = ctx.createLinearGradient(0, pFL.y, 0, pNL.y);
-            tGrad.addColorStop(0, '#0d224c'); tGrad.addColorStop(0.5, '#153878'); tGrad.addColorStop(1, '#194591');
+            tGrad.addColorStop(0, eclipseDarkTimer > 0 ? '#06091e' : '#0d224c');
+            tGrad.addColorStop(0.5, eclipseDarkTimer > 0 ? '#0c1338' : '#153878');
+            tGrad.addColorStop(1, eclipseDarkTimer > 0 ? '#111a4a' : '#194591');
             ctx.fillStyle = tGrad; ctx.fill();
 
             if (ball.state && SKILL_META[ball.state]) {
@@ -3556,7 +4232,6 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 ctx.globalAlpha = 1.0;
             }
 
-            // 硬體級雙重描邊球桌邊框（取代高耗能 shadowBlur）
             ctx.strokeStyle = 'rgba(0, 242, 254, 0.38)'; ctx.lineWidth = 8; ctx.stroke();
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
 
@@ -3618,10 +4293,10 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 }
             });
 
-            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            const isVoidHidden = (hasBallArch('void') || hasBallArch('eclipse') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
             if (ball.showLandingRing && !isVoidHidden) {
                 const sMeta = ball.state ? SKILL_META[ball.state] : null;
-                const ringColor = sMeta ? sMeta.color : (ball.isSmashShot ? '#f43f5e' : (ball.vz < 0 ? '#fbbf24' : '#00f2fe'));
+                const ringColor = sMeta ? sMeta.color : (ball.isDragonShot ? '#dc2626' : (ball.isSmashShot ? '#f43f5e' : (ball.vz < 0 ? '#fbbf24' : '#00f2fe')));
                 const pulse = 0.80 + 0.20 * Math.sin(performance.now() * 0.018);
 
                 const drawRingAt = (tx, tz, col) => {
@@ -3637,8 +4312,8 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                     ctx.restore();
                 };
 
-                if (hasBallArch('ghost')) {
-                    [-125, -42, 42, 125].forEach(ox => drawRingAt(ox, ball.targetZ, '#e879f9'));
+                if (hasBallArch('ghost') || hasBallArch('sakura')) {
+                    [-125, -42, 42, 125].forEach(ox => drawRingAt(ox, ball.targetZ, hasBallArch('sakura') ? '#f472b6' : '#e879f9'));
                 } else {
                     drawRingAt(ball.targetX, ball.targetZ, ringColor);
                 }
@@ -3709,11 +4384,12 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 const l = skillVisuals.laserBeam;
                 const p1 = project(l.x1, l.y1, l.z1), p2 = project(l.x2, l.y2, l.z2);
                 if (p1.vis && p2.vis) {
-                    const wMult = l.wide ? 20 : 8;
+                    const wMult = l.wide ? 22 : 8;
                     ctx.save();
                     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.4)'; ctx.lineWidth = wMult * 1.8 * (l.timer / 0.75); ctx.stroke();
-                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = wMult * (l.timer / 0.75); ctx.stroke();
+                    ctx.strokeStyle = l.color || 'rgba(0, 242, 254, 0.4)'; ctx.globalAlpha = 0.45; ctx.lineWidth = wMult * 1.8 * (l.timer / 0.75); ctx.stroke();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = l.color === '#eab308' ? '#fde047' : '#f43f5e'; ctx.lineWidth = wMult * (l.timer / 0.75); ctx.stroke();
                     ctx.strokeStyle = '#ffffff'; ctx.lineWidth = (l.wide ? 6 : 2.5); ctx.stroke();
                     ctx.restore();
                 }
@@ -3812,8 +4488,8 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ctx.fillRect(-r * 0.16, r * 0.7, r * 0.32, r * 0.65);
 
             ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
-            ctx.fillStyle = aPaddle.reverseTimer > 0 ? '#84cc16' : (aPaddle.stunTimer > 0 ? '#fde047' : '#e11d48');
-            ctx.strokeStyle = '#fda4af'; ctx.lineWidth = 2.5;
+            ctx.fillStyle = aPaddle.reverseTimer > 0 ? '#84cc16' : (aPaddle.stunTimer > 0 ? '#fde047' : (aPaddle.armorBreakTimer > 0 ? '#ec4899' : '#e11d48'));
+            ctx.strokeStyle = aPaddle.scorpionStacks > 0 ? '#f97316' : '#fda4af'; ctx.lineWidth = 2.5;
             ctx.fill(); ctx.stroke();
 
             const barW = r * 1.6;
@@ -3821,6 +4497,14 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ctx.fillRect(-barW * 0.5, -r - 10, barW, 4);
             ctx.fillStyle = aPaddle.hp > 50 ? '#10b981' : (aPaddle.hp > 25 ? '#f59e0b' : '#ef4444');
             ctx.fillRect(-barW * 0.5, -r - 10, barW * (aPaddle.hp / 100), 4);
+
+            if (aPaddle.scorpionStacks > 0 || aPaddle.armorBreakTimer > 0) {
+                ctx.fillStyle = '#fde047';
+                ctx.font = '900 10px Orbitron, sans-serif';
+                ctx.textAlign = 'center';
+                const statusStr = `${aPaddle.scorpionStacks > 0 ? '🦂x' + aPaddle.scorpionStacks : ''} ${aPaddle.armorBreakTimer > 0 ? '🎵破防' : ''}`.trim();
+                ctx.fillText(statusStr, 0, -r - 15);
+            }
 
             ctx.restore();
         }
@@ -3879,12 +4563,11 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ctx.roundRect(-r * 0.17, r * 0.72, r * 0.34, r * 0.70, 4);
             ctx.fill(); ctx.stroke();
 
-            const rimColor = pPaddle.wantSmash ? '#f43f5e' : ((mana.p >= 100 || pPaddle.prechargedSkill || novaBurstTimer > 0) ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : '#00f2fe'));
+            const rimColor = (cfgSkill === 'dragon' || pPaddle.wantSmash) ? '#dc2626' : ((mana.p >= 100 || pPaddle.prechargedSkill || novaBurstTimer > 0) ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : '#00f2fe'));
             ctx.beginPath();
             ctx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
             ctx.fill();
-            // 雙重硬體描邊取代昂貴模糊
             ctx.strokeStyle = rimColor;
             ctx.globalAlpha = 0.35; ctx.lineWidth = 8; ctx.stroke();
             ctx.globalAlpha = 1.0; ctx.lineWidth = 3.5; ctx.stroke();
@@ -3911,7 +4594,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
         }
 
         function drawBallShadow3D() {
-            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            const isVoidHidden = (hasBallArch('void') || hasBallArch('eclipse') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
             if (isVoidHidden) return;
             const onTable = Math.abs(ball.x) <= T_W && Math.abs(ball.z) <= T_L;
             const shadowY = onTable ? 0 : FLOOR_Y;
@@ -3923,29 +4606,28 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.18, 0.72 - h / 260)})`; ctx.fill();
         }
 
-        // ================= 高對比霓虹球體與零延遲 Double-Pass 拖尾渲染 =================
+        // ================= 高對比霓虹球體、螺旋麻花光帶與零延遲 Double-Pass 拖尾渲染 =================
         function drawRibbonBall3D() {
             const pb = project(ball.x, ball.y, ball.z);
             if (!pb.vis) return;
 
             const sMeta = ball.state ? SKILL_META[ball.state] : null;
-            const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
+            const isVoidHidden = (hasBallArch('void') || hasBallArch('eclipse') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
             if (isVoidHidden) return;
 
-            const novaMult = hasBallArch('nova') ? 1.65 : 1.0;
+            const novaMult = (hasBallArch('nova') || hasBallArch('dragon') || ball.isDragonShot) ? 1.55 : 1.0;
             const pulseScale = (1.0 + (ball.state ? 0.15 * Math.sin(performance.now() * 0.028) : 0)) * novaMult;
             const br = Math.min(22, Math.max(5, ball.r * pb.scale * pulseScale));
 
             const spinColors = { topspin: '#ff5500', backspin: '#38bdf8', sidespin: '#10b981', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
-            const trailColor = sMeta ? sMeta.color : (ball.isSmashShot ? '#f43f5e' : (spinColors[ball.spinType] || '#00f2fe'));
-            const secColor = ball.secondaryArch && ARCH_STYLE[ball.secondaryArch] ? ARCH_STYLE[ball.secondaryArch].color : '#ffffff';
+            const trailColor = sMeta ? sMeta.color : (ball.isDragonShot ? '#dc2626' : (ball.isSmashShot ? '#f43f5e' : (spinColors[ball.spinType] || '#00f2fe')));
+            const secColor = ball.isDragonShot ? '#fde047' : (ball.secondaryArch && ARCH_STYLE[ball.secondaryArch] ? ARCH_STYLE[ball.secondaryArch].color : '#ffffff');
 
-            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.22;
+            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.22 + Math.min(1.2, bladeStacks * 0.12);
 
-            // 【關鍵性能優化】：使用 Double-Pass 雙層透明度描邊取代迴圈內的 shadowBlur，幀率暴增 300%
             if (ball.trail.length > 1) {
                 ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                const wMult = (ball.tier === 3 ? 3.5 : (ball.tier === 2 ? 2.9 : (ball.state || ball.isSmashShot ? 2.3 : 1.6))) * sonicWidthBoost;
+                const wMult = (ball.tier === 3 ? 3.5 : (ball.tier === 2 ? 2.9 : (ball.state || ball.isSmashShot || ball.isDragonShot ? 2.4 : 1.6))) * sonicWidthBoost;
                 for (let i = 1; i < ball.trail.length; i++) {
                     const p0 = project(ball.trail[i - 1].x, ball.trail[i - 1].y, ball.trail[i - 1].z);
                     const p1 = project(ball.trail[i].x, ball.trail[i].y, ball.trail[i].z);
@@ -3954,7 +4636,6 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                         const tx = hasBallArch('thunder') ? p1.x + (Math.random() - 0.5) * 14 : p1.x;
                         const ty = hasBallArch('thunder') ? p1.y + (Math.random() - 0.5) * 14 : p1.y;
 
-                        // 第一層：外圍霓虹寬光暈
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
                         ctx.lineTo(tx, ty);
@@ -3963,14 +4644,25 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                         ctx.globalAlpha = ratio * 0.78;
                         ctx.stroke();
 
-                        // 第二層：高亮度能量內芯
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
                         ctx.lineTo(tx, ty);
-                        ctx.strokeStyle = ball.tier >= 2 ? secColor : '#ffffff';
+                        ctx.strokeStyle = (ball.tier >= 2 || ball.isDragonShot) ? secColor : '#ffffff';
                         ctx.lineWidth = Math.min(10, br * 0.78 * ratio);
                         ctx.globalAlpha = ratio * 0.95;
                         ctx.stroke();
+
+                        // 🌀 螺旋深淵：繪製反向對稱的第二條紫羅蘭色螺旋麻花光帶
+                        if (ball.abyssHelix || hasBallArch('abyss')) {
+                            const offset = Math.sin(i * 0.7 + ball.orbitalAngle) * 24 * p1.scale;
+                            ctx.beginPath();
+                            ctx.moveTo(p0.x - offset, p0.y);
+                            ctx.lineTo(p1.x + offset, p1.y);
+                            ctx.strokeStyle = '#c084fc';
+                            ctx.lineWidth = Math.min(14, br * 1.4 * ratio);
+                            ctx.globalAlpha = ratio * 0.85;
+                            ctx.stroke();
+                        }
                     }
                 }
                 ctx.restore();
@@ -3988,7 +4680,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 }
             }
 
-            if (hasBallArch('ghost')) {
+            if (hasBallArch('ghost') || hasBallArch('sakura')) {
                 for (let idx = 0; idx < 4; idx++) {
                     const off = ball.ghostOffsets[idx];
                     if (!off) continue;
@@ -3997,24 +4689,26 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                         ctx.save();
                         ctx.beginPath(); ctx.arc(pg.x, pg.y, br, 0, Math.PI * 2);
                         ctx.fillStyle = '#fde047';
-                        ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 3;
+                        ctx.strokeStyle = hasBallArch('sakura') ? '#f472b6' : '#e879f9'; ctx.lineWidth = 3;
                         ctx.fill(); ctx.stroke();
                         ctx.restore();
                     }
                 }
             }
 
-            if (hasBallArch('boomerang')) {
+            // ⚔️ 劍刃風暴 & 🪃 次元迴旋：聖劍光刃隨【劍意】層數放大
+            if (hasBallArch('boomerang') || hasBallArch('blade') || (cfgSkill === 'blade' && bladeStacks > 0)) {
+                const bladeScale = 1.0 + Math.min(1.2, bladeStacks * 0.15);
                 ctx.save();
                 ctx.translate(pb.x, pb.y);
-                ctx.rotate(ball.orbitalAngle * 1.8);
+                ctx.rotate(ball.orbitalAngle * 2.0);
                 ctx.strokeStyle = '#fde047';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 3.2;
                 for (let b = 0; b < 4; b++) {
                     ctx.rotate(Math.PI / 2);
                     ctx.beginPath();
                     ctx.moveTo(0, 0);
-                    ctx.quadraticCurveTo(br * 1.5, -br * 0.7, br * 2.5, 0);
+                    ctx.quadraticCurveTo(br * 1.5 * bladeScale, -br * 0.7 * bladeScale, br * 2.6 * bladeScale, 0);
                     ctx.stroke();
                 }
                 ctx.restore();
@@ -4032,36 +4726,35 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 ctx.restore();
             }
 
-            if (sMeta) {
+            if (sMeta || ball.isDragonShot) {
                 ctx.save();
                 ctx.translate(pb.x, pb.y);
                 ctx.rotate(ball.orbitalAngle);
                 ctx.beginPath();
                 ctx.ellipse(0, 0, br * 2.2, br * 0.85, 0, 0, Math.PI * 2);
-                ctx.strokeStyle = sMeta.glow;
+                ctx.strokeStyle = sMeta ? sMeta.glow : '#fde047';
                 ctx.lineWidth = 2.5;
                 ctx.stroke();
 
-                if (ball.tier >= 2) {
+                if (ball.tier >= 2 || ball.isDragonShot || hasBallArch('abyss')) {
                     ctx.rotate(Math.PI * 0.5);
                     ctx.beginPath();
                     ctx.ellipse(0, 0, br * 2.2, br * 0.85, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = secColor;
+                    ctx.strokeStyle = hasBallArch('abyss') ? '#c084fc' : secColor;
                     ctx.stroke();
                 }
                 ctx.restore();
             }
 
-            // 球體本體（外圍光暈環 + 核心高對比亮球）
             ctx.save();
-            const coreR = br * (ball.tier >= 2 ? 1.25 : 1.05);
+            const coreR = br * (ball.tier >= 2 || ball.isDragonShot ? 1.25 : 1.05);
             ctx.beginPath(); ctx.arc(pb.x, pb.y, coreR * 1.45, 0, Math.PI * 2);
             ctx.fillStyle = trailColor; ctx.globalAlpha = 0.35; ctx.fill();
 
             ctx.globalAlpha = 1.0;
             ctx.beginPath(); ctx.arc(pb.x, pb.y, coreR, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff'; ctx.fill();
-            ctx.lineWidth = 3; ctx.strokeStyle = sMeta ? sMeta.glow : trailColor; ctx.stroke();
+            ctx.lineWidth = 3; ctx.strokeStyle = sMeta ? sMeta.glow : (ball.isDragonShot ? '#fde047' : trailColor); ctx.stroke();
             ctx.restore();
         }
 
@@ -4083,7 +4776,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
                 const pj = project(sw.x, sw.y, sw.z);
                 if (pj.vis) {
                     ctx.save(); ctx.beginPath();
-                    const rx = Math.min(115, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
+                    const rx = Math.min(125, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
                     ctx.ellipse(pj.x, pj.y, rx, ry, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = sw.color; ctx.globalAlpha = Math.max(0, sw.alpha);
                     ctx.lineWidth = 3.2; ctx.stroke();
@@ -4209,7 +4902,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             });
         }
 
-        // ================= 電競 Cut-in 播報與超能槽/右下角技能鈕連動更新 =================
+        // ================= 電競 Cut-in 播報與雙層能量艙連動更新 =================
         let leftToastTimer = null, rightToastTimer = null, topToastTimer = null;
 
         function triggerAnimeCutIn(pos, title, sub, color = '#00f2fe') {
@@ -4256,31 +4949,74 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             const statusText = document.getElementById('overdrive-status-text');
             const evBtn = document.getElementById('btn-evolve-prominent');
             const evNext = document.getElementById('btn-evolve-next-lv');
-            const mobPct = document.getElementById('mobile-skill-pct');
-            const mobBtn = document.getElementById('mobile-skill-btn');
+
+            const smashBar = document.getElementById('hud-smash-bar');
+            const smashPctEl = document.getElementById('hud-smash-pct');
+            const smashText = document.getElementById('smash-status-text');
+            const smashBox = document.getElementById('smash-bar-container');
 
             const pct = Math.round(mana.p);
             pBar.style.width = `${mana.p}%`;
             document.getElementById('hud-mana').innerText = `${pct}%`;
-            if (mobPct) mobPct.innerText = `${pct}%`;
+
+            // 更新上層【💥 球勢 SMASH GAUGE】
+            if (cfgSkill === 'dragon') {
+                smashBar.style.width = '100%';
+                smashPctEl.innerText = '🐉 MAX';
+                smashBox.classList.add('smash-ready');
+                smashText.innerText = '🐉 龍魂覺醒常駐：每一擊皆為專屬【龍魂殺球】＋龍吟破防！';
+                smashText.className = 'text-amber-300 tracking-wider';
+            } else {
+                const sPct = Math.round(smashGauge.p);
+                smashBar.style.width = `${sPct}%`;
+                smashPctEl.innerText = `${sPct}%`;
+                if (pPaddle.wantSmash) {
+                    smashBox.classList.add('smash-ready');
+                    smashText.innerText = '💥 雷霆殺球已上膛！下一擊將轟出毀滅重扣！';
+                    smashText.className = 'text-amber-300 tracking-wider animate-pulse';
+                } else if (sPct >= 100) {
+                    smashBox.classList.add('smash-ready');
+                    smashText.innerText = isTouchMode
+                        ? '💥 球勢已滿 100%！【雙指連點 2 下】或【點擊此處】發動殺球！'
+                        : '💥 球勢已滿 100%！按【D 鍵 / Ctrl+左鍵】或【點擊此處】發動殺球！';
+                    smashText.className = 'text-yellow-300 tracking-wider';
+                } else {
+                    smashBox.classList.remove('smash-ready');
+                    smashText.innerText = `💥 球勢累積中 (${sPct}% · 施放技能+40% / 來回對拉+6%~10% ➔ 滿100%解鎖殺球)`;
+                    smashText.className = 'text-rose-300 tracking-wider';
+                }
+            }
 
             const canEvolve = skillLevel < 5 && roundsEvolvedThisRound < 2 && mana.p >= 100;
             evBtn.classList.toggle('hidden', !canEvolve);
             if (canEvolve) evNext.innerText = `LV.${skillLevel + 1}`;
 
             const sMeta = SKILL_META[cfgSkill];
-            if (pPaddle.prechargedSkill) {
+            if (cfgSkill === 'dragon') {
+                if (pPaddle.prechargedSkill) {
+                    barContainer.classList.add('overdrive-ready');
+                    statusText.innerText = '🐉 【龍皇降臨】反制已上膛！100%防禦敵方技能並反轟真龍形態！';
+                    statusText.className = 'text-amber-300 tracking-wider animate-pulse';
+                } else if (mana.p >= 80) {
+                    barContainer.classList.add('overdrive-ready');
+                    statusText.innerText = '🐉 孤高龍皇：無主動技 · 敵方開大時可耗 80% 能量【龍威破萬法】反制！';
+                    statusText.className = 'text-amber-300 tracking-wider';
+                } else {
+                    barContainer.classList.remove('overdrive-ready');
+                    statusText.innerText = `🐉 龍魂核心 (${pct}% · 常駐龍魂殺球 / 80%反制敵方大招 / 100%進化)`;
+                    statusText.className = 'text-slate-300 tracking-wider';
+                }
+            } else if (pPaddle.prechargedSkill) {
                 barContainer.classList.add('overdrive-ready');
-                if (mobBtn) mobBtn.classList.add('overdrive-ready');
                 statusText.innerText = `🔥 【${sMeta.name}】已上膛！100%絕對防禦破球並轟出必殺`;
                 statusText.className = 'text-amber-300 tracking-wider animate-pulse';
             } else if (mana.p >= 100) {
-    barContainer.classList.add('overdrive-ready');
-    statusText.innerText = isTouchMode
-        ? `🔥 超能全滿！【第二指單擊】釋放 ${sMeta.name} ·【雙指連點】殺球`
-        : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} ·【D鍵/Ctrl】殺球`;
-    statusText.className = 'text-amber-300 tracking-wider';
-} else if (mana.p >= 80) {
+                barContainer.classList.add('overdrive-ready');
+                statusText.innerText = isTouchMode
+                    ? `🔥 超能全滿！【第二指單擊】釋放 ${sMeta.name} (大幅累積球勢！)`
+                    : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} (大幅累積球勢！)`;
+                statusText.className = 'text-amber-300 tracking-wider';
+            } else if (mana.p >= 80) {
                 barContainer.classList.add('overdrive-ready');
                 statusText.innerText = isTouchMode
                     ? `⚡ 已達 80% 反制門檻！敵方開大時【第二指單擊】觸發融合神技`
@@ -4329,6 +5065,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             }
 
             document.getElementById('setup-modal').classList.add('hidden');
+            document.getElementById('lobby-settings-modal').classList.add('hidden');
             document.getElementById('brawler-detail-modal').classList.add('hidden');
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('pause-modal').classList.add('hidden');
@@ -4340,9 +5077,6 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             document.getElementById('hud-skill-name-short').innerText = sMeta.name.slice(3);
             document.getElementById('hud-skill-name-short').className = `text-xs font-black ${sMeta.textCls}`;
             document.getElementById('hud-skill-icon-box').style.borderColor = sMeta.color;
-
-            const mobEmoji = document.getElementById('mobile-skill-emoji');
-            if (mobEmoji) mobEmoji.innerText = sMeta.name.slice(0, 2);
 
             restartMatch();
             resizeCanvas();
@@ -4361,7 +5095,8 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
 
             matchState = { round: 1, playerRounds: 0, aiRounds: 0, roundScores: { p: 0, a: 0 }, history: [], currentServer: 'player', waitingForServe: false };
             mana = { p: 100, a: 40 };
-            matchTimer = 300;
+            smashGauge = { p: cfgSkill === 'dragon' ? 100 : 0, a: 0 };
+            matchTimer = cfgMatchDuration;
             suddenDeath = false;
             skillLevel = 1; roundsEvolvedThisRound = 0;
             skillChainCount = 0; skillUseTotal = 0; skillAwakened = false;
@@ -4369,6 +5104,7 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             recentSpins = []; guaranteedPerfect = false; forceNextTier3 = false; ignoreNextAiPred = false;
             lastPlayerCastSkill = null;
             resonanceActive = false; chronoTimer = 0; novaBurstTimer = 0; sonicRallyStacks = 0;
+            bladeStacks = 0; rhythmNoteIdx = 0; eclipseDarkTimer = 0; lastPlayerHitDir = 0;
             aquaSlowNextReturn = false;
             prismShield = { player: 0, ai: 0 };
             lingeringFields = [];
@@ -4380,8 +5116,8 @@ if (ball.isSmashShot) flightFrames = Math.max(12, Math.round(flightFrames * 0.72
             twinClone.active = false; twinClone.cooldown = 0; twinClone.orbX = null;
             rewindState.active = false; rewindState.freeUsed = false;
             quantumPortal.active = false;
-            pPaddle.hp = 100; pPaddle.poisonStacks = 0; pPaddle.webRootTimer = 0; pPaddle.reverseTimer = 0; pPaddle.prechargedSkill = null;
-            aPaddle.hp = 100; aPaddle.poisonStacks = 0; aPaddle.webRootTimer = 0; aPaddle.reverseTimer = 0;
+            pPaddle.hp = 100; pPaddle.poisonStacks = 0; pPaddle.scorpionStacks = 0; pPaddle.armorBreakTimer = 0; pPaddle.webRootTimer = 0; pPaddle.reverseTimer = 0; pPaddle.prechargedSkill = null; pPaddle.wantSmash = false;
+            aPaddle.hp = 100; aPaddle.poisonStacks = 0; aPaddle.scorpionStacks = 0; aPaddle.armorBreakTimer = 0; aPaddle.webRootTimer = 0; aPaddle.reverseTimer = 0;
 
             document.getElementById('hud-skill-lv').innerText = 'LV.1';
             document.getElementById('score-player').innerText = '0';
