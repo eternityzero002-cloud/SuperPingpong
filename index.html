@@ -375,15 +375,21 @@
 
                 <!-- 底部：難度選擇 + 開戰按鈕 -->
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center pt-1">
-                    <div id="ai-setup-section" class="sm:col-span-7 grid grid-cols-3 gap-1.5">
-                        <button onclick="selectDiff('easy')" id="diff-easy" class="cyber-btn py-2 px-2 rounded-xl text-center">
-                            <div class="font-black text-xs">休閒 EASY</div>
+                    <div id="ai-setup-section" class="sm:col-span-7 grid grid-cols-5 gap-1">
+                        <button onclick="selectDiff('easy')" id="diff-easy" class="cyber-btn py-2 px-1 rounded-xl text-center">
+                            <div class="font-black text-[10px] sm:text-xs">1.休閒</div>
                         </button>
-                        <button onclick="selectDiff('normal')" id="diff-normal" class="cyber-btn active py-2 px-2 rounded-xl text-center">
-                            <div class="font-black text-xs text-cyan-300">標準 NORMAL</div>
+                        <button onclick="selectDiff('normal')" id="diff-normal" class="cyber-btn active py-2 px-1 rounded-xl text-center">
+                            <div class="font-black text-[10px] sm:text-xs text-cyan-300">2.標準</div>
                         </button>
-                        <button onclick="selectDiff('hard')" id="diff-hard" class="cyber-btn py-2 px-2 rounded-xl text-center">
-                            <div class="font-black text-xs text-pink-400">宗師 INSANE 🔥</div>
+                        <button onclick="selectDiff('hard')" id="diff-hard" class="cyber-btn py-2 px-1 rounded-xl text-center">
+                            <div class="font-black text-[10px] sm:text-xs text-emerald-300">3.中等</div>
+                        </button>
+                        <button onclick="selectDiff('expert')" id="diff-expert" class="cyber-btn py-2 px-1 rounded-xl text-center">
+                            <div class="font-black text-[10px] sm:text-xs text-amber-300">4.高級⚡</div>
+                        </button>
+                        <button onclick="selectDiff('god')" id="diff-god" class="cyber-btn py-2 px-1 rounded-xl text-center">
+                            <div class="font-black text-[10px] sm:text-xs text-rose-400">5.終極💀</div>
                         </button>
                     </div>
                     <button onclick="initMatch()" id="btn-start-match" class="sm:col-span-5 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base sm:text-lg cyber-font rounded-2xl border-2 border-white shadow-xl transition">
@@ -582,7 +588,7 @@
             { id: 'boomerang', role: '詭術型 TRICKSTER', stats: { pwr: 87, spd: 91, spn: 99, ctl: 84 }, name: '🪃 次元迴旋', desc: '球化為高速旋轉黃金光刃，在敵方桌面彈起後不往前飛，而是180度往球網倒飛', smashDesc: '化為【疾風風魔手裏劍】：落地後極速貼網倒飛，讓底線對手100%揮空！', passiveName: '迴旋', passiveDesc: '側旋球曲率額外提升25%', fusionTips: '推薦配對：💨音速光輪斬 / 🌪️龍捲手裏劍', arch: 'boomerang' },
             { id: 'bomb',      role: '破壞型 DESTROYER', stats: { pwr: 100, spd: 86, spn: 80, ctl: 78 }, name: '💣 定時星雷', desc: '球頂顯示3➔2➔1倒數炸彈，對拉中倒數歸零直接在當前半場引爆，炸飛球拍扣60%耐久', smashDesc: '殺球猛擊引信使炸彈倒數【立刻縮短0.8秒】，逼對手接下即將爆炸的星雷！', passiveName: '引信', passiveDesc: '每次使用殺球時，炸彈倒數自動加快0.6秒', fusionTips: '推薦配對：🔥熱核聚變星雷 / 💫超新星坍縮雷', arch: 'bomb' },
             { id: 'pinball',   role: '極速型 ASSASSIN',  stats: { pwr: 90, spd: 96, spn: 95, ctl: 92 }, name: '🎱 星軌彈珠', desc: '球桌兩側升起紫金高壓彈射軌，球大角度撞擊邊軌後觸發彈珠音效並高速Z字折返', smashDesc: '邊軌高壓通電：撞擊軌道後升級為【3倍速雷暴彈珠】直射死角！', passiveName: '彈射', passiveDesc: '邊線極限控球·擦邊球觸發率大幅提升', fusionTips: '推薦配對：💎光稜彈珠矩陣 / ⚡高壓電弧彈珠', arch: 'pinball' },
-            { id: 'dragon',    role: '破壞型 DESTROYER', stats: { pwr: 100, spd: 92, spn: 85, ctl: 90 }, name: '🐉 龍魂覺醒', desc: '【孤高龍皇】無主動技且不與外系聯動；換來每一擊皆為專屬【龍魂殺球】並伴隨龍吟與赤金龍息！', smashDesc: '常駐【龍魂殺球】：比一般殺球更強，完全無視甜區限制，遇敵方技能可耗80%能量以【龍威破萬法】硬撼！', passiveName: '真龍', passiveDesc: '球勢永久MAX·每拍必為龍魂殺球·僅能與自身融合【龍皇降臨】', fusionTips: '孤高唯一：🐉龍皇降臨·真龍形態 (拒絕一切外系聯動)', arch: 'dragon' },
+            { id: 'dragon',    role: '破壞型 DESTROYER', stats: { pwr: 88, spd: 89, spn: 85, ctl: 90 }, name: '🐉 龍魂覺醒', desc: '【孤高龍皇】無主動技且不與外系聯動；每一擊皆轉化為【輕量級龍魂殺球】並伴隨龍吟與赤金龍息！', smashDesc: '常駐【輕量龍魂殺球】：威力略低於蓄力重扣但刀刀烈火；遇敵方大招可耗80%能量以【龍威破萬法】反制！', passiveName: '真龍', passiveDesc: '每拍常駐輕量龍魂殺球(1.22倍球威)·僅能與自身融合【龍皇降臨】', fusionTips: '孤高唯一：🐉龍皇降臨·真龍形態 (拒絕一切外系聯動)', arch: 'dragon' },
             { id: 'sakura',    role: '詭術型 TRICKSTER', stats: { pwr: 60, spd: 94, spn: 100, ctl: 96 }, name: '🌸 櫻花幻舞', desc: '釋放漫天櫻花使球變得極度輕飄飄且變幻莫測；高球＋技能可在空中【完全懸浮1.5秒】！', smashDesc: '【無聲落葉殺球】：輕飄飄的技巧型殺球，過網後急墜貼網並向側邊死角滑開！', passiveName: '卸力', passiveDesc: '太極卸力：將對手重球與殺球衝擊力卸除 50%，極難被破球', fusionTips: '推薦配對：⚔️散華櫻吹雪 / 🌀櫻花幻舞', arch: 'sakura' },
             { id: 'blade',     role: '極速型 ASSASSIN',  stats: { pwr: 95, spd: 98, spn: 82, ctl: 84 }, name: '⚔️ 劍刃風暴', desc: '成長疊加型技能：對拉中每拍無限疊加【劍意】越打越強，聖劍光刃隨層數放大！', smashDesc: '【一劍破萬法】：濃縮所有劍意化為筆直黃金劍氣【直線貫穿】，附帶超高強制破球率！', passiveName: '劍意', passiveDesc: '每拍擊球無限疊加劍意（每層球速+8%、削耐久威力+12%）', fusionTips: '推薦配對：🌀螺旋聖劍鑽 / 🌸散華櫻吹雪', arch: 'blade' },
             { id: 'scorpion',  role: '破壞型 DESTROYER', stats: { pwr: 94, spd: 86, spn: 92, ctl: 85 }, name: '🦂 蠍毒尾刺', desc: '施放技能為敵方無限疊加【蠍毒印記】：大幅弱化敵方回球球威與移速，疊滿3層直接麻痺！', smashDesc: '【蠍皇毒針】：瞬間引爆所有蠍毒印記，使敵拍強制麻痺鎖死 1.1 秒並腐蝕 40% 耐久！', passiveName: '劇毒', passiveDesc: '每層蠍毒弱化敵方 12% 球威與 15% 移速，並增加 25% 耐久損耗', fusionTips: '推薦配對：🎵劇毒鎮魂曲 / ☠️蠍毒深淵', arch: 'scorpion' },
@@ -1321,7 +1327,10 @@
 
         function selectDiff(d) {
             cfgDiff = d;
-            ['easy', 'normal', 'hard'].forEach(k => document.getElementById('diff-' + k).classList.remove('active'));
+            ['easy', 'normal', 'hard', 'expert', 'god'].forEach(k => {
+                const el = document.getElementById('diff-' + k);
+                if (el) el.classList.remove('active');
+            });
             document.getElementById('diff-' + d).classList.add('active');
         }
 
@@ -1599,9 +1608,11 @@
 
         // ================= AI 難度與學習型記憶（強化宗師 AI 反應與新技能適應） =================
         const AI_PROFILES = {
-            easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
-            normal: { name: 'NORMAL',        speed: 11.2, flightFrames: 34, spread: 0.78, saveRate: 0.62, clashRate: 0.52, learnRate: 0.65 },
-            hard:   { name: 'NEURAL INSANE', speed: 27.0, flightFrames: 19, spread: 0.96, saveRate: 0.98, clashRate: 0.97, learnRate: 1.5 }
+            easy:   { name: 'LV.1 休閒',     speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28,  clashRate: 0.15,  learnRate: 0.2 },
+            normal: { name: 'LV.2 標準',     speed: 11.2, flightFrames: 34, spread: 0.78, saveRate: 0.62,  clashRate: 0.52,  learnRate: 0.65 },
+            hard:   { name: 'LV.3 中等',     speed: 25.0, flightFrames: 21, spread: 0.92, saveRate: 0.92,  clashRate: 0.88,  learnRate: 1.4 },
+            expert: { name: 'LV.4 高級智能', speed: 38.0, flightFrames: 16, spread: 0.97, saveRate: 0.99,  clashRate: 0.98,  learnRate: 2.5 },
+            god:    { name: 'LV.5 終極神域', speed: 68.0, flightFrames: 13, spread: 0.99, saveRate: 0.999, clashRate: 0.999, learnRate: 5.0 }
         };
         const AI_SKILL_POOL = [
             'fire', 'thunder', 'gravity', 'sonic', 'ghost', 'prism', 'chrono', 'leech',
@@ -2583,9 +2594,8 @@
             let targetX = gravitySuppressed ? 0 : Math.max(-T_W * 0.84, Math.min(T_W * 0.84, aimX));
 
             const selfWeakMult = Math.max(0.45, 1.0 - pPaddle.scorpionStacks * 0.12);
-            let calcPower = (isSmash ? 1.65 : 1.0) * (strokeStyle === 'long' ? 1.2 : 1.0) * (twinDoubleHit ? 1.8 : 1.0) * LV_MULT[skillLevel - 1] * selfWeakMult;
-
-            if (ball.isDragonShot) calcPower *= 1.45;
+            const baseSmashMult = ball.isDragonShot ? (ball.tier >= 2 ? 1.75 : 1.22) : (isSmash ? 1.65 : 1.0);
+            let calcPower = baseSmashMult * (strokeStyle === 'long' ? 1.2 : 1.0) * (twinDoubleHit ? 1.8 : 1.0) * LV_MULT[skillLevel - 1] * selfWeakMult;
             if (bladeStacks > 0) calcPower *= (1 + bladeStacks * 0.12);
             if (hasBallArch('sakura') || cfgSkill === 'sakura') calcPower *= 0.62;
             if (hasBallArch('leech')) {
@@ -2737,7 +2747,7 @@
                 }
             }
             if (isSmash && !hasBallArch('sakura') && !(hasBallArch('blade') && isSmash)) {
-                flightFrames = Math.max(9, Math.round(flightFrames * (ball.isDragonShot ? 0.68 : 0.72)));
+                flightFrames = Math.max(11, Math.round(flightFrames * (ball.isDragonShot && !ball.state ? 0.86 : 0.72)));
             }
             if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.78); resonanceFastFlight = false; }
 
@@ -2842,23 +2852,27 @@
             }
 
             if (ball.vz < 0) {
-                let desiredX = ball.x + ball.vx * 8 + aiMemory.predictedX * 0.25 * aiMod.aiErrorMult;
+                const isHighAi = (cfgDiff === 'hard' || cfgDiff === 'expert' || cfgDiff === 'god');
+                // Lv.4/Lv.5 直接結合真實落點 targetX 與球的即時座標，預判精準度極高
+                let desiredX = (cfgDiff === 'god')
+                    ? (ball.bouncedOnTarget ? ball.x + ball.vx * 3 : ball.targetX * 0.65 + ball.x * 0.35)
+                    : (cfgDiff === 'expert' ? (ball.x + ball.vx * 6 + ball.targetX * 0.25) : (ball.x + ball.vx * 8 + aiMemory.predictedX * 0.25 * aiMod.aiErrorMult));
 
-                if (ball.mirrorTwin && ball.mirrorTwin.active && ball.z > -220) {
+                if (ball.mirrorTwin && ball.mirrorTwin.active && ball.z > -220 && cfgDiff !== 'god') {
                     desiredX = desiredX * 0.5 + ball.mirrorTwin.x * 0.5;
                 }
 
-                // 🌸 櫻花 1.5 秒高空懸浮期間，非宗師 AI 會因為時間差被騙走位
-                if (ball.sakuraHoverTimer > 0 && cfgDiff !== 'hard') {
+                if (ball.sakuraHoverTimer > 0 && !isHighAi) {
                     desiredX += Math.sin(performance.now() * 0.015) * 140;
                 }
 
                 if (hasBallArch('ghost') || hasBallArch('void') || hasBallArch('cyclone') || hasBallArch('quantum') || hasBallArch('sakura') || hasBallArch('eclipse') || hasBallArch('abyss') || ball.voidTimer > 0 || ignoreNextAiPred || skillLevel === 5) {
-                    const confuse = (cfgDiff === 'hard' ? 0.08 : 0.85) * aiMod.aiErrorMult;
+                    const confuseMap = { easy: 0.95, normal: 0.75, hard: 0.15, expert: 0.03, god: 0.0 };
+                    const confuse = (confuseMap[cfgDiff] ?? 0.5) * aiMod.aiErrorMult;
                     desiredX += Math.sin(ball.z * 0.055) * 115 * confuse;
                 }
 
-                if (ball.magnetActive && ball.z < -150 && ball.z > -390) {
+                if (ball.magnetActive && ball.z < -150 && ball.z > -390 && cfgDiff !== 'god') {
                     const distMag = Math.hypot(ball.x - aPaddle.x, ball.z - aPaddle.z);
                     if (distMag < 145) {
                         if (ball.magnetPolarity === 'attract') {
@@ -2872,7 +2886,6 @@
                     }
                 }
 
-                // 🦂 蠍毒印記減速與場地減速
                 let fieldSlow = Math.max(0.40, 1.0 - aPaddle.scorpionStacks * 0.15);
                 let onIce = false;
                 lingeringFields.forEach(f => {
@@ -2882,10 +2895,10 @@
                         if (f.type === 'frost') { fieldSlow = 0.32; onIce = true; }
                         if (f.type === 'aqua') fieldSlow = 0.32;
                         if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.45;
-                        if (f.type === 'web' && !f.triggered) { f.triggered = true; aPaddle.webRootTimer = 0.95; }
+                        if (f.type === 'web' && !f.triggered) { f.triggered = true; aPaddle.webRootTimer = cfgDiff === 'god' ? 0.15 : 0.95; }
                         if (f.type === 'nova' && !f.triggered) {
                             f.triggered = true;
-                            aPaddle.stunTimer = 0.55;
+                            aPaddle.stunTimer = cfgDiff === 'god' ? 0.10 : 0.55;
                             aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 95;
                         }
                         if (f.type === 'toxin') {
@@ -2893,17 +2906,18 @@
                             aPaddle.hp = Math.max(0, aPaddle.hp - dt * 24);
                             if (aPaddle.poisonStacks >= 2.0) {
                                 aPaddle.poisonStacks = 0;
-                                aPaddle.reverseTimer = 1.25;
+                                aPaddle.reverseTimer = cfgDiff === 'god' ? 0 : 1.25;
                                 mana.a = Math.max(0, mana.a - 15);
                             }
                         }
                     }
                 });
 
-                if (aPaddle.reverseTimer > 0) desiredX = -desiredX;
+                if (cfgDiff === 'god') { fieldSlow = Math.max(0.85, fieldSlow); onIce = false; }
+                if (aPaddle.reverseTimer > 0 && cfgDiff !== 'god') desiredX = -desiredX;
 
                 const dx = desiredX - aPaddle.x;
-                const moveStep = prof.speed * (aPaddle.stunTimer > 0 ? 0.22 : 1.0) * fieldSlow * timeScale;
+                const moveStep = prof.speed * (aPaddle.stunTimer > 0 ? (cfgDiff === 'god' ? 0.75 : 0.22) : 1.0) * fieldSlow * timeScale;
                 if (onIce) {
                     aPaddle.iceSlideVx = aPaddle.iceSlideVx * 0.94 + Math.sign(dx) * moveStep * 0.16;
                     aPaddle.x += aPaddle.iceSlideVx;
@@ -2916,14 +2930,16 @@
 
                 if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player') {
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
-                    let reach = aPaddle.rx * (cfgDiff === 'hard' ? 3.25 : 1.85);
+                    const reachMultMap = { easy: 1.65, normal: 1.85, hard: 2.9, expert: 3.8, god: 5.5 };
+                    let reach = aPaddle.rx * (reachMultMap[cfgDiff] || 1.85);
 
-                    const breakBonus = LV_BREAK[skillLevel - 1] + (hasBallArch('nova') || ball.isDragonShot || (hasBallArch('blade') && ball.isSmashShot) ? 0.45 : 0) + (resonancePowerBoost ? 0.50 : 0) + (ball.isSmashShot ? 0.28 : 0);
+                    const dragonBreak = ball.isDragonShot ? 0.10 : 0;
+                    const breakBonus = (cfgDiff === 'god' ? 0 : (LV_BREAK[skillLevel - 1] + (hasBallArch('nova') || (hasBallArch('blade') && ball.isSmashShot) ? 0.42 : dragonBreak) + (resonancePowerBoost ? 0.50 : 0) + (ball.isSmashShot ? 0.25 : 0)));
                     resonancePowerBoost = false;
                     ignoreNextAiPred = false;
 
-                    if (aPaddle.stunTimer > 0 || aPaddle.knockbackZ < -15) reach *= 0.35;
-                    if ((ball.tier >= 1 || ball.isSmashShot) && Math.random() > Math.max(0.10, prof.saveRate - breakBonus)) {
+                    if ((aPaddle.stunTimer > 0 || aPaddle.knockbackZ < -15) && cfgDiff !== 'god') reach *= 0.35;
+                    if (cfgDiff !== 'god' && (ball.tier >= 1 || ball.isSmashShot) && Math.random() > Math.max(0.10, prof.saveRate - breakBonus)) {
                         reach *= 0.20;
                     }
 
@@ -2943,30 +2959,31 @@
             const incomingSmash = ball.isSmashShot;
             const incomingPower = ball.shotPower || 1.0;
 
-            const aiManaGain = cfgDiff === 'hard' ? 40 : (resonanceActive ? 32 : 24);
-            mana.a = Math.min(100, mana.a + aiManaGain);
-            addSmashMomentum('ai', cfgDiff === 'hard' ? 18 : 10);
+            const manaGainMap = { easy: 18, normal: 24, hard: 36, expert: 50, god: 85 };
+            mana.a = Math.min(100, mana.a + (manaGainMap[cfgDiff] || 24));
+            addSmashMomentum('ai', cfgDiff === 'god' ? 40 : (cfgDiff === 'expert' ? 25 : 14));
 
-            // 宗師 AI 在中蠍毒或音律破防時，會積極開大反制解圍
             const aiUnderDebuff = aPaddle.scorpionStacks >= 2 || aPaddle.armorBreakTimer > 0;
-            const effectiveClashRate = Math.min(0.99, prof.clashRate + (aiUnderDebuff ? 0.25 : 0));
+            const effectiveClashRate = Math.min(0.999, prof.clashRate + (aiUnderDebuff ? 0.25 : 0));
             const aiCanSkill = (incomingSkill && mana.a >= 80 && Math.random() < effectiveClashRate) || (!incomingSkill && mana.a >= 100 && Math.random() < effectiveClashRate);
 
             if (!aiCanSkill && (incomingSkill || incomingSmash || incomingPower >= 1.4 || hasPassive('scorpion'))) {
                 const scorpVuln = 1.0 + aPaddle.scorpionStacks * 0.25;
                 const rhythmVuln = aPaddle.armorBreakTimer > 0 ? 1.60 : 1.0;
-                const bladeBonus = (hasBallArch('blade') && incomingSmash) ? 1.50 : 1.0;
-                const hpLoss = incomingPower * scorpVuln * rhythmVuln * bladeBonus * (hasBallArch('fire') || ball.isDragonShot ? 45 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15) * (cfgDiff === 'hard' ? 0.55 : 1.0);
-                aPaddle.hp = Math.max(0, aPaddle.hp - hpLoss);
+                const bladeBonus = (hasBallArch('blade') && incomingSmash) ? 1.45 : 1.0;
+                const diffArmorMap = { easy: 1.1, normal: 1.0, hard: 0.65, expert: 0.38, god: 0.10 };
+                const baseDmg = hasBallArch('fire') ? 42 : (hasBallArch('gravity') ? 34 : (ball.isDragonShot ? 24 : 22));
+                const hpLoss = incomingPower * scorpVuln * rhythmVuln * bladeBonus * baseDmg * (distToAi < 35 ? 0.65 : 1.15) * (diffArmorMap[cfgDiff] || 1.0);
+                aPaddle.hp = Math.max(cfgDiff === 'god' ? 35 : 0, aPaddle.hp - hpLoss);
 
-                if (hasBallArch('fire') || ball.isDragonShot || hasBallArch('rhythm') || novaBurstTimer > 0) {
+                if ((hasBallArch('fire') || hasBallArch('rhythm') || novaBurstTimer > 0) && cfgDiff !== 'god') {
                     aPaddle.knockbackZ = -80;
                     aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 98;
                 }
 
-                // 🐉 龍魂殺球與 ⚔️ 劍刃直線殺球強制無視敵方甜區減免
-                const aiSweet = (ball.isDragonShot || (hasBallArch('blade') && incomingSmash)) ? false : (distToAi < 32);
-                const breakProb = (incomingPower - 1.1) * 0.38 + ((hasBallArch('blade') && incomingSmash) ? 0.42 : 0) + (aPaddle.hp <= 0 ? 0.80 : (100 - aPaddle.hp) * 0.0045) - (aiSweet ? 0.35 : 0) - aPaddle.luck;
+                const aiSweet = (hasBallArch('blade') && incomingSmash) ? false : (distToAi < (cfgDiff === 'god' ? 85 : 32));
+                const aiLuckBonus = cfgDiff === 'god' ? 2.0 : (cfgDiff === 'expert' ? 0.45 : aPaddle.luck);
+                const breakProb = (incomingPower - 1.15) * 0.36 + ((hasBallArch('blade') && incomingSmash) ? 0.35 : 0) + (aPaddle.hp <= 0 ? 0.75 : (100 - aPaddle.hp) * 0.004) - (aiSweet ? 0.38 : 0) - aiLuckBonus;
                 if (Math.random() < breakProb) {
                     sfx.guardBreak();
                     vibrate([90, 30, 120]);
@@ -3013,7 +3030,7 @@
                 aiNextSkill = fRes.id;
                 aiNextSecondary = fRes.secondaryArch;
                 fusionLabel = fRes.displayName;
-                aiNextTier = (cfgDiff === 'hard' || fRes.isHardTier3) ? 3 : 2;
+                aiNextTier = (['hard', 'expert', 'god'].includes(cfgDiff) || fRes.isHardTier3) ? 3 : 2;
 
                 sfx.fusionClash();
                 hitStopTimer = 0.095;
@@ -3084,10 +3101,21 @@
             ball.shotPower = (aiNextTier >= 2 ? 1.85 : (aiNextTier === 1 ? 1.45 : (aiWantsSmash ? 1.55 : 1.0))) * aiWeakFactor;
             updateHUD();
 
-            const targetSide = pPaddle.x > 0 ? -1 : 1;
+            // Lv.4 與 Lv.5 智能選點：根據玩家移動速度 vx 與站位習慣，專打玩家重心反方向的極限死角
+            let targetSide = pPaddle.x > 0 ? -1 : 1;
+            if ((cfgDiff === 'expert' || cfgDiff === 'god') && Math.abs(pPaddle.vx) > 2.2) {
+                targetSide = -Math.sign(pPaddle.vx); // 抓玩家移動慣性打反方向回頭球
+            }
             let targetX = targetSide * (0.25 + Math.random() * 0.42) * T_W * prof.spread;
-            let targetZ = 195 + Math.random() * 95;
-            let flightFrames = Math.round(prof.flightFrames * (1.0 + aPaddle.scorpionStacks * 0.12));
+            if (cfgDiff === 'expert' || cfgDiff === 'god') {
+                targetX = targetSide * (0.72 + Math.random() * 0.14) * T_W - (aiMemory.predictedX * 0.25);
+                targetX = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, targetX));
+            }
+            // 若玩家退到遠台(z>340)，Lv.4/Lv.5 會自動放近網短球；若玩家貼網(z<220)，則抽底線長球
+            let targetZ = (cfgDiff === 'expert' || cfgDiff === 'god')
+                ? (pPaddle.z > 340 ? 130 + Math.random() * 25 : 295 + Math.random() * 40)
+                : (195 + Math.random() * 95);
+            let flightFrames = Math.round(prof.flightFrames * (1.0 + (cfgDiff === 'god' ? 0 : aPaddle.scorpionStacks * 0.12)));
 
             if (aquaSlowNextReturn || hasPassive('aqua')) {
                 flightFrames = Math.round(flightFrames * (aquaSlowNextReturn ? 1.48 : 1.20));
@@ -3101,7 +3129,7 @@
             if (Math.random() < 0.35) {
                 if (Math.random() < 0.6) {
                     ball.spinType = 'sidespin';
-                    aiSpinX = targetSide * (cfgDiff === 'hard' ? 0.30 : 0.22);
+                    aiSpinX = targetSide * (['hard', 'expert', 'god'].includes(cfgDiff) ? 0.32 : 0.22);
                 } else {
                     ball.spinType = 'topspin';
                     aiSpinY = -0.16;
@@ -3646,12 +3674,12 @@
             ball.vy = Math.max(1.4, ball.vy);
             ball.vx = Math.max(-9.5, Math.min(9.5, ball.vx));
 
-            // 🐉 常駐龍魂殺球落地火柱特效
+            // 🐉 常駐輕量龍魂殺球落地火柱特效
             if (ball.isDragonShot && !ball.state) {
                 sfx.bounce(true);
-                lightPillars.push({ x: ball.x, z: ball.z, color: '#dc2626', r: 38, alpha: 0.95 });
-                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 8, maxR: 95, color: '#fde047', alpha: 0.9, isFlat: true });
-                ball.vz *= 1.28;
+                lightPillars.push({ x: ball.x, z: ball.z, color: '#dc2626', r: 24, alpha: 0.75 });
+                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 6, maxR: 65, color: '#fde047', alpha: 0.75, isFlat: true });
+                ball.vz *= 1.12;
             }
 
             // 🦂 被動或技能命中敵方半場時疊加【蠍毒印記】
@@ -4014,12 +4042,12 @@
             const targetZ = -255;
 
             if (cfgSkill === 'dragon') {
-                ball.isSmashShot = true;
+                ball.isSmashShot = false;
                 ball.isDragonShot = true;
-                ball.shotPower = 1.45;
+                ball.shotPower = 1.15;
                 sfx.dragonRoar();
-                spawnParticles(ball.x, ball.y, ball.z, '#dc2626', 24, 7, 'flame');
-                launchBall3DSpin(targetX, targetZ, 24, 0, -0.14, false);
+                spawnParticles(ball.x, ball.y, ball.z, '#dc2626', 18, 6, 'flame');
+                launchBall3DSpin(targetX, targetZ, 30, 0, -0.10, false);
             } else {
                 addSmashMomentum('player', 8);
                 if (cfgSkill === 'rhythm') sfx.playRhythmScale(rhythmNoteIdx++);
