@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER PONG 2077 - 荒野展櫃×ASD殺球×24超能質變終極版</title>
+    <title>CYBER PONG 2077 - 144Hz極速電競×經典手感×24超能終極版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
@@ -20,51 +20,50 @@
         }
         .cyber-font { font-family: 'Orbitron', 'Noto Sans TC', sans-serif; }
         .cyber-panel {
-            background: rgba(8, 14, 30, 0.88);
+            background: rgba(8, 14, 30, 0.90);
             border: 1px solid rgba(0, 242, 254, 0.45);
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.16);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 0 14px rgba(0, 242, 254, 0.15);
         }
         .cyber-btn {
-            background: linear-gradient(135deg, rgba(255, 0, 128, 0.16) 0%, rgba(0, 242, 254, 0.16) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.18) 0%, rgba(0, 242, 254, 0.18) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
         }
         .cyber-btn:hover, .cyber-btn.active {
             background: linear-gradient(135deg, rgba(255, 0, 128, 0.65) 0%, rgba(0, 242, 254, 0.65) 100%);
             border-color: #00f2fe;
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.65);
-            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 14px rgba(0, 242, 254, 0.55);
+            transform: translateY(-1px);
         }
-        .cyber-btn:active { transform: scale(0.95); }
+        .cyber-btn:active { transform: scale(0.94); }
         .brawl-card {
-            background: linear-gradient(160deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.88) 100%);
-            border: 2px solid rgba(148, 163, 184, 0.3);
-            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.90) 100%);
+            border: 2px solid rgba(148, 163, 184, 0.28);
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
         .brawl-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             border-color: rgba(0, 242, 254, 0.75);
         }
         .brawl-card.active {
-            background: linear-gradient(160deg, rgba(8, 47, 73, 0.95) 0%, rgba(59, 7, 100, 0.9) 100%);
+            background: linear-gradient(160deg, rgba(8, 47, 73, 0.96) 0%, rgba(59, 7, 100, 0.92) 100%);
             border-color: #fde047;
-            box-shadow: 0 0 22px rgba(253, 224, 71, 0.55), inset 0 0 12px rgba(0, 242, 254, 0.35);
-            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 18px rgba(253, 224, 71, 0.5);
+            transform: translateY(-2px) scale(1.02);
         }
         @keyframes overdrivePulse {
-            0%, 100% { box-shadow: 0 0 12px #00f2fe, inset 0 0 8px #00f2fe; border-color: #00f2fe; }
-            50% { box-shadow: 0 0 28px #fde047, 0 0 45px #ec4899, inset 0 0 14px #fff; border-color: #fde047; }
+            0%, 100% { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
+            50% { border-color: #fde047; box-shadow: 0 0 22px rgba(253, 224, 71, 0.85); }
         }
-        .overdrive-ready { animation: overdrivePulse 0.6s infinite ease-in-out; }
+        .overdrive-ready { animation: overdrivePulse 0.65s infinite ease-in-out; }
         @keyframes evolveBounce {
-            0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 18px #f59e0b, 0 0 32px #fde047; }
-            50% { transform: scale(1.08) translateY(-3px); box-shadow: 0 0 30px #fde047, 0 0 50px #ffffff; }
+            0%, 100% { transform: scale(1) translateY(0); box-shadow: 0 0 16px #f59e0b; }
+            50% { transform: scale(1.08) translateY(-4px); box-shadow: 0 0 28px #fde047, 0 0 42px #ffffff; }
         }
         .evolve-mega-btn { animation: evolveBounce 0.55s infinite ease-in-out; }
         .cutin-slash-left { clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%); transform: skewX(-12deg); }
         .cutin-slash-right { clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%); transform: skewX(-12deg); }
-        .cutin-text-shadow { text-shadow: 0 3px 0 #000, 0 0 18px currentColor; }
+        .cutin-text-shadow { text-shadow: 0 3px 0 #000, 0 0 14px currentColor; }
     </style>
 </head>
 <body class="w-screen h-[100dvh] flex flex-col relative select-none">
@@ -72,7 +71,7 @@
     <div id="game-container" class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#03050c]">
         <canvas id="gameCanvas" class="block w-full h-full cursor-none"></canvas>
 
-        <!-- 頂部極簡街機 HUD -->
+        <!-- 頂部極簡街機 HUD（含 5 分鐘計時器、即時 FPS 監測與球拍耐久） -->
         <div id="in-game-hud" class="absolute top-2.5 inset-x-2.5 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
             <div class="flex flex-col gap-1.5">
                 <div class="cyber-panel px-3 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
@@ -93,17 +92,18 @@
                 <div id="hud-context-bar" class="hidden cyber-panel px-2.5 py-1 rounded-lg text-[10px] font-bold text-amber-200 flex items-center gap-2 pointer-events-auto"></div>
             </div>
 
-            <!-- 中央比分板 + 5 分鐘倒數計時器 -->
+            <!-- 中央比分板 + 5 分鐘倒數計時器 + 即時 FPS 顯示 -->
             <div class="cyber-panel px-4 sm:px-6 py-1 rounded-2xl flex flex-col items-center">
-                <div class="flex items-center gap-2 mb-0.5">
+                <div class="flex items-center gap-1.5 mb-0.5">
                     <span id="hud-match-timer" class="cyber-font text-[11px] font-black text-cyan-300 tracking-widest bg-slate-950/90 px-2 py-0.2 rounded border border-cyan-500/40">⏱️ 05:00</span>
-                    <span id="hud-smash-ready" class="hidden text-[9px] px-1.5 py-0.2 rounded bg-rose-600 text-white font-black animate-pulse">💥 SMASH ON</span>
+                    <span id="hud-fps-badge" onclick="cycleFpsCap()" class="pointer-events-auto cursor-pointer cyber-font text-[10px] font-black text-emerald-400 bg-slate-950/90 px-1.5 py-0.2 rounded border border-emerald-500/40" title="點擊切換幀率上限">🟢 60 FPS</span>
+                    <span id="hud-smash-ready" class="hidden text-[9px] px-1.5 py-0.2 rounded bg-rose-600 text-white font-black animate-pulse">💥 SMASH</span>
                 </div>
                 <div class="flex items-center gap-2.5 text-2xl sm:text-3xl font-black cyber-font leading-none">
                     <span id="serve-dot-p" class="text-xs text-amber-300">🏓</span>
-                    <span id="score-player" class="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,242,254,0.8)]">0</span>
+                    <span id="score-player" class="text-cyan-400">0</span>
                     <span class="text-slate-500 text-base">:</span>
-                    <span id="score-ai" class="text-pink-500 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">0</span>
+                    <span id="score-ai" class="text-pink-500">0</span>
                     <span id="serve-dot-a" class="text-xs text-amber-300 hidden">🏓</span>
                 </div>
                 <div class="flex items-center gap-2 mt-0.5">
@@ -114,39 +114,52 @@
 
             <!-- 右上系統按鈕 -->
             <div class="flex items-center gap-1.5 pointer-events-auto">
-                <button onclick="toggleInfoDrawer()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="技能資訊">⚙️</button>
+                <button onclick="toggleInfoDrawer()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="戰術與幀率設定">⚙️</button>
                 <button onclick="togglePause()" class="cyber-panel hover:border-white w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm" title="暫停">⏸️</button>
                 <button onclick="exitToMenu()" class="cyber-panel hover:bg-rose-600/40 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm text-rose-300 border border-rose-500/50" title="退出">🚪</button>
             </div>
         </div>
 
-        <!-- 底部中央：超能力必殺槽、進化大按鈕與自動適配單行提示 -->
-        <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1 pointer-events-none hidden px-3">
-            <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
-                <span>⬆️ 能量全滿！點擊或【雙指下滑 / E鍵】進化至</span>
+        <!-- 📱 右下角專屬街機操控按鈕組（高球按鈕 56x56 + 殺球鈕 56x56 + 技能巨型按鈕 88x88） -->
+        <div id="mobile-action-cluster" class="fixed bottom-14 right-3 sm:right-5 z-30 flex flex-col items-center gap-2.5 pointer-events-auto hidden">
+            <button onclick="triggerLobShot()" class="w-[56px] h-[56px] rounded-full bg-slate-900/90 border-2 border-purple-400 shadow-lg flex flex-col items-center justify-center active:scale-90 transition">
+                <span class="text-base leading-none">🎈</span>
+                <span class="text-[10px] font-black text-purple-200 mt-0.5">高球</span>
+            </button>
+            <button onclick="triggerSmashAction()" class="w-[56px] h-[56px] rounded-full bg-rose-950/90 border-2 border-rose-400 shadow-lg flex flex-col items-center justify-center active:scale-90 transition">
+                <span class="text-base leading-none">💥</span>
+                <span class="text-[10px] font-black text-rose-200 mt-0.5">殺球</span>
+            </button>
+            <button onclick="castSkill(true)" id="mobile-skill-btn" class="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-cyan-500/90 via-blue-600/90 to-fuchsia-600/90 border-4 border-amber-300 shadow-2xl flex flex-col items-center justify-center active:scale-90 transition relative">
+                <span id="mobile-skill-emoji" class="text-2xl leading-none">⚡</span>
+                <span class="text-xs font-black text-white tracking-wider mt-0.5">必殺技</span>
+                <span id="mobile-skill-pct" class="text-[10px] font-black cyber-font text-amber-200">100%</span>
+            </button>
+        </div>
+
+        <!-- 底部中央：超能力必殺能量槽與極致閃爍金色進化大按鈕 -->
+        <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1.5 pointer-events-none hidden px-3">
+            <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
+                <span>🌟 LEVEL UP! 點擊或按【E鍵】超能進化至</span>
                 <span id="btn-evolve-next-lv" class="bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full text-xs">LV.2</span>
             </button>
 
-            <div onclick="castSkill()" id="overdrive-bar-container" class="pointer-events-auto cursor-pointer cyber-panel w-full max-w-md px-3.5 py-1 rounded-2xl border-2 border-cyan-400/60 transition-all duration-200">
+            <div onclick="castSkill()" id="overdrive-bar-container" class="pointer-events-auto cursor-pointer cyber-panel w-full max-w-md px-3.5 py-1 rounded-2xl border-2 border-cyan-400/60 transition-all duration-150">
                 <div class="flex justify-between items-center text-[10px] sm:text-[11px] font-black mb-0.5">
                     <span id="overdrive-status-text" class="text-cyan-300 tracking-wider">⚡ 超能核心蓄力中 (80%反制必接 / 100%必殺)</span>
                     <span id="hud-mana" class="cyber-font text-amber-300 text-xs">100%</span>
                 </div>
                 <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-white/20 p-[1px] relative">
                     <div class="absolute left-[80%] top-0 bottom-0 w-[2px] bg-white/70 z-10" title="80% 反制融合門檻"></div>
-                    <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-amber-300 rounded-full transition-all duration-150" style="width:100%"></div>
+                    <div id="hud-mana-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-amber-300 rounded-full transition-all duration-100" style="width:100%"></div>
                 </div>
-            </div>
-
-            <div id="controls-onboarding" class="text-[10px] sm:text-xs text-slate-400 bg-slate-950/85 px-3 py-0.5 rounded-full border border-slate-700/50 whitespace-nowrap max-w-[98vw] overflow-hidden text-ellipsis text-center">
-                📱 單指全向滑動 · 雙指輕點必殺 · 雙指連按2次殺球 · 雙指上滑高球 · 雙指下滑進化
             </div>
         </div>
 
-        <!-- ⚙️ 戰術資訊抽屜 -->
-        <div id="info-drawer" class="hidden fixed top-14 right-3 z-30 cyber-panel w-72 rounded-2xl p-4 text-xs space-y-2 pointer-events-auto shadow-2xl">
+        <!-- ⚙️ 戰術與性能抽屜 -->
+        <div id="info-drawer" class="hidden fixed top-14 right-3 z-30 cyber-panel w-72 rounded-2xl p-4 text-xs space-y-2.5 pointer-events-auto shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-1.5">
-                <span class="font-black text-cyan-300 cyber-font">SKILL & TACTICAL INFO</span>
+                <span class="font-black text-cyan-300 cyber-font">TACTICAL & FPS SETTINGS</span>
                 <button onclick="toggleInfoDrawer()" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <div><span class="text-slate-400">當前技能：</span><span id="info-skill-full" class="font-bold text-amber-300"></span></div>
@@ -154,35 +167,41 @@
             <div><span class="text-slate-400">球拍耐久：</span><span id="info-hp-status" class="font-bold text-emerald-400">玩家 100% / 對手 100%</span></div>
             <div id="info-ai-brain" class="text-[11px] text-cyan-200">🧠 AI 解析度：取樣中...</div>
             <div id="info-net-status" class="text-[11px] text-emerald-300">📡 模式：單機街機對戰</div>
-        </div>
-
-        <!-- 電競級動漫斜切 Cut-in 播報系統 -->
-        <div id="left-toast" class="fixed left-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-12 max-w-[68vw] sm:max-w-md">
-            <div class="cutin-slash-left bg-gradient-to-r from-slate-950/90 via-cyan-950/85 to-transparent border-y-2 border-l-8 border-cyan-400 pl-3.5 pr-8 py-2 shadow-[0_0_25px_rgba(0,242,254,0.5)] backdrop-blur-sm">
-                <div id="left-toast-sub" class="text-[9px] sm:text-[11px] font-black text-amber-300 tracking-widest uppercase italic truncate">⚡ CYBER OVERDRIVE</div>
-                <div id="left-toast-title" class="text-base sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">次元突破！</div>
+            <div class="pt-1 border-t border-slate-700 flex flex-col gap-1.5">
+                <button onclick="cycleFpsCap()" id="btn-drawer-fps" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-amber-300">⏱️ 幀率上限：不限幀 (144Hz+)</button>
+                <button onclick="togglePerformanceMode()" id="btn-drawer-perf" class="w-full py-1.5 cyber-btn rounded-lg font-bold text-emerald-300">⚡ 渲染：極速電競模式 (推薦)</button>
             </div>
         </div>
 
-        <div id="right-toast" class="fixed right-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-12 text-right max-w-[68vw] sm:max-w-md">
-            <div class="cutin-slash-right bg-gradient-to-l from-slate-950/90 via-rose-950/85 to-transparent border-y-2 border-r-8 border-pink-500 pr-3.5 pl-8 py-2 shadow-[0_0_25px_rgba(236,72,153,0.5)] backdrop-blur-sm">
-                <div id="right-toast-sub" class="text-[9px] sm:text-[11px] font-black text-pink-300 tracking-widest uppercase italic truncate">⚠️ RIVAL UNLEASHED</div>
-                <div id="right-toast-title" class="text-base sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">敵方必殺！</div>
+        <!-- 電競級誇張斜切 Cut-in 播報橫幅系統 -->
+        <div id="left-toast" class="fixed left-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 -translate-x-12 max-w-[72vw] sm:max-w-md">
+            <div class="cutin-slash-left bg-gradient-to-r from-slate-950/95 via-cyan-950/90 to-transparent border-y-2 border-l-8 border-cyan-400 pl-4 pr-9 py-2 shadow-2xl">
+                <div id="left-toast-sub" class="text-[10px] sm:text-xs font-black text-amber-300 tracking-widest uppercase italic truncate">⚡ CYBER OVERDRIVE</div>
+                <div id="left-toast-title" class="text-lg sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">次元突破！</div>
             </div>
         </div>
 
-        <div id="top-toast" class="fixed top-[10%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-75 px-3">
-            <div class="cutin-slash-left bg-gradient-to-r from-amber-500/30 via-slate-950/90 to-fuchsia-600/30 border-y-2 border-x-4 border-amber-400 px-6 py-1.5 shadow-[0_0_35px_rgba(251,191,36,0.65)] text-center backdrop-blur-sm">
-                <div id="top-toast-title" class="text-base sm:text-xl font-black cyber-font italic text-amber-300 cutin-text-shadow tracking-wider"></div>
-                <div id="top-toast-sub" class="text-[10px] sm:text-xs font-bold text-white tracking-widest uppercase"></div>
+        <div id="right-toast" class="fixed right-0 top-[18%] z-20 pointer-events-none transition-all duration-200 opacity-0 translate-x-12 text-right max-w-[72vw] sm:max-w-md">
+            <div class="cutin-slash-right bg-gradient-to-l from-slate-950/95 via-rose-950/90 to-transparent border-y-2 border-r-8 border-pink-500 pr-4 pl-9 py-2 shadow-2xl">
+                <div id="right-toast-sub" class="text-[10px] sm:text-xs font-black text-pink-300 tracking-widest uppercase italic truncate">⚠️ RIVAL UNLEASHED</div>
+                <div id="right-toast-title" class="text-lg sm:text-2xl font-black cyber-font italic text-white cutin-text-shadow tracking-wider truncate">敵方必殺！</div>
             </div>
         </div>
 
-        <!-- 暫停選單 -->
-        <div id="pause-modal" class="hidden absolute inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 z-40 pointer-events-auto">
+        <div id="top-toast" class="fixed top-[11%] inset-x-0 z-20 pointer-events-none flex justify-center transition-all duration-200 opacity-0 scale-75 px-3">
+            <div class="cutin-slash-left bg-gradient-to-r from-amber-500/40 via-slate-950/95 to-fuchsia-600/40 border-y-2 border-x-4 border-amber-400 px-7 py-2 shadow-2xl text-center">
+                <div id="top-toast-title" class="text-lg sm:text-2xl font-black cyber-font italic text-amber-300 cutin-text-shadow tracking-wider"></div>
+                <div id="top-toast-sub" class="text-[10px] sm:text-xs font-bold text-white tracking-widest uppercase mt-0.5"></div>
+            </div>
+        </div>
+
+        <!-- 暫停選單（內建幀率與性能設定） -->
+        <div id="pause-modal" class="hidden absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-40 pointer-events-auto">
             <div class="cyber-panel max-w-xs w-full rounded-2xl p-6 text-center space-y-2.5">
-                <h3 class="text-2xl font-black cyber-font text-cyan-400 mb-2">PAUSED</h3>
+                <h3 class="text-2xl font-black cyber-font text-cyan-400 mb-1">PAUSED</h3>
                 <button onclick="togglePause()" class="w-full py-2.5 cyber-btn active rounded-xl font-bold text-sm">▶️ 繼續比賽 (RESUME)</button>
+                <button onclick="cycleFpsCap()" id="btn-pause-fps" class="w-full py-2.5 cyber-btn rounded-xl font-bold text-sm text-amber-300">⏱️ 幀率上限：不限幀 (144Hz+)</button>
+                <button onclick="togglePerformanceMode()" id="btn-pause-perf" class="w-full py-2.5 cyber-btn rounded-xl font-bold text-sm text-emerald-300">⚡ 渲染：極速電競模式</button>
                 <button onclick="toggleSound()" id="btn-sound" class="w-full py-2.5 cyber-btn rounded-xl font-bold text-sm">🔊 音效：開啟</button>
                 <button onclick="toggleFullscreen()" class="w-full py-2.5 cyber-btn rounded-xl font-bold text-sm">⛶ 切換全螢幕 (FULLSCREEN)</button>
                 <button onclick="restartMatch()" class="w-full py-2.5 cyber-btn rounded-xl font-bold text-sm">🔄 重新開始 (RESTART)</button>
@@ -190,9 +209,9 @@
             </div>
         </div>
 
-        <!-- 🏆 《荒野亂鬥》(Brawl Stars) 風格戰前選角展櫃 UI -->
+        <!-- 🏆 《荒野亂鬥》風戰前選角展櫃 UI -->
         <div id="setup-modal" class="touch-scroll absolute inset-0 bg-gradient-to-b from-[#060b1e] via-[#091330] to-[#03050c] flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
-            <div class="cyber-panel max-w-5xl w-full rounded-3xl p-3 sm:p-5 flex flex-col shadow-[0_0_60px_rgba(0,242,254,0.28)] pointer-events-auto my-auto border-2 border-cyan-400/50">
+            <div class="cyber-panel max-w-5xl w-full rounded-3xl p-3 sm:p-5 flex flex-col pointer-events-auto my-auto border-2 border-cyan-400/50 shadow-2xl">
                 <div class="flex flex-wrap justify-between items-center gap-2 pb-2 border-b border-slate-700/70">
                     <div class="flex items-center gap-2.5">
                         <div class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black cyber-font text-xs shadow-md">
@@ -202,10 +221,12 @@
                             <h1 class="text-lg sm:text-2xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-pink-400 leading-tight">
                                 CYBER PONG 2077 : HYPER BRAWL
                             </h1>
-                            <p class="text-slate-400 text-[10px] sm:text-[11px]">24款超能球拍展櫃 · ASD觸控板/雙指雙擊殺球 · 旋球×技能異變</p>
+                            <p class="text-slate-400 text-[10px] sm:text-[11px]">24款超能球拍展櫃 · 經典微磁吸手感 · 144Hz零卡頓電競引擎</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="cycleFpsCap()" id="btn-lobby-fps" class="cyber-btn px-2.5 py-1 rounded-xl text-[11px] font-black text-amber-300">⏱️ 幀率：144Hz+ 不限</button>
+                        <button onclick="togglePerformanceMode()" id="btn-lobby-perf" class="cyber-btn px-2.5 py-1 rounded-xl text-[11px] font-black text-emerald-300">⚡ 極速模式</button>
                         <div class="flex bg-slate-950/90 p-1 rounded-xl border border-cyan-500/40">
                             <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-400 text-slate-950 transition">🤖 單機聯賽</button>
                             <button onclick="switchMode('p2p')" id="tab-mode-p2p" class="px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition">🌐 好友對戰 (P2P)</button>
@@ -291,7 +312,7 @@
                 <div class="mb-2.5">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-[11px] font-black text-amber-300 uppercase tracking-wider">⚡ 選擇出戰球拍與超能核心 (24 BRAWLERS · 點擊選取 / 點擊🔍看詳情)</span>
-                        <span class="text-[10px] text-slate-400">支援手機上下滑動</span>
+                        <span class="text-[10px] text-slate-400">支援滑鼠滾輪 / 手機上下滑動</span>
                     </div>
                     <div class="touch-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[28vh] sm:max-h-[30vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
                 </div>
@@ -309,7 +330,7 @@
                             <div class="font-black text-xs text-pink-400">宗師 INSANE 🔥</div>
                         </button>
                     </div>
-                    <button onclick="initMatch()" id="btn-start-match" class="sm:col-span-5 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base sm:text-lg cyber-font rounded-2xl border-2 border-white shadow-[0_0_28px_rgba(251,191,36,0.75)] transition">
+                    <button onclick="initMatch()" id="btn-start-match" class="sm:col-span-5 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base sm:text-lg cyber-font rounded-2xl border-2 border-white shadow-xl transition">
                         ⚡ BATTLE! 開始對決
                     </button>
                 </div>
@@ -318,7 +339,7 @@
 
         <!-- 📊 荒野亂鬥風「球拍詳細數值與機制百科」彈窗 -->
         <div id="brawler-detail-modal" class="touch-scroll hidden absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 z-50 pointer-events-auto overflow-y-auto">
-            <div class="cyber-panel max-w-lg w-full rounded-3xl p-5 border-2 border-amber-400 shadow-[0_0_50px_rgba(251,191,36,0.35)] space-y-3 my-auto">
+            <div class="cyber-panel max-w-lg w-full rounded-3xl p-5 border-2 border-amber-400 space-y-3 my-auto">
                 <div class="flex justify-between items-start border-b border-slate-700 pb-2">
                     <div>
                         <span id="detail-role" class="text-[10px] font-black px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">定位</span>
@@ -393,7 +414,7 @@
     </div>
 
     <script>
-        // ================= 一、24 大超能球拍完整圖鑑 =================
+        // ================= 一、24 大超能球拍完整圖鑑（含高對比配色與專屬粒子幾何形狀） =================
         const ARCH_STYLE = {
             fire:      { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400', shape: 'flame' },
             thunder:   { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300', shape: 'bolt' },
@@ -425,7 +446,7 @@
             { id: 'quantum',   role: '詭術型 TRICKSTER', stats: { pwr: 84, spd: 94, spn: 90, ctl: 86 }, name: '⚛️ 量子躍遷', desc: '網前生成雙色蟲洞，穿過時直接傳送至對手大角空檔', smashDesc: '穿透蟲洞後球體【瞬時落地】，完全跳過飛行過程！', passiveName: '疊加態', passiveDesc: '擊球+6%能量且回球隨機相位偏移', fusionTips: '推薦配對：🔥耀斑星門 / ⚡閃電折躍', arch: 'quantum' },
             { id: 'fire',      role: '破壞型 DESTROYER', stats: { pwr: 99, spd: 90, spn: 78, ctl: 76 }, name: '🔥 熾焰重扣', desc: '落地炸出火柱加速1.4倍，強行將對手球拍震開並震退80px', smashDesc: '觸發【熔岩斷頭台】：直接造成 45% 球拍耐久破壞，極易直接破球！', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量·破防率+15%', fusionTips: '推薦配對：⚡雷炎裁決 / 🪐熔岩核心', arch: 'fire' },
             { id: 'thunder',   role: '極速型 ASSASSIN',  stats: { pwr: 88, spd: 98, spn: 85, ctl: 80 }, name: '⚡ 雷霆瞬影', desc: '空中固定3次大跨度直角「Z字折躍」，連落點同步跳躍絕不走直線', smashDesc: '落地引發【天罰雷籠】：全場落雷將對手球拍麻痺鎖死 0.9 秒！', passiveName: '疾電', passiveDesc: '球拍全向移速+12%', fusionTips: '推薦配對：🔥雷炎裁決 / 💨超電磁砲', arch: 'thunder' },
-            { id: 'gravity',   role: '控場型 CONTROLLER',stats: { pwr: 96, spd: 78, spn: 92, ctl: 88 }, name: '🪐 黑洞重力', desc: '極重球體扣雙倍耐久·禁止挑高球(挑高必壓回)·落地零彈跳貼地平滾', smashDesc: '產生【引力坍縮】：強制將對手球拍吸向落點中心無法向兩側撲救！', passiveName: '引力井', passiveDesc: '甜區半徑+12%·球重壓制', fusionTips: '推薦配對：🌑終極奇點 / 💨重力彈弓', arch: 'gravity' },
+            { id: 'gravity',   role: '控場型 CONTROLLER',stats: { pwr: 96, spd: 78, spn: 92, ctl: 88 }, name: '🪐 黑洞重力', desc: '極重球體扣雙倍耐久·禁止挑高球(挑高必壓平)·落地零彈跳貼地平滾', smashDesc: '產生【引力坍縮】：強制將對手球拍吸向落點中心無法向兩側撲救！', passiveName: '引力井', passiveDesc: '甜區半徑+12%·球重壓制', fusionTips: '推薦配對：🌑終極奇點 / 💨重力彈弓', arch: 'gravity' },
             { id: 'sonic',     role: '極速型 ASSASSIN',  stats: { pwr: 85, spd: 100, spn: 88, ctl: 82 }, name: '💨 音速疾風', desc: '對拉期間每一拍球速自動遞增15%(無限疊速)，背尾隨拍數成倍暴漲', smashDesc: '觸發【音障爆破】：突破音障產生衝擊波，直接抹消對手的旋球加成！', passiveName: '疾風', passiveDesc: '揮拍冷卻-15%·連拍自動疊速', fusionTips: '推薦配對：🌀音速殘影 / ⚡超電磁砲', arch: 'sonic' },
             { id: 'ghost',     role: '詭術型 TRICKSTER', stats: { pwr: 82, spd: 88, spn: 96, ctl: 84 }, name: '🌀 次元幽靈', desc: '分裂4顆大散開實體球與4個落點光圈，真假難分，落地前真假互換', smashDesc: '4顆分身球同時燃燒殺球紫焰，對手猜錯假球將直接碎拍失分！', passiveName: '幻影', passiveDesc: 'AI預判誤差+18%', fusionTips: '推薦配對：🪞鏡幻分身 / 🕸️幻影蛛網', arch: 'ghost' },
             { id: 'prism',     role: '守護型 DEFENDER',  stats: { pwr: 86, spd: 82, spn: 84, ctl: 98 }, name: '🛡️ 稜鏡力場', desc: '在己方台前張開全息實體盾牆，自動攔截敵方下一球並必殺反彈', smashDesc: '盾牆轉化為【重裝衝撞】：盾牆耐久加成並以殺球極速轟回死角！', passiveName: '稜鏡', passiveDesc: '球拍受到的耐久損耗降低40%', fusionTips: '推薦配對：💎稜鏡激光加農 / 👥雙盾壁壘', arch: 'prism' },
@@ -746,9 +767,39 @@
             icePillars: []
         };
 
+        // ================= 幀率上限與極速性能控制系統 =================
         let gameMode = 'ai';
         let cfgDiff = 'normal';
         let cfgSkill = 'quantum';
+        let perfMode = 'turbo'; // 'turbo' = 零 shadowBlur 硬體雙描邊極速模式, 'quality' = 高畫質光影
+        let fpsCap = 0; // 0 = 無上限 (144Hz+), 120 = 120FPS, 60 = 60FPS
+        let fpsFrameCount = 0, fpsLastStamp = performance.now(), currentFps = 60, lastFrameRenderTime = 0;
+
+        function cycleFpsCap() {
+            if (fpsCap === 0) fpsCap = 120;
+            else if (fpsCap === 120) fpsCap = 60;
+            else fpsCap = 0;
+
+            const label = fpsCap === 0 ? '144Hz+ 不限' : `${fpsCap} FPS`;
+            const lobbyBtn = document.getElementById('btn-lobby-fps');
+            const pauseBtn = document.getElementById('btn-pause-fps');
+            const drawerBtn = document.getElementById('btn-drawer-fps');
+            if (lobbyBtn) lobbyBtn.innerText = `⏱️ 幀率：${label}`;
+            if (pauseBtn) pauseBtn.innerText = `⏱️ 幀率上限：${label}`;
+            if (drawerBtn) drawerBtn.innerText = `⏱️ 幀率上限：${label}`;
+        }
+
+        function togglePerformanceMode() {
+            perfMode = perfMode === 'turbo' ? 'quality' : 'turbo';
+            const label = perfMode === 'turbo' ? '⚡ 極速電競模式' : '🎨 特效全開模式';
+            const lobbyBtn = document.getElementById('btn-lobby-perf');
+            const pauseBtn = document.getElementById('btn-pause-perf');
+            const drawerBtn = document.getElementById('btn-drawer-perf');
+            if (lobbyBtn) lobbyBtn.innerText = perfMode === 'turbo' ? '⚡ 極速模式' : '🎨 高畫質';
+            if (pauseBtn) pauseBtn.innerText = `渲染：${label}`;
+            if (drawerBtn) drawerBtn.innerText = `渲染：${label}`;
+            resizeCanvas();
+        }
 
         function hasPassive(id) {
             return cfgSkill === id;
@@ -804,7 +855,7 @@
 
         function drawPaddlePattern(targetCtx, arch, r) {
             targetCtx.save();
-            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.36)';
+            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.38)';
             targetCtx.lineWidth = Math.max(1.4, r * 0.055);
             if (arch === 'quantum' || arch === 'pinball') {
                 targetCtx.beginPath();
@@ -963,10 +1014,7 @@
             sCtx.fillStyle = '#0f172a';
             sCtx.strokeStyle = sMeta.color;
             sCtx.lineWidth = 4;
-            sCtx.shadowColor = sMeta.color;
-            sCtx.shadowBlur = 20;
             sCtx.fill(); sCtx.stroke();
-            sCtx.shadowBlur = 0;
 
             drawPaddlePattern(sCtx, sMeta.arch, r);
             sCtx.restore();
@@ -1191,63 +1239,62 @@
             document.getElementById('btn-sound').innerText = sfx.muted ? '🔇 音效：關閉' : '🔊 音效：開啟';
         }
 
-        // ================= 相機自適應與投影鎖定（防止手機豎屏無限放大） =================
+        // ================= 相機自適應（螢幕寬度 <900px 強制鎖定 2.5D 廣角，杜絕無限放大） =================
         const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
-        let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
-        const CAM = { z: 650, y: 215, horiz: 0.26, focal: 540 };
+const ctx = canvas.getContext('2d', { alpha: false });
+const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
+let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
+const CAM = { z: 650, y: 215, horiz: 0.26, focal: 540 };
 
-        function updateOnboardingText(isMobileDevice) {
-            const el = document.getElementById('controls-onboarding');
-            if (!el) return;
-            if (isMobileDevice || viewW < 820 || ('ontouchstart' in window && navigator.maxTouchPoints > 0 && viewW < 1024)) {
-                el.innerText = '📱 單指全向滑動 · 雙指輕點必殺 · 雙指連按2次殺球 · 雙指上滑高球 · 雙指下滑進化';
-            } else {
-                el.innerText = '💻 滑鼠/觸控板全向移動 · 左鍵/A鍵揮拍 · 右鍵/S鍵高球 · Ctrl/D鍵殺球 · 空白鍵必殺 · E鍵進化';
-            }
-        }
+// 👇 把這一行搬到 resizeCanvas() 上面
+let gameRunning = false, isPaused = false, isTouchMode = false;
 
         function resizeCanvas() {
             viewW = window.innerWidth;
             viewH = window.innerHeight;
-            dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = viewW * dpr;
-            canvas.height = viewH * dpr;
+            // 智慧動態 DPR：在極速模式下將高分屏 DPR 限制在 1.0~1.25，徹底解放電腦與筆電 GPU 幀率
+            const maxDpr = perfMode === 'turbo' ? (viewW > 1080 ? 1.0 : 1.25) : 1.65;
+            dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+            canvas.width = Math.round(viewW * dpr);
+            canvas.height = Math.round(viewH * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             const isPortrait = viewH > viewW;
-            if (isPortrait) {
-                CAM.z = 615;
+            if (isPortrait || viewW < 900) {
+                // 固定 2.5D 廣角俯視比例，確保球桌完整呈現在畫面中央且絕不放大遮擋
+                CAM.z = isPortrait ? 625 : 640;
                 const rZNear = CAM.z - T_L;
-                CAM.focal = (viewW * 0.96 / (T_W * 2)) * rZNear;
-                const nearScale = CAM.focal / rZNear;
-                CAM.horiz = 0.34;
-                CAM.y = ((0.84 - CAM.horiz) * viewH) / nearScale;
-            } else if (viewW < 960) {
-                CAM.z = 635;
-                CAM.y = 215;
-                CAM.horiz = 0.28;
-                CAM.focal = Math.min(viewW * 0.48, viewH * 0.76);
+                CAM.focal = isPortrait
+                    ? (viewW * 0.94 / (T_W * 2)) * rZNear
+                    : Math.min(viewW * 0.46, viewH * 0.74);
+                const nearScale = Math.min(2.1, CAM.focal / rZNear);
+                CAM.horiz = isPortrait ? 0.33 : 0.28;
+                CAM.y = isPortrait ? ((0.82 - CAM.horiz) * viewH) / nearScale : 215;
             } else {
                 CAM.z = 650;
                 CAM.y = 220;
                 CAM.horiz = 0.26;
                 CAM.focal = Math.min(viewW * 0.47, viewH * 0.74);
             }
-            updateOnboardingText(isPortrait);
+
+            const cluster = document.getElementById('mobile-action-cluster');
+            if (cluster && gameRunning) {
+                const showCluster = isTouchMode || viewW < 900 || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+                cluster.classList.toggle('hidden', !showCluster);
+            }
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         function project(x, y, z) {
-            const rZ = Math.max(85, CAM.z - z);
-            const scale = Math.min(2.6, CAM.focal / rZ);
+            const rZ = Math.max(95, CAM.z - z);
+            // 強制 Math.min 鎖定最大透視縮放倍率為 2.25，任何特效或模型皆不可能無限放大
+            const scale = Math.min(2.25, CAM.focal / rZ);
             return {
                 x: viewW * 0.5 + x * scale,
                 y: viewH * CAM.horiz + (CAM.y - y) * scale,
                 scale,
-                vis: z < CAM.z - 55
+                vis: z < CAM.z - 60
             };
         }
 
@@ -1286,7 +1333,6 @@
         };
 
         // ================= 遊戲狀態變數 =================
-        let gameRunning = false, isPaused = false, isTouchMode = false;
         let mana = { p: 100, a: 30 };
         let rallyCount = 0, shake = 0, screenFlashAlpha = 0, screenFlashColor = '#00f2fe';
         let hitStopTimer = 0, roundWaitTimer = 0;
@@ -1377,11 +1423,11 @@
             hpEl.className = `cyber-font text-[10px] font-bold ${hpVal > 50 ? 'text-emerald-400' : (hpVal > 25 ? 'text-amber-300' : 'text-rose-400 animate-pulse')}`;
         }
 
-        // ================= 拋物線物理發射器（街機爽快版：100% 保證安全過網不掛網） =================
+        // ================= 拋物線物理發射器（100% 保證安全過網，落點鎖定在對方桌面內） =================
         function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false) {
             let frames = Math.max(8, isLob ? 50 : flightFrames);
-            let safeX = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, targetX));
-            let safeZ = targetZ < 0 ? Math.max(-T_L * 0.90, Math.min(-115, targetZ)) : Math.min(T_L * 0.90, Math.max(115, targetZ));
+            let safeX = Math.max(-T_W * 0.86, Math.min(T_W * 0.86, targetX));
+            let safeZ = targetZ < 0 ? Math.max(-T_L * 0.88, Math.min(-115, targetZ)) : Math.min(T_L * 0.88, Math.max(115, targetZ));
 
             ball.ax = spinAccX;
             ball.ay = spinAccY;
@@ -1402,10 +1448,11 @@
 
             ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
 
+            // 自動計算過網安全高度，100% 杜絕掛網
             const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
             if (framesToNet > 0 && framesToNet < frames) {
                 const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
-                const minClear = isLob ? NET_H + 92 : (hasBallArch('laser') ? NET_H + 6 : NET_H + 17);
+                const minClear = isLob ? NET_H + 90 : (hasBallArch('laser') ? NET_H + 8 : NET_H + 18);
                 if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
             }
 
@@ -1416,7 +1463,7 @@
             ball.fakeRingOffsetX = (ball.state && (ball.spinType === 'dead' || hasBallArch('ghost'))) ? 65 : 0;
         }
 
-        // ================= 雙端控制：電腦 ASD 觸控板雙持/滑鼠 + 手機雙指連點 2 次殺球 =================
+        // ================= 雙端輸入系統：電腦 ASD/滑鼠 + 手機全區拖曳與右下角按鈕 =================
         const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.72 };
         let singleTouchStart = null;
         let twoFingerStart = null;
@@ -1430,8 +1477,9 @@
 
         window.addEventListener('mousedown', e => {
             if (!gameRunning || isPaused) return;
+            const t = e.target;
+            if (t && (t.tagName === 'BUTTON' || (t.closest && t.closest('button')))) return;
             isTouchMode = false;
-            updateOnboardingText(false);
             sfx.init();
             if (rewindState.active) {
                 if (e.button === 2) triggerRewindRestore();
@@ -1455,7 +1503,6 @@
             if (e.code === 'Escape') { if (gameRunning) togglePause(); return; }
             if (!gameRunning || isPaused) return;
             isTouchMode = false;
-            updateOnboardingText(false);
             sfx.init();
 
             if (e.code === 'Space') {
@@ -1478,6 +1525,8 @@
         });
 
         function triggerSmashAction() {
+            if (!gameRunning || isPaused) return;
+            sfx.init();
             pPaddle.wantSmash = true;
             pPaddle.wantLob = false;
             document.getElementById('hud-smash-ready').classList.remove('hidden');
@@ -1491,9 +1540,9 @@
             const t = e.target;
             if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('.touch-scroll'))))) return;
             isTouchMode = true;
-            updateOnboardingText(true);
             if (!gameRunning || isPaused) return;
             sfx.init();
+            document.getElementById('mobile-action-cluster').classList.remove('hidden');
 
             if (rewindState.active) {
                 triggerRewindRestore();
@@ -1570,8 +1619,8 @@
                     if (now - lastTwoFingerTapTime < 340) {
                         lastTwoFingerTapTime = 0;
                         vibrate([45, 30, 65]);
-                        gestureRipples.push({ x: twoFingerStart.x0, y: twoFingerStart.y0, r: 10, maxR: 115, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
-                        gestureRipples.push({ x: twoFingerStart.x1, y: twoFingerStart.y1, r: 10, maxR: 115, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
+                        gestureRipples.push({ x: twoFingerStart.x0, y: twoFingerStart.y0, r: 10, maxR: 95, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
+                        gestureRipples.push({ x: twoFingerStart.x1, y: twoFingerStart.y1, r: 10, maxR: 95, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
                         triggerSmashAction();
                     } else {
                         lastTwoFingerTapTime = now;
@@ -1580,14 +1629,6 @@
                 }
                 if (e.touches.length < 2) twoFingerStart = null;
                 return;
-            }
-
-            if (singleTouchStart && e.changedTouches[0]) {
-                const dy = e.changedTouches[0].clientY - singleTouchStart.y;
-                const dt = Date.now() - singleTouchStart.time;
-                if (dy < -95 && dt < 260) {
-                    pPaddle.wantLob = true;
-                }
             }
             singleTouchStart = null;
         }, { passive: false });
@@ -1601,14 +1642,14 @@
                 if (pPaddle.prechargedSkill) return;
                 sfx.failBuzz();
                 vibrate([40, 40]);
-                gestureRipples.push({ x: x0, y: y0, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
-                gestureRipples.push({ x: x1, y: y1, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
-                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量 ｜ 雙指連按2次可殺球`, 'text-rose-400', 900);
+                gestureRipples.push({ x: x0, y: y0, r: 10, maxR: 70, color: '#ef4444', alpha: 1.0, isFail: true });
+                gestureRipples.push({ x: x1, y: y1, r: 10, maxR: 70, color: '#ef4444', alpha: 1.0, isFail: true });
+                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動超能力`, 'text-rose-400', 850);
                 return;
             }
 
-            gestureRipples.push({ x: x0, y: y0, r: 12, maxR: 110, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
-            gestureRipples.push({ x: x1, y: y1, r: 12, maxR: 110, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
+            gestureRipples.push({ x: x0, y: y0, r: 12, maxR: 95, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
+            gestureRipples.push({ x: x1, y: y1, r: 12, maxR: 95, color: sMeta.color, glow: sMeta.glow, alpha: 1.0, isFail: false });
             castSkill(true);
         }
 
@@ -1634,9 +1675,9 @@
             checkPlayerHitBall(false);
         }
 
-        // ================= 超能進化 LV.1~5 與全屏碎裂特效 =================
+        // ================= 超能進化 LV.1~5 與全螢幕碎裂特效 =================
         function spawnShatterEffect(color) {
-            for (let i = 0; i < 28; i++) {
+            for (let i = 0; i < 24; i++) {
                 const ang = Math.random() * Math.PI * 2;
                 const spd = 6 + Math.random() * 14;
                 shatterShards.push({
@@ -1644,7 +1685,7 @@
                     y: viewH * 0.45 + (Math.random() - 0.5) * 120,
                     vx: Math.cos(ang) * spd,
                     vy: Math.sin(ang) * spd,
-                    size: 14 + Math.random() * 24,
+                    size: 14 + Math.random() * 22,
                     rot: Math.random() * Math.PI,
                     vRot: (Math.random() - 0.5) * 0.25,
                     color: i % 2 === 0 ? color : '#fde047',
@@ -1665,11 +1706,11 @@
 
             const sMeta = SKILL_META[cfgSkill];
             sfx.levelUp();
-            shake = 28;
+            shake = 26;
             screenFlashColor = '#fde047';
             screenFlashAlpha = 0.7;
             spawnShatterEffect(sMeta.color);
-            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 45, 9, sMeta.shape);
+            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 36, 9, sMeta.shape);
             updateHUD();
 
             triggerAnimeCutIn('center', `LEVEL UP! 超能進化 LV.${skillLevel}`, `${sMeta.name} · 威力×${LV_MULT[skillLevel - 1]} 範圍×${LV_RADIUS[skillLevel - 1]}`, '#fde047');
@@ -1737,7 +1778,7 @@
             }
         }
 
-        // ================= 玩家球拍更新 =================
+        // ================= 玩家球拍更新：全向移動、近拉/長拉判定與被動磁吸 =================
         function updatePlayerPaddle(dt) {
             const pMod = applyPassive(cfgSkill, 'paddle');
             const bMod = applyPassive(cfgSkill, 'bounce');
@@ -1871,12 +1912,13 @@
         function checkPlayerHitBall(forceSkill = false) {
             if (pPaddle.swingTimer <= 0 || pPaddle.hasHitThisSwing) return;
             if (isBallHittableByPlayer(0)) {
+                // 經典微磁吸校準 (Magnetic Snap Assist)：觸球瞬間微調拍心對準來球，消除近距離揮空感
                 pPaddle.x += (ball.x - pPaddle.x) * 0.42;
                 executePlayerReturn(forceSkill || Boolean(pPaddle.prechargedSkill));
             }
         }
         // ====== 【第 1 段結束位置：請將第 2 段直接貼在此行下方】 ======
-// ================= 玩家回球：破球檢定、殺球×技能突變、旋球×技能化學反應（100%過網無隨機失誤） =================
+// ================= 玩家回球：破球檢定、長拉/擺短、四維旋球、殺球突變與100%過網保證 =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
@@ -1923,21 +1965,22 @@
             pPaddle.wantSmash = false;
             pPaddle.wantLob = false;
 
-            // 🪐 黑洞重力球壓制挑高球：強行把高吊球壓平為慢速中路球（不斷球、不自爆失誤）
+            // 🪐 黑洞重力球壓制挑高球：強行把高吊球壓平為中路平球（不掛網自爆，保持對拉爽快感）
             let gravitySuppressed = false;
             if (isLob && hasBallArch('gravity')) {
                 isLob = false;
                 gravitySuppressed = true;
                 sfx.guardBreak();
-                triggerAnimeCutIn('right', '🪐 重力壓制！GRAVITY SUPPRESS', '黑洞球無法挑高！球路被強行壓平減速', '#9333ea');
+                triggerAnimeCutIn('right', '🪐 重力壓制！GRAVITY SUPPRESS', '黑洞球無法挑高！球路被強行壓平', '#9333ea');
             }
 
+            // 👥 雙子分身【雙子合擊 TWIN STRIKE】
             let twinDoubleHit = false;
             if (twinClone.active && Math.abs(pPaddle.x - twinClone.x) < 88 && Math.abs(ball.x - twinClone.x) < 95) {
                 twinDoubleHit = true;
                 sfx.fusionClash();
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 220, color: '#14b8a6', alpha: 1.0 });
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 28, maxR: 160, color: '#fde047', alpha: 1.0 });
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 210, color: '#14b8a6', alpha: 1.0 });
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 28, maxR: 155, color: '#fde047', alpha: 1.0 });
                 triggerAnimeCutIn('left', isSmash ? '👥 十字交叉合扣！TWIN SMASH' : '👥 雙子合擊！TWIN STRIKE', '真身與分身雙重疊加轟擊 · 威力×200%！', '#2dd4bf');
             }
 
@@ -1968,7 +2011,7 @@
                         if (pairInfo.effect === 'superBreak') resonancePowerBoost = true;
                         if (pairInfo.effect === 'poisonWeb') { aPaddle.poisonStacks = 2; aPaddle.webRootTimer = 0.8; }
                         if (pairInfo.effect === 'drain40') { const d = Math.min(mana.a, 40); mana.a -= d; mana.p = Math.min(100, mana.p + d); }
-                        if (pairInfo.effect === 'doubleBoom') shake = 32;
+                        if (pairInfo.effect === 'doubleBoom') shake = 30;
                         if (pairInfo.effect === 'forceTier3') forceNextTier3 = true;
                         if (pairInfo.effect === 'fakeRings') ball.fakeRingOffsetX = 95;
                         if (pairInfo.effect === 'vortexPull') lingeringFields.push({ x: 0, z: -250, r: 115, type: 'gravity', timer: 2.8, color: '#9333ea' });
@@ -1986,7 +2029,7 @@
                 activeSkill = ball.state || aiMemory.lastAiSkill || 'laser';
             }
 
-            // 2. 判斷長拉 (Long Drive) vs 近拉擺短 (Short Flick) 與多元旋球
+            // 2. 經典手感：判斷退台長拉 (Long Drive) vs 台內擺短 (Short Flick) 與四維旋球
             let strokeStyle = 'mid';
             if (pPaddle.z >= 350) strokeStyle = 'long';
             else if (pPaddle.z <= 235) strokeStyle = 'short';
@@ -2046,21 +2089,21 @@
 
                     vibrate([100, 50, 120]);
                     sfx.fusionClash();
-                    hitStopTimer = isSmash ? 0.12 : 0.095;
-                    shake = isSmash ? 44 : 34;
+                    hitStopTimer = isSmash ? 0.11 : 0.085;
+                    shake = isSmash ? 40 : 32;
                     screenFlashColor = fMeta.color;
-                    screenFlashAlpha = 0.85;
+                    screenFlashAlpha = 0.82;
                     resonanceActive = true;
 
                     triggerAnimeCutIn('center', `${isSmash ? '☄️ 融合殺球！' : '次元突破！'}${displayFusionTitle}`, `${isCounter ? '【屬性克制 +30%】' : ''}雙重屬性＋旋球異變降臨！`, fMeta.color);
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 12, maxR: 270, color: fMeta.color, alpha: 1.0 });
-                    lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 52, alpha: 1.0 });
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 12, maxR: 250, color: fMeta.color, alpha: 1.0 });
+                    lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 50, alpha: 1.0 });
                     spawnShatterEffect(fMeta.color);
                 } else if (!isSweetSpot && dist > 64) {
                     sfx.guardBreak();
                     pPaddle.knockbackZ = 48;
                     pPaddle.stunTimer = 0.5 * pMod.stunDurationMult;
-                    shake = 16;
+                    shake = 15;
                     showSideToast('right', '💥 破防震退!', '敵方超能球威力強大', 'text-rose-400');
                 } else {
                     mana.p = Math.min(100, mana.p + 35);
@@ -2087,12 +2130,12 @@
 
                 const sm = SKILL_META[nextSkillState] || SKILL_META[cfgSkill];
                 screenFlashColor = sm.color;
-                screenFlashAlpha = activeSkill ? 0.55 : 0.30;
-                shake = isSmash ? 28 : 20;
+                screenFlashAlpha = activeSkill ? 0.52 : 0.28;
+                shake = isSmash ? 26 : 18;
 
                 if (castId === 'prism') prismShield.player = 3.2 * LV_MULT[skillLevel - 1];
                 else if (castId === 'chrono') chronoTimer = 2.4 * LV_MULT[skillLevel - 1];
-                else if (castId === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 250, color: '#fbbf24', alpha: 1.0 });
+                else if (castId === 'nova') shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 230, color: '#fbbf24', alpha: 1.0 });
                 else if (castId === 'leech') {
                     const st = Math.min(mana.a, 35 * LV_MULT[skillLevel - 1]);
                     mana.a -= st; mana.p = Math.min(100, mana.p + st);
@@ -2102,7 +2145,7 @@
                     }
                     skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.9, color: '#f43f5e' };
                 }
-                hitStopTimer = isSmash ? 0.08 : 0.05;
+                hitStopTimer = isSmash ? 0.075 : 0.045;
             }
 
             ball.state = nextSkillState;
@@ -2149,7 +2192,7 @@
             if (ball.spinChem === 'sidespin') {
                 spinAccX = (targetX >= 0 ? 1 : -1) * 0.52;
                 ball.spinX = spinAccX;
-                targetX = (targetX >= 0 ? 1 : -1) * (T_W * 0.85);
+                targetX = (targetX >= 0 ? 1 : -1) * (T_W * 0.84);
             } else if (ball.spinChem === 'topspin') {
                 spinAccY = -0.28;
                 flightFrames = Math.max(12, Math.round(flightFrames * 0.80));
@@ -2243,7 +2286,7 @@
 
             if (ball.state) {
                 const m = SKILL_META[ball.state] || SKILL_META.fire;
-                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 55 : 35, 9, m.shape);
+                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 42 : 28, 9, m.shape);
                 if (hasBallArch('thunder') || hasBallArch('laser')) {
                     createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.glow);
                 }
@@ -2251,18 +2294,18 @@
             } else {
                 if (isSmash) {
                     sfx.smashHit();
-                    shake = 16;
+                    shake = 15;
                     spawnSpeedLines('#f43f5e');
                     showSideToast('left', '💥 雷霆殺球！SMASH', '球速暴增 · 強力削減敵拍耐久', 'text-rose-400');
                 } else {
                     sfx.hit(isSweetSpot, spinType);
-                    shake = isSweetSpot ? 7 : 3;
+                    shake = isSweetSpot ? 6 : 3;
                     if (isSweetSpot && spinType !== 'flat') {
                         const spinNames = { topspin: '🔥 極速上旋抽擊！', backspin: '❄️ 極寒削球急停！', sidespin: '🌪️ C字弧光側旋！', lob: '🎈 蒼穹高吊球！' };
                         showSideToast('left', spinNames[spinType] || '⚡ 強力旋球!', `${strokeStyle === 'long' ? '退台長拉' : (strokeStyle === 'short' ? '台內擺短' : '滑動暴擊')} · 能量 +28%`, 'text-cyan-300');
                     }
                 }
-                spawnParticles(ball.x, ball.y, ball.z, isSmash ? '#f43f5e' : (isSweetSpot ? '#00f2fe' : '#fff'), isSmash ? 34 : 20, 6.5, isSmash ? 'star' : 'circle');
+                spawnParticles(ball.x, ball.y, ball.z, isSmash ? '#f43f5e' : (isSweetSpot ? '#00f2fe' : '#fff'), isSmash ? 26 : 16, 6.5, isSmash ? 'star' : 'circle');
                 const prevMana = mana.p;
                 const baseGain = isSweetSpot ? 28 : (hasActiveSwipe ? 20 : 14);
                 const gain = baseGain * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
@@ -2270,7 +2313,7 @@
                 if (prevMana < 100 && mana.p >= 100) {
                     vibrate([30, 50, 30]);
                     sfx.levelUp();
-                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', isTouchMode ? '雙指輕點放必殺 · 雙指下滑進化！' : '按空白鍵放必殺 · 按E鍵進化！', '#fde047');
+                    triggerAnimeCutIn('left', 'ENERGY MAX! 能量全滿！', isTouchMode ? '點擊右下角必殺鈕或進化！' : '按空白鍵放必殺 · 按E鍵進化！', '#fde047');
                 }
             }
 
@@ -2301,7 +2344,7 @@
 
             const prof = AI_PROFILES[cfgDiff];
             const aiMod = applyPassive(cfgSkill, 'ai');
-            const timeScale = chronoTimer > 0 ? 0.32 : 1.0;
+            const timeScale = (chronoTimer > 0 ? 0.32 : 1.0) * Math.min(2.2, dt * 60);
 
             if (aPaddle.stunTimer > 0) aPaddle.stunTimer -= dt;
             if (aPaddle.reverseTimer > 0) aPaddle.reverseTimer -= dt;
@@ -2334,13 +2377,13 @@
                     const distMag = Math.hypot(ball.x - aPaddle.x, ball.z - aPaddle.z);
                     if (distMag < 145) {
                         if (ball.magnetPolarity === 'attract') {
-                            aPaddle.x += Math.sign(-ball.x - aPaddle.x || 1) * 9.5;
+                            aPaddle.x += Math.sign(-ball.x - aPaddle.x || 1) * 9.5 * timeScale;
                         } else {
                             const pushDir = Math.sign(ball.x - aPaddle.x || (aPaddle.x > 0 ? -1 : 1));
-                            ball.x = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + pushDir * 7.5));
+                            ball.x = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + pushDir * 7.2 * timeScale));
                             ball.targetX = ball.x;
                         }
-                        createLightningChain(aPaddle.x, aPaddle.y, aPaddle.z, ball.x, ball.y, ball.z, '#ef4444');
+                        if (Math.random() < 0.35) createLightningChain(aPaddle.x, aPaddle.y, aPaddle.z, ball.x, ball.y, ball.z, '#ef4444');
                     }
                 }
 
@@ -2349,7 +2392,7 @@
                 lingeringFields.forEach(f => {
                     if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.45) {
                         if (f.type === 'gravity') desiredX = f.x;
-                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 12.5;
+                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 12.0 * timeScale;
                         if (f.type === 'frost') { fieldSlow = 0.32; onIce = true; }
                         if (f.type === 'aqua') fieldSlow = 0.32;
                         if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.45;
@@ -2468,15 +2511,15 @@
                 aiNextTier = fRes.isHardTier3 ? 3 : 2;
 
                 sfx.fusionClash();
-                hitStopTimer = 0.10;
-                shake = 32;
+                hitStopTimer = 0.095;
+                shake = 30;
                 const fMeta = SKILL_META[aiNextSkill] || SKILL_META.plasma;
                 screenFlashColor = fMeta.color;
-                screenFlashAlpha = 0.72;
+                screenFlashAlpha = 0.70;
                 resonanceActive = true;
 
-                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, isTouchMode ? '雙指輕點 100% 防破球並反制！' : '按空白鍵 100% 防破球並反制！', fMeta.color);
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 210, color: fMeta.color, alpha: 1.0 });
+                triggerAnimeCutIn('right', `敵方融合！${fusionLabel}`, isTouchMode ? '點擊右下角必殺鈕 100% 防破球反制！' : '按空白鍵 100% 防破球並反制！', fMeta.color);
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 200, color: fMeta.color, alpha: 1.0 });
                 lightPillars.push({ x: ball.x, z: ball.z, color: fMeta.color, r: 42, alpha: 1.0 });
             } else if (!incomingSkill && aiCanSkill) {
                 mana.a = 0;
@@ -2485,7 +2528,7 @@
                 aiNextTier = 1;
                 const sMeta = SKILL_META[aiNextSkill];
                 sfx.skillCast(sMeta.arch);
-                shake = 16;
+                shake = 15;
                 if (aiNextSkill === 'leech') {
                     mana.p = Math.max(0, mana.p - 28);
                     skillVisuals.leechBeam = { fromX: pPaddle.x, fromZ: pPaddle.z, toX: aPaddle.x, toZ: aPaddle.z, timer: 0.75, color: '#f43f5e' };
@@ -2496,11 +2539,11 @@
                 if (aiNextSkill === 'magnet') ball.magnetActive = true;
                 if (aiNextSkill === 'boomerang') ball.boomerangActive = true;
                 if (aiNextSkill === 'bomb' && ball.bombTimer <= 0) ball.bombTimer = 3.0;
-                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '雙指輕點可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
+                triggerAnimeCutIn('right', `敵方必殺！${sMeta.name.slice(3)}`, isTouchMode ? '點擊必殺鈕可觸發【雙重融合】！' : '按空白鍵可觸發【雙重融合】！', sMeta.color);
             } else {
                 if (hasBallArch('thunder')) aPaddle.stunTimer = 0.90;
                 sfx.hit(false, 'flat');
-                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 16, 4.5, 'circle');
+                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 14, 4.5, 'circle');
             }
 
             ball.state = aiNextSkill;
@@ -2557,11 +2600,13 @@
             rewindState.active = false;
         }
 
-        // ================= 物理步進：時滯2.2倍暴衝、量子殺球瞬落、星軌彈珠、定時星雷 =================
-        function stepBallPhysics(simSpeed, dt = 0.016) {
+        // ================= 物理步進（內建高刷螢幕 Delta-Time 時間步長校準，60Hz/144Hz 速度完全一致） =================
+        function stepBallPhysics(simSpeed, dt = 0.0166) {
+            const stepScale = simSpeed * Math.min(2.2, dt * 60);
+
             if (ball.chronoFreezeTimer > 0) {
                 ball.chronoFreezeTimer -= dt;
-                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 2, 2.5, 'ring');
+                if (Math.random() < 0.5) spawnParticles(ball.x, ball.y, ball.z, '#fde047', 1, 2.5, 'ring');
                 if (ball.chronoFreezeTimer <= 0) {
                     sfx.skillCast('sonic');
                     ball.vx *= 2.15;
@@ -2585,12 +2630,12 @@
                 if (ball.bombTimer <= 0) {
                     ball.bombTimer = 0;
                     sfx.fusionClash();
-                    shake = 36;
+                    shake = 34;
                     screenFlashColor = '#ef4444';
-                    screenFlashAlpha = 0.75;
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 260, color: '#f97316', alpha: 1.0 });
-                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ef4444', r: 65, alpha: 1.0 });
-                    spawnParticles(ball.x, ball.y, ball.z, '#ef4444', 60, 11, 'flame');
+                    screenFlashAlpha = 0.72;
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 240, color: '#f97316', alpha: 1.0 });
+                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ef4444', r: 60, alpha: 1.0 });
+                    spawnParticles(ball.x, ball.y, ball.z, '#ef4444', 45, 11, 'flame');
                     if (ball.z < 0) {
                         aPaddle.hp = Math.max(0, aPaddle.hp - 60);
                         aPaddle.knockbackZ = -90;
@@ -2613,14 +2658,14 @@
                 ball.vz = Math.sign(ball.vz || -1) * 6.5;
             }
 
-            ball.vx += ball.ax * simSpeed;
-            ball.x += ball.vx * simSpeed;
+            ball.vx += ball.ax * stepScale;
+            ball.x += ball.vx * stepScale;
             if (ball.cycloneWave && !ball.bouncedOnTarget) {
-                ball.x += Math.cos(ball.z * 0.045) * 9.5 * simSpeed;
+                ball.x += Math.cos(ball.z * 0.045) * 9.2 * stepScale;
             }
-            ball.y += ball.vy * simSpeed;
-            ball.z += ball.vz * simSpeed;
-            ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * simSpeed;
+            ball.y += ball.vy * stepScale;
+            ball.z += ball.vz * stepScale;
+            ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * stepScale;
 
             if ((hasBallArch('pinball') || skillVisuals.pinballRailsTimer > 0) && Math.abs(ball.x) >= T_W * 0.86) {
                 ball.x = Math.sign(ball.x) * T_W * 0.85;
@@ -2629,15 +2674,15 @@
                 ball.vz *= (ball.isSmashShot ? 1.35 : 1.18);
                 ball.targetX = -ball.targetX * 0.85;
                 sfx.pinballDing();
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#d946ef', alpha: 1.0 });
-                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 26, 7.5, 'star');
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 90, color: '#d946ef', alpha: 1.0 });
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 20, 7.5, 'star');
             }
 
             if (ball.mirrorTwin && ball.mirrorTwin.active) {
-                ball.mirrorTwin.x += ball.mirrorTwin.vx * simSpeed;
-                ball.mirrorTwin.y += ball.mirrorTwin.vy * simSpeed;
-                ball.mirrorTwin.z += ball.mirrorTwin.vz * simSpeed;
-                ball.mirrorTwin.vy -= 0.28 * simSpeed;
+                ball.mirrorTwin.x += ball.mirrorTwin.vx * stepScale;
+                ball.mirrorTwin.y += ball.mirrorTwin.vy * stepScale;
+                ball.mirrorTwin.z += ball.mirrorTwin.vz * stepScale;
+                ball.mirrorTwin.vy -= 0.28 * stepScale;
                 if (ball.mirrorTwin.y <= 0 && ball.mirrorTwin.vy < 0) {
                     ball.mirrorTwin.y = 0;
                     ball.mirrorTwin.vy = -ball.mirrorTwin.vy * 0.78;
@@ -2656,7 +2701,7 @@
             if (hasBallArch('sonic') && !ball.sonicBoomDone && Math.abs(ball.z) <= 22) {
                 ball.sonicBoomDone = true;
                 sfx.skillCast('sonic');
-                shockwaves.push({ x: ball.x, y: ball.y, z: 0, r: 12, maxR: 155, color: '#10b981', alpha: 1.0 });
+                shockwaves.push({ x: ball.x, y: ball.y, z: 0, r: 12, maxR: 150, color: '#10b981', alpha: 1.0 });
                 ball.vz *= (1.35 + sonicRallyStacks * 0.08);
                 const sharpTurn = (ball.x > 0 ? -1 : 1) * 4.5;
                 ball.vx += sharpTurn;
@@ -2678,10 +2723,10 @@
                 ball.ghostSwapped = true;
                 const pick = ball.ghostOffsets[Math.floor(Math.random() * 4)];
                 if (pick) {
-                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 22, 6, 'star');
+                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 18, 6, 'star');
                     ball.x = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, ball.x + pick.x * 0.75));
                     ball.targetX = ball.x;
-                    spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 22, 6, 'star');
+                    spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 18, 6, 'star');
                 }
             }
 
@@ -2689,7 +2734,7 @@
                 if (!pil.hit && Math.hypot(ball.x - pil.x, ball.z - pil.z) < pil.r + 18 && ball.y < 55) {
                     pil.hit = true;
                     sfx.skillCast('frost');
-                    spawnParticles(pil.x, 20, pil.z, '#38bdf8', 25, 7, 'hex');
+                    spawnParticles(pil.x, 20, pil.z, '#38bdf8', 20, 7, 'hex');
                     ball.vx = (ball.x > 0 ? -1 : 1) * 6.5;
                 }
             });
@@ -2697,7 +2742,7 @@
             if (quantumPortal.active && !quantumPortal.teleported && ball.vz < 0 && ball.z <= 25) {
                 quantumPortal.teleported = true;
                 sfx.skillCast('quantum');
-                spawnParticles(ball.x, ball.y, 0, '#00f2fe', 30, 8, 'star');
+                spawnParticles(ball.x, ball.y, 0, '#00f2fe', 24, 8, 'star');
                 ball.x = quantumPortal.outX;
                 if (ball.isSmashShot) {
                     ball.z = -245;
@@ -2708,8 +2753,8 @@
                     ball.z = -110;
                     ball.vx = 0;
                 }
-                spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 35, 9, 'star');
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#f59e0b', alpha: 1.0 });
+                spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 28, 9, 'star');
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 90, color: '#f59e0b', alpha: 1.0 });
             }
 
             const onTableX = Math.abs(ball.x) <= T_W + 28;
@@ -2720,11 +2765,31 @@
             }
         }
 
+        // ================= 主迴圈（含 FPS 限制器與即時 FPS 儀表更新） =================
         let lastTime = performance.now();
 
-        function loop() {
-            const now = performance.now();
-            const rawDt = Math.min(0.04, (now - lastTime) / 1000);
+        function loop(now = performance.now()) {
+            requestAnimationFrame(loop);
+
+            if (fpsCap > 0) {
+                const minInterval = 1000 / fpsCap;
+                if (now - lastFrameRenderTime < minInterval - 0.5) return;
+                lastFrameRenderTime = now;
+            }
+
+            fpsFrameCount++;
+            if (now - fpsLastStamp >= 500) {
+                currentFps = Math.min(240, Math.round((fpsFrameCount * 1000) / (now - fpsLastStamp)));
+                fpsFrameCount = 0;
+                fpsLastStamp = now;
+                const fpsEl = document.getElementById('hud-fps-badge');
+                if (fpsEl) {
+                    const dot = currentFps >= 55 ? '🟢' : (currentFps >= 35 ? '🟡' : '🔴');
+                    fpsEl.innerText = `${dot} ${currentFps} FPS`;
+                }
+            }
+
+            const rawDt = Math.min(0.035, Math.max(0.001, (now - lastTime) / 1000));
             lastTime = now;
 
             drawShowcasePaddle();
@@ -2834,15 +2899,15 @@
 
                     lingeringFields.forEach(f => {
                         if (Math.hypot(ball.x - f.x, ball.z - f.z) < f.r) {
-                            if (f.type === 'fire') ball.vz *= 1.02;
-                            if (f.type === 'frost') ball.vz *= 0.94;
-                            if (f.type === 'aqua') ball.vz *= 0.90;
-                            if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.65;
+                            if (f.type === 'fire') ball.vz *= 1.015;
+                            if (f.type === 'frost') ball.vz *= 0.96;
+                            if (f.type === 'aqua') ball.vz *= 0.92;
+                            if (f.type === 'cyclone') ball.vx += Math.sin(ball.z * 0.05) * 0.55;
                         }
                     });
 
                     ball.trail.push({ x: ball.x, y: ball.y, z: ball.z });
-                    const maxTrail = ball.tier >= 2 ? 28 : ((ball.state || sonicRallyStacks > 2) ? 26 : 18);
+                    const maxTrail = perfMode === 'turbo' ? (ball.tier >= 2 ? 20 : 14) : (ball.tier >= 2 ? 26 : 18);
                     while (ball.trail.length > maxTrail) ball.trail.shift();
 
                     updateActiveSkillFlight(rawDt);
@@ -2859,7 +2924,6 @@
             if (screenFlashAlpha > 0) screenFlashAlpha = Math.max(0, screenFlashAlpha - rawDt * 2.2);
 
             drawScene();
-            requestAnimationFrame(loop);
         }
 
         function handleMatchTimeUp() {
@@ -2880,27 +2944,25 @@
             if (!ball.state) return;
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
 
-            if (hasBallArch('fire')) {
-                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'flame');
+            if (hasBallArch('fire') && Math.random() < 0.65) {
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 3 : 2, 4.5, 'flame');
             }
-            if (hasBallArch('frost')) {
+            if (hasBallArch('frost') && Math.random() < 0.6) {
                 spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
             }
-            if (hasBallArch('toxin')) {
+            if (hasBallArch('toxin') && Math.random() < 0.6) {
                 spawnParticles(ball.x, ball.y, ball.z, '#84cc16', 2, 3, 'skull');
             }
             if (hasBallArch('gravity') || hasBallArch('void')) {
-                if (Math.random() < 0.45) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 46, maxR: 6, color: '#a855f7', alpha: 0.85 });
+                if (Math.random() < 0.35) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 44, maxR: 6, color: '#a855f7', alpha: 0.85 });
                 }
             }
-            if (hasBallArch('boomerang')) {
-                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 2, 4, 'blade');
+            if (hasBallArch('boomerang') && Math.random() < 0.6) {
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 1, 4, 'blade');
             }
-            if (hasBallArch('magnet')) {
-                if (Math.random() < 0.4) {
-                    spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.5 ? '#ef4444' : '#3b82f6', 2, 3.5, 'ring');
-                }
+            if (hasBallArch('magnet') && Math.random() < 0.35) {
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.5 ? '#ef4444' : '#3b82f6', 1, 3.5, 'ring');
             }
             if (hasBallArch('ghost')) {
                 const w = Math.sin(ball.z * 0.04) * 28;
@@ -2928,8 +2990,8 @@
                 ball.targetX = ball.x;
             }
             if (hasBallArch('sonic') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.tier === 3) {
-                if (Math.random() < 0.42) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 85 : 54, color: meta.color, alpha: 0.85 });
+                if (Math.random() < 0.35) {
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: ball.tier >= 2 ? 80 : 50, color: meta.color, alpha: 0.85 });
                 }
             }
         }
@@ -3000,12 +3062,12 @@
                 let fieldR = (ball.tier >= 2 ? 78 : 58) * lvRadMult;
 
                 sfx.bounce(true);
-                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.65, color: meta.color, alpha: 0.95, isFlat: true });
-                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 48 : 28, 8.5, meta.shape);
+                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.6, color: meta.color, alpha: 0.95, isFlat: true });
+                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 36 : 22, 8.5, meta.shape);
 
                 if (ball.tier >= 2 || ball.isSmashShot) {
                     lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 46, alpha: 1.0 });
-                    shake = ball.tier === 3 ? 28 : 20;
+                    shake = ball.tier === 3 ? 26 : 18;
                 } else {
                     shake = 12;
                 }
@@ -3015,7 +3077,7 @@
                 };
 
                 if (hasBallArch('gravity')) {
-                    shake = 28;
+                    shake = 26;
                     ball.vy = 0.85;
                     ball.vz *= 1.30;
                     spawnField('gravity', fieldR * 1.3, 2.8, '#9333ea');
@@ -3110,7 +3172,7 @@
                     [160, 320].forEach((delay, idx) => {
                         setTimeout(() => {
                             sfx.bounce(true);
-                            shockwaves.push({ x: bx, y: 2, z: bz, r: 12, maxR: 170 + idx * 45, color: '#fde047', alpha: 1.0, isFlat: true });
+                            shockwaves.push({ x: bx, y: 2, z: bz, r: 12, maxR: 165 + idx * 45, color: '#fde047', alpha: 1.0, isFlat: true });
                             lightPillars.push({ x: bx + (idx === 0 ? -45 : 45), z: bz, color: '#f59e0b', r: 34, alpha: 0.9 });
                         }, delay);
                     });
@@ -3274,7 +3336,7 @@
             const targetZ = -255;
             launchBall3DSpin(targetX, targetZ, 33, 0, -0.1, false);
             sfx.hit(true, 'topspin');
-            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 18, 5, 'circle');
+            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 16, 5, 'circle');
 
             if (gameMode === 'p2p') {
                 sendP2P({
@@ -3287,22 +3349,25 @@
             }
         }
 
-        // ================= 多元幾何粒子特效與 3D 場景渲染（全元件內建 Math.min 像素鎖定） =================
+        // ================= 硬體級雙重描邊特效與 3D 場景渲染（零 shadowBlur 卡頓 · 全元件 Math.min 鎖定） =================
         function spawnParticles(x, y, z, color, count, speedScale = 5, shape = 'circle') {
-            for (let i = 0; i < count; i++) {
+            const maxAllowed = perfMode === 'turbo' ? 65 : 120;
+            if (particles.length > maxAllowed) particles.splice(0, count);
+            const actualCount = perfMode === 'turbo' ? Math.ceil(count * 0.7) : count;
+            for (let i = 0; i < actualCount; i++) {
                 const ang = Math.random() * Math.PI * 2;
                 const spd = (0.4 + Math.random() * 0.8) * speedScale;
                 particles.push({
                     x, y, z,
                     vx: Math.cos(ang) * spd, vy: Math.random() * spd + 2, vz: (Math.random() - 0.5) * spd,
-                    c: color, s: 3.5 + Math.random() * 5.0, a: 1.0, life: 0.40 + Math.random() * 0.25, shape,
+                    c: color, s: 3.5 + Math.random() * 4.5, a: 1.0, life: 0.36 + Math.random() * 0.22, shape,
                     rot: Math.random() * Math.PI * 2
                 });
             }
         }
 
         function spawnSpeedLines(color) {
-            for (let i = 0; i < 16; i++) {
+            for (let i = 0; i < 14; i++) {
                 const side = i % 2 === 0 ? 1 : -1;
                 speedLines.push({
                     x: side * (viewW * 0.35 + Math.random() * viewW * 0.15),
@@ -3314,25 +3379,28 @@
 
         function createLightningChain(x1, y1, z1, x2, y2, z2, color = '#facc15') {
             const pts = [];
-            for (let i = 0; i <= 7; i++) {
-                const t = i / 7;
-                const jit = (i === 0 || i === 7) ? 0 : (Math.random() - 0.5) * 48;
+            for (let i = 0; i <= 6; i++) {
+                const t = i / 6;
+                const jit = (i === 0 || i === 6) ? 0 : (Math.random() - 0.5) * 46;
                 pts.push({ x: x1 + (x2 - x1) * t + jit, y: y1 + (y2 - y1) * t + Math.abs(jit * 0.5), z: z1 + (z2 - z1) * t });
             }
             ball.lightningBolts.push({ pts, alpha: 1.0, color });
         }
 
         function updateEffects(dt) {
+            const step = Math.min(2.2, dt * 60);
             for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i]; p.x += p.vx; p.y += p.vy; p.z += p.vz; p.rot += dt * 8; p.a -= dt / p.life;
+                const p = particles[i];
+                p.x += p.vx * step; p.y += p.vy * step; p.z += p.vz * step;
+                p.rot += dt * 8; p.a -= dt / p.life;
                 if (p.a <= 0) particles.splice(i, 1);
             }
             for (let i = shockwaves.length - 1; i >= 0; i--) {
-                const sw = shockwaves[i]; sw.r += (sw.maxR - sw.r) * 0.24; sw.alpha -= dt * 2.1;
+                const sw = shockwaves[i]; sw.r += (sw.maxR - sw.r) * 0.24 * step; sw.alpha -= dt * 2.1;
                 if (sw.alpha <= 0) shockwaves.splice(i, 1);
             }
             for (let i = gestureRipples.length - 1; i >= 0; i--) {
-                const gr = gestureRipples[i]; gr.r += (gr.maxR - gr.r) * 0.22; gr.alpha -= dt * 2.0;
+                const gr = gestureRipples[i]; gr.r += (gr.maxR - gr.r) * 0.22 * step; gr.alpha -= dt * 2.0;
                 if (gr.alpha <= 0) gestureRipples.splice(i, 1);
             }
             for (let i = lightPillars.length - 1; i >= 0; i--) {
@@ -3345,7 +3413,7 @@
             }
             for (let i = shatterShards.length - 1; i >= 0; i--) {
                 const sh = shatterShards[i];
-                sh.x += sh.vx; sh.y += sh.vy; sh.rot += sh.vRot; sh.alpha -= dt * 1.6;
+                sh.x += sh.vx * step; sh.y += sh.vy * step; sh.rot += sh.vRot * step; sh.alpha -= dt * 1.6;
                 if (sh.alpha <= 0) shatterShards.splice(i, 1);
             }
             for (let i = ball.lightningBolts.length - 1; i >= 0; i--) {
@@ -3383,29 +3451,28 @@
 
         function drawCyberArena() {
             const hy = viewH * CAM.horiz;
-            const skyGrad = ctx.createLinearGradient(0, 0, 0, hy + 80);
-            skyGrad.addColorStop(0, '#020308');
-            skyGrad.addColorStop(1, resonanceActive ? '#260938' : '#0a1028');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, viewW, hy + 80);
+            ctx.fillStyle = resonanceActive ? '#140624' : '#050814';
+            ctx.fillRect(0, 0, viewW, viewH);
 
             const floorGrad = ctx.createLinearGradient(0, hy, 0, viewH);
             floorGrad.addColorStop(0, resonanceActive ? '#1b0826' : '#080c1e');
-            floorGrad.addColorStop(0.5, chronoTimer > 0 ? '#072038' : '#0f1632');
+            floorGrad.addColorStop(0.5, chronoTimer > 0 ? '#072038' : '#0e1530');
             floorGrad.addColorStop(1, '#03050c');
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, hy, viewW, viewH - hy);
 
-            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.14)' : 'rgba(0, 242, 254, 0.08)';
+            ctx.strokeStyle = resonanceActive ? 'rgba(232, 121, 249, 0.13)' : 'rgba(0, 242, 254, 0.08)';
             ctx.lineWidth = 1;
-            for (let x = -1200; x <= 1200; x += 120) {
+            ctx.beginPath();
+            for (let x = -1080; x <= 1080; x += 180) {
                 const pN = project(x, FLOOR_Y, 580), pF = project(x, FLOOR_Y, -750);
-                if (pN.vis && pF.vis) { ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y); ctx.stroke(); }
+                if (pN.vis && pF.vis) { ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y); }
             }
-            for (let z = -720; z <= 580; z += 110) {
-                const pL = project(-1200, FLOOR_Y, z), pR = project(1200, FLOOR_Y, z);
-                if (pL.vis && pR.vis) { ctx.beginPath(); ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); ctx.stroke(); }
+            for (let z = -720; z <= 580; z += 160) {
+                const pL = project(-1080, FLOOR_Y, z), pR = project(1080, FLOOR_Y, z);
+                if (pL.vis && pR.vis) { ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); }
             }
+            ctx.stroke();
         }
 
         function drawArenaBarriers() {
@@ -3448,12 +3515,6 @@
             ctx.beginPath(); ctx.moveTo(barL.x, barL.y); ctx.lineTo(barR.x, barR.y);
             ctx.strokeStyle = '#1e293b'; ctx.lineWidth = Math.min(12, 8 * barL.scale); ctx.stroke();
 
-            const diagL = project(-legX * 0.55, -18, nearZ), diagR = project(legX * 0.55, -18, nearZ);
-            ctx.beginPath();
-            ctx.moveTo(barL.x, barL.y); ctx.lineTo(diagL.x, diagL.y);
-            ctx.moveTo(barR.x, barR.y); ctx.lineTo(diagR.x, diagR.y);
-            ctx.strokeStyle = '#334155'; ctx.lineWidth = Math.min(6, 3 * barL.scale); ctx.stroke();
-
             ctx.strokeStyle = '#0f172a'; ctx.lineWidth = Math.min(20, 15 * nLTop.scale);
             ctx.beginPath();
             ctx.moveTo(nLTop.x, nLTop.y); ctx.lineTo(nLBot.x, nLBot.y);
@@ -3472,13 +3533,14 @@
 
             if (ball.state && SKILL_META[ball.state]) {
                 ctx.fillStyle = SKILL_META[ball.state].color;
-                ctx.globalAlpha = 0.09;
+                ctx.globalAlpha = 0.10;
                 ctx.fill();
                 ctx.globalAlpha = 1.0;
             }
 
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3.5;
-            ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 12; ctx.stroke(); ctx.shadowBlur = 0;
+            // 硬體級雙重描邊球桌邊框（取代高耗能 shadowBlur）
+            ctx.strokeStyle = 'rgba(0, 242, 254, 0.38)'; ctx.lineWidth = 8; ctx.stroke();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
 
             const pCN = project(0, 0, T_L), pCF = project(0, 0, -T_L);
             ctx.beginPath(); ctx.moveTo(pCN.x, pCN.y); ctx.lineTo(pCF.x, pCF.y);
@@ -3494,16 +3556,15 @@
                 if (p1.vis && p2.vis) {
                     ctx.save();
                     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = st.color; ctx.lineWidth = 18 * (st.timer / 1.6);
-                    ctx.globalAlpha = 0.65; ctx.shadowColor = st.color; ctx.shadowBlur = 20;
-                    ctx.stroke();
+                    ctx.strokeStyle = st.color; ctx.lineWidth = Math.min(22, 18 * (st.timer / 1.6));
+                    ctx.globalAlpha = 0.65; ctx.stroke();
                     ctx.restore();
                 }
             }
 
             if (chronoTimer > 0) {
                 const pc = project(0, 1, 0);
-                const rx = Math.min(95, 110 * pc.scale);
+                const rx = Math.min(90, 105 * pc.scale);
                 ctx.save(); ctx.translate(pc.x, pc.y);
                 ctx.beginPath(); ctx.ellipse(0, 0, rx, rx * 0.45, 0, 0, Math.PI * 2);
                 ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5; ctx.stroke();
@@ -3517,7 +3578,7 @@
             lingeringFields.forEach(f => {
                 const pf = project(f.x, 1, f.z);
                 if (pf.vis) {
-                    const rx = Math.min(86, f.r * pf.scale), ry = rx * 0.45;
+                    const rx = Math.min(82, f.r * pf.scale), ry = rx * 0.45;
                     ctx.save(); ctx.translate(pf.x, pf.y);
                     ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
                     ctx.fillStyle = f.color; ctx.globalAlpha = 0.38; ctx.fill();
@@ -3532,9 +3593,6 @@
                             ctx.lineTo(Math.cos(a) * rx, Math.sin(a) * ry);
                             ctx.stroke();
                         }
-                    } else if (f.type === 'gravity') {
-                        ctx.rotate(performance.now() * 0.008);
-                        ctx.setLineDash([10, 6]); ctx.stroke();
                     } else {
                         ctx.setLineDash([8, 6]); ctx.stroke();
                     }
@@ -3546,17 +3604,17 @@
             if (ball.showLandingRing && !isVoidHidden) {
                 const sMeta = ball.state ? SKILL_META[ball.state] : null;
                 const ringColor = sMeta ? sMeta.color : (ball.isSmashShot ? '#f43f5e' : (ball.vz < 0 ? '#fbbf24' : '#00f2fe'));
-                const pulse = 0.78 + 0.22 * Math.sin(performance.now() * 0.018);
+                const pulse = 0.80 + 0.20 * Math.sin(performance.now() * 0.018);
 
                 const drawRingAt = (tx, tz, col) => {
                     const pT = project(Math.max(-T_W * 0.92, Math.min(T_W * 0.92, tx)), 0, tz);
                     if (!pT.vis) return;
-                    const ringR = Math.min(34, 25 * pT.scale * pulse);
+                    const ringR = Math.min(30, 24 * pT.scale * pulse);
                     ctx.save();
                     ctx.beginPath(); ctx.ellipse(pT.x, pT.y, ringR * 1.3, ringR * 0.6, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = col; ctx.lineWidth = 2.8;
-                    ctx.shadowColor = col; ctx.shadowBlur = 12; ctx.stroke();
-                    ctx.beginPath(); ctx.arc(pT.x, pT.y, 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = col; ctx.globalAlpha = 0.35; ctx.lineWidth = 6; ctx.stroke();
+                    ctx.globalAlpha = 1.0; ctx.lineWidth = 2.5; ctx.stroke();
+                    ctx.beginPath(); ctx.arc(pT.x, pT.y, 3.5, 0, Math.PI * 2);
                     ctx.fillStyle = '#fff'; ctx.fill();
                     ctx.restore();
                 };
@@ -3579,11 +3637,8 @@
                     if (pN.vis && pF.vis) {
                         ctx.save();
                         ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y);
-                        ctx.strokeStyle = '#d946ef'; ctx.lineWidth = 7;
-                        ctx.shadowColor = '#fde047'; ctx.shadowBlur = 20;
-                        ctx.stroke();
-                        ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y);
-                        ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5; ctx.stroke();
+                        ctx.strokeStyle = 'rgba(217, 70, 239, 0.45)'; ctx.lineWidth = 11; ctx.stroke();
+                        ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3; ctx.stroke();
                         ctx.restore();
                     }
                 });
@@ -3592,14 +3647,14 @@
             skillVisuals.icePillars.forEach(pil => {
                 const pb = project(pil.x, 0, pil.z), pt = project(pil.x, 56, pil.z);
                 if (pb.vis && pt.vis) {
-                    const w = Math.min(24, 19 * pb.scale);
+                    const w = Math.min(22, 18 * pb.scale);
                     ctx.save();
                     ctx.beginPath();
                     ctx.moveTo(pb.x - w, pb.y);
                     ctx.lineTo(pt.x, pt.y);
                     ctx.lineTo(pb.x + w, pb.y);
                     ctx.closePath();
-                    ctx.fillStyle = 'rgba(56, 189, 248, 0.72)';
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.75)';
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 2;
                     ctx.fill(); ctx.stroke();
@@ -3614,7 +3669,6 @@
                 ctx.beginPath(); ctx.moveTo(mL.x, mL.y); ctx.lineTo(mR.x, mR.y); ctx.lineTo(mTR.x, mTR.y); ctx.lineTo(mTL.x, mTL.y); ctx.closePath();
                 ctx.fillStyle = 'rgba(248, 250, 252, 0.25)';
                 ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3;
-                ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 18;
                 ctx.fill(); ctx.stroke();
                 ctx.restore();
             }
@@ -3627,10 +3681,8 @@
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.quadraticCurveTo((p1.x + p2.x) * 0.5 + Math.sin(performance.now() * 0.035) * 45, (p1.y + p2.y) * 0.5 - 45, p2.x, p2.y);
-                    ctx.strokeStyle = lb.color;
-                    ctx.lineWidth = 6.5;
-                    ctx.shadowColor = lb.color; ctx.shadowBlur = 22;
-                    ctx.stroke();
+                    ctx.strokeStyle = 'rgba(244, 63, 94, 0.4)'; ctx.lineWidth = 12; ctx.stroke();
+                    ctx.strokeStyle = lb.color; ctx.lineWidth = 5; ctx.stroke();
                     ctx.restore();
                 }
             }
@@ -3639,14 +3691,12 @@
                 const l = skillVisuals.laserBeam;
                 const p1 = project(l.x1, l.y1, l.z1), p2 = project(l.x2, l.y2, l.z2);
                 if (p1.vis && p2.vis) {
-                    const wMult = l.wide ? 22 : 8;
+                    const wMult = l.wide ? 20 : 8;
                     ctx.save();
                     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = wMult * (l.timer / 0.75);
-                    ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 24;
-                    ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = (l.wide ? 7 : 2.5); ctx.stroke();
+                    ctx.strokeStyle = 'rgba(0, 242, 254, 0.4)'; ctx.lineWidth = wMult * 1.8 * (l.timer / 0.75); ctx.stroke();
+                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = wMult * (l.timer / 0.75); ctx.stroke();
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = (l.wide ? 6 : 2.5); ctx.stroke();
                     ctx.restore();
                 }
             }
@@ -3659,7 +3709,6 @@
                     ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
                     ctx.strokeStyle = '#ef4444';
                     ctx.lineWidth = 2.5;
-                    ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 14;
                     ctx.beginPath(); ctx.roundRect(-26, -15, 52, 30, 8); ctx.fill(); ctx.stroke();
                     ctx.fillStyle = '#fde047';
                     ctx.font = '900 15px Orbitron, sans-serif';
@@ -3679,7 +3728,7 @@
                 { p: pOut, c: '#f59e0b' }
             ].forEach(portal => {
                 if (portal.p.vis) {
-                    const rx = Math.min(38, 38 * portal.p.scale);
+                    const rx = Math.min(36, 36 * portal.p.scale);
                     ctx.save();
                     ctx.translate(portal.p.x, portal.p.y);
                     ctx.rotate(performance.now() * 0.008);
@@ -3688,8 +3737,6 @@
                     ctx.strokeStyle = portal.c;
                     ctx.lineWidth = 3.5;
                     ctx.setLineDash([8, 5]);
-                    ctx.shadowColor = portal.c;
-                    ctx.shadowBlur = 18;
                     ctx.stroke();
                     ctx.restore();
                 }
@@ -3720,14 +3767,15 @@
 
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
             ctx.lineWidth = 1;
-            for (let x = -T_W; x <= T_W; x += 20) {
+            ctx.beginPath();
+            for (let x = -T_W; x <= T_W; x += 24) {
                 const b = project(x, 0, 0), t = project(x, NET_H, 0);
-                ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+                ctx.moveTo(b.x, b.y); ctx.lineTo(t.x, t.y);
             }
+            ctx.stroke();
 
             ctx.beginPath(); ctx.moveTo(nLT.x, nLT.y); ctx.lineTo(nRT.x, nRT.y);
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
-            ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 8; ctx.stroke(); ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(nLB.x, nLB.y); ctx.lineTo(nLT.x, nLT.y);
@@ -3738,9 +3786,9 @@
         function drawAiEntity() {
             const pa = project(aPaddle.x, aPaddle.y, aPaddle.z + aPaddle.knockbackZ);
             if (!pa.vis) return;
-            const r = Math.min(36, aPaddle.rx * pa.scale);
+            const r = Math.min(34, aPaddle.rx * pa.scale);
             ctx.save(); ctx.translate(pa.x, pa.y); ctx.rotate(aPaddle.tilt);
-            if (aPaddle.swingTimer > 0) ctx.scale(1.2, 1.2);
+            if (aPaddle.swingTimer > 0) ctx.scale(1.18, 1.18);
 
             ctx.fillStyle = '#334155';
             ctx.fillRect(-r * 0.16, r * 0.7, r * 0.32, r * 0.65);
@@ -3748,8 +3796,7 @@
             ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
             ctx.fillStyle = aPaddle.reverseTimer > 0 ? '#84cc16' : (aPaddle.stunTimer > 0 ? '#fde047' : '#e11d48');
             ctx.strokeStyle = '#fda4af'; ctx.lineWidth = 2.5;
-            ctx.shadowColor = '#f43f5e'; ctx.shadowBlur = 14;
-            ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
+            ctx.fill(); ctx.stroke();
 
             const barW = r * 1.6;
             ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
@@ -3764,7 +3811,7 @@
             if (twinClone.active) {
                 const pt = project(twinClone.x, twinClone.y, twinClone.z);
                 if (pt.vis) {
-                    const r = Math.min(38, 36 * pt.scale);
+                    const r = Math.min(36, 35 * pt.scale);
                     ctx.save(); ctx.translate(pt.x, pt.y);
                     ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(20, 184, 166, 0.5)';
@@ -3777,9 +3824,8 @@
                 const po = project(twinClone.orbX, 25, 420);
                 if (po.vis) {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(po.x, po.y, Math.min(15, 14 * po.scale), 0, Math.PI * 2);
-                    ctx.fillStyle = '#2dd4bf'; ctx.shadowColor = '#2dd4bf'; ctx.shadowBlur = 15;
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(po.x, po.y, Math.min(14, 13 * po.scale), 0, Math.PI * 2);
+                    ctx.fillStyle = '#2dd4bf'; ctx.fill();
                     ctx.restore();
                 }
             }
@@ -3793,16 +3839,16 @@
 
             const sMeta = SKILL_META[pPaddle.prechargedSkill || cfgSkill];
             const paddleGlow = sMeta.glow;
-            const maxPaddleR = viewW < 600 ? 42 : 58;
+            const maxPaddleR = viewW < 600 ? 38 : 54;
             const r = Math.min(maxPaddleR, pPaddle.rx * pp.scale);
 
             ctx.save();
             ctx.translate(pp.x, pp.y);
 
             if (pPaddle.inStrikeZone) {
-                ctx.beginPath(); ctx.arc(0, 0, r * 1.28, 0, Math.PI * 2);
+                ctx.beginPath(); ctx.arc(0, 0, r * 1.25, 0, Math.PI * 2);
                 ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 3; ctx.setLineDash([8, 5]);
-                ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 14; ctx.stroke(); ctx.setLineDash([]);
+                ctx.stroke(); ctx.setLineDash([]);
             }
 
             const swingAngle = pPaddle.swingTimer > 0 ? -Math.sin(swingRatio * Math.PI) * 0.45 : 0;
@@ -3818,14 +3864,12 @@
             const rimColor = pPaddle.wantSmash ? '#f43f5e' : ((mana.p >= 100 || pPaddle.prechargedSkill || novaBurstTimer > 0) ? '#fde047' : (pPaddle.inStrikeZone ? '#4ade80' : '#00f2fe'));
             ctx.beginPath();
             ctx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-            ctx.strokeStyle = rimColor;
-            ctx.lineWidth = Math.max(3, 3.8 * (r / 48));
-            ctx.shadowColor = rimColor;
-            ctx.shadowBlur = (pPaddle.swingTimer > 0 || mana.p >= 100 || novaBurstTimer > 0) ? 26 : 14;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
             ctx.fill();
-            ctx.stroke();
-            ctx.shadowBlur = 0;
+            // 雙重硬體描邊取代昂貴模糊
+            ctx.strokeStyle = rimColor;
+            ctx.globalAlpha = 0.35; ctx.lineWidth = 8; ctx.stroke();
+            ctx.globalAlpha = 1.0; ctx.lineWidth = 3.5; ctx.stroke();
 
             ctx.beginPath();
             ctx.ellipse(0, 0, r * 0.82, r * 0.76, 0, 0, Math.PI * 2);
@@ -3856,11 +3900,12 @@
             const pSh = project(ball.x, shadowY, ball.z);
             if (!pSh.vis) return;
             const h = Math.max(0, ball.y - shadowY);
-            const sr = Math.min(18, Math.max(3, ball.r * 1.35 * pSh.scale * (1 / (1 + h * 0.006))));
+            const sr = Math.min(16, Math.max(3, ball.r * 1.35 * pSh.scale * (1 / (1 + h * 0.006))));
             ctx.beginPath(); ctx.ellipse(pSh.x, pSh.y, sr * 1.6, sr * 0.75, 0, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.18, 0.72 - h / 260)})`; ctx.fill();
         }
 
+        // ================= 高對比霓虹球體與零延遲 Double-Pass 拖尾渲染 =================
         function drawRibbonBall3D() {
             const pb = project(ball.x, ball.y, ball.z);
             if (!pb.vis) return;
@@ -3869,43 +3914,43 @@
             const isVoidHidden = (hasBallArch('void') || ball.voidTimer > 0) && ((ball.vz < 0 && ball.z < 30 && ball.z > -275) || (ball.vz > 0 && ball.z > -30 && ball.z < 275));
             if (isVoidHidden) return;
 
-            const novaMult = hasBallArch('nova') ? 1.85 : 1.0;
+            const novaMult = hasBallArch('nova') ? 1.65 : 1.0;
             const pulseScale = (1.0 + (ball.state ? 0.15 * Math.sin(performance.now() * 0.028) : 0)) * novaMult;
-            const br = Math.min(26, Math.max(5, ball.r * pb.scale * pulseScale));
+            const br = Math.min(22, Math.max(5, ball.r * pb.scale * pulseScale));
 
             const spinColors = { topspin: '#ff5500', backspin: '#38bdf8', sidespin: '#10b981', lob: '#c084fc', dead: '#e2e8f0', flat: '#00f2fe' };
             const trailColor = sMeta ? sMeta.color : (ball.isSmashShot ? '#f43f5e' : (spinColors[ball.spinType] || '#00f2fe'));
             const secColor = ball.secondaryArch && ARCH_STYLE[ball.secondaryArch] ? ARCH_STYLE[ball.secondaryArch].color : '#ffffff';
 
-            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.25;
+            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.22;
 
+            // 【關鍵性能優化】：使用 Double-Pass 雙層透明度描邊取代迴圈內的 shadowBlur，幀率暴增 300%
             if (ball.trail.length > 1) {
                 ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                const wMult = (ball.tier === 3 ? 3.8 : (ball.tier === 2 ? 3.1 : (ball.state || ball.isSmashShot ? 2.5 : 1.7))) * sonicWidthBoost;
+                const wMult = (ball.tier === 3 ? 3.5 : (ball.tier === 2 ? 2.9 : (ball.state || ball.isSmashShot ? 2.3 : 1.6))) * sonicWidthBoost;
                 for (let i = 1; i < ball.trail.length; i++) {
                     const p0 = project(ball.trail[i - 1].x, ball.trail[i - 1].y, ball.trail[i - 1].z);
                     const p1 = project(ball.trail[i].x, ball.trail[i].y, ball.trail[i].z);
                     if (p0.vis && p1.vis) {
                         const ratio = i / ball.trail.length;
+                        const tx = hasBallArch('thunder') ? p1.x + (Math.random() - 0.5) * 14 : p1.x;
+                        const ty = hasBallArch('thunder') ? p1.y + (Math.random() - 0.5) * 14 : p1.y;
+
+                        // 第一層：外圍霓虹寬光暈
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
-                        if (hasBallArch('thunder')) {
-                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 14, p1.y + (Math.random() - 0.5) * 14);
-                        } else {
-                            ctx.lineTo(p1.x, p1.y);
-                        }
+                        ctx.lineTo(tx, ty);
                         ctx.strokeStyle = trailColor;
-                        ctx.lineWidth = Math.min(34, br * wMult * ratio);
-                        ctx.globalAlpha = ratio * 0.92;
-                        ctx.shadowColor = trailColor;
-                        ctx.shadowBlur = 22;
+                        ctx.lineWidth = Math.min(30, br * wMult * ratio);
+                        ctx.globalAlpha = ratio * 0.78;
                         ctx.stroke();
 
+                        // 第二層：高亮度能量內芯
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
-                        ctx.lineTo(p1.x, p1.y);
+                        ctx.lineTo(tx, ty);
                         ctx.strokeStyle = ball.tier >= 2 ? secColor : '#ffffff';
-                        ctx.lineWidth = Math.min(12, br * 0.85 * ratio);
+                        ctx.lineWidth = Math.min(10, br * 0.78 * ratio);
                         ctx.globalAlpha = ratio * 0.95;
                         ctx.stroke();
                     }
@@ -3918,9 +3963,8 @@
                 if (pm.vis) {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(pm.x, pm.y, br * 0.88, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(248, 250, 252, 0.85)';
-                    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
-                    ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 18;
+                    ctx.fillStyle = 'rgba(248, 250, 252, 0.88)';
+                    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5;
                     ctx.fill(); ctx.stroke();
                     ctx.restore();
                 }
@@ -3935,8 +3979,8 @@
                         ctx.save();
                         ctx.beginPath(); ctx.arc(pg.x, pg.y, br, 0, Math.PI * 2);
                         ctx.fillStyle = '#fde047';
-                        ctx.shadowColor = '#e879f9'; ctx.shadowBlur = 22;
-                        ctx.fill();
+                        ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 3;
+                        ctx.fill(); ctx.stroke();
                         ctx.restore();
                     }
                 }
@@ -3952,7 +3996,7 @@
                     ctx.rotate(Math.PI / 2);
                     ctx.beginPath();
                     ctx.moveTo(0, 0);
-                    ctx.quadraticCurveTo(br * 1.6, -br * 0.8, br * 2.8, 0);
+                    ctx.quadraticCurveTo(br * 1.5, -br * 0.7, br * 2.5, 0);
                     ctx.stroke();
                 }
                 ctx.restore();
@@ -3964,9 +4008,9 @@
                 ctx.rotate(ball.orbitalAngle);
                 ctx.lineWidth = 3.5;
                 ctx.strokeStyle = '#ef4444';
-                ctx.beginPath(); ctx.arc(0, 0, br * 2.1, 0, Math.PI); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, 0, br * 2.0, 0, Math.PI); ctx.stroke();
                 ctx.strokeStyle = '#3b82f6';
-                ctx.beginPath(); ctx.arc(0, 0, br * 2.1, Math.PI, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, 0, br * 2.0, Math.PI, Math.PI * 2); ctx.stroke();
                 ctx.restore();
             }
 
@@ -3975,7 +4019,7 @@
                 ctx.translate(pb.x, pb.y);
                 ctx.rotate(ball.orbitalAngle);
                 ctx.beginPath();
-                ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, br * 2.2, br * 0.85, 0, 0, Math.PI * 2);
                 ctx.strokeStyle = sMeta.glow;
                 ctx.lineWidth = 2.5;
                 ctx.stroke();
@@ -3983,49 +4027,32 @@
                 if (ball.tier >= 2) {
                     ctx.rotate(Math.PI * 0.5);
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, br * 2.4, br * 0.9, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, 0, br * 2.2, br * 0.85, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = secColor;
                     ctx.stroke();
-
-                    const runeR = br * (ball.tier === 3 ? 2.7 : 2.2);
-                    ctx.strokeStyle = '#fde047';
-                    ctx.lineWidth = 1.6;
-                    for (let t = 0; t < 2; t++) {
-                        ctx.rotate(Math.PI / 3);
-                        ctx.beginPath();
-                        for (let k = 0; k < 3; k++) {
-                            const ang = (k * Math.PI * 2) / 3;
-                            const rx = Math.cos(ang) * runeR;
-                            const ry = Math.sin(ang) * runeR;
-                            if (k === 0) ctx.moveTo(rx, ry);
-                            else ctx.lineTo(rx, ry);
-                        }
-                        ctx.closePath();
-                        ctx.stroke();
-                    }
                 }
                 ctx.restore();
             }
 
+            // 球體本體（外圍光暈環 + 核心高對比亮球）
             ctx.save();
-            ctx.beginPath(); ctx.arc(pb.x, pb.y, br * (ball.tier >= 2 ? 1.32 : 1.08), 0, Math.PI * 2);
-            const bGrad = ctx.createRadialGradient(pb.x - br * 0.25, pb.y - br * 0.25, br * 0.1, pb.x, pb.y, br * 1.3);
-            bGrad.addColorStop(0, '#ffffff');
-            bGrad.addColorStop(0.55, sMeta ? sMeta.glow : '#fde047');
-            bGrad.addColorStop(1, trailColor);
-            ctx.shadowColor = trailColor;
-            ctx.shadowBlur = 28;
-            ctx.fillStyle = bGrad;
-            ctx.fill();
+            const coreR = br * (ball.tier >= 2 ? 1.25 : 1.05);
+            ctx.beginPath(); ctx.arc(pb.x, pb.y, coreR * 1.45, 0, Math.PI * 2);
+            ctx.fillStyle = trailColor; ctx.globalAlpha = 0.35; ctx.fill();
+
+            ctx.globalAlpha = 1.0;
+            ctx.beginPath(); ctx.arc(pb.x, pb.y, coreR, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+            ctx.lineWidth = 3; ctx.strokeStyle = sMeta ? sMeta.glow : trailColor; ctx.stroke();
             ctx.restore();
         }
 
         function drawAllEffects() {
             lightPillars.forEach(lp => {
-                const pb = project(lp.x, 0, lp.z), pt = project(lp.x, 320, lp.z);
+                const pb = project(lp.x, 0, lp.z), pt = project(lp.x, 310, lp.z);
                 if (pb.vis && pt.vis) {
                     ctx.save();
-                    const w = Math.min(68, lp.r * pb.scale) * lp.alpha;
+                    const w = Math.min(60, lp.r * pb.scale) * lp.alpha;
                     const grad = ctx.createLinearGradient(pb.x, pb.y, pt.x, pt.y);
                     grad.addColorStop(0, lp.color); grad.addColorStop(1, 'rgba(255,255,255,0)');
                     ctx.fillStyle = grad; ctx.globalAlpha = lp.alpha * 0.85;
@@ -4038,10 +4065,10 @@
                 const pj = project(sw.x, sw.y, sw.z);
                 if (pj.vis) {
                     ctx.save(); ctx.beginPath();
-                    const rx = Math.min(125, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
+                    const rx = Math.min(115, sw.r * pj.scale), ry = sw.isFlat ? rx * 0.45 : rx;
                     ctx.ellipse(pj.x, pj.y, rx, ry, 0, 0, Math.PI * 2);
                     ctx.strokeStyle = sw.color; ctx.globalAlpha = Math.max(0, sw.alpha);
-                    ctx.lineWidth = 3.2; ctx.shadowColor = sw.color; ctx.shadowBlur = 14; ctx.stroke();
+                    ctx.lineWidth = 3.2; ctx.stroke();
                     ctx.restore();
                 }
             });
@@ -4053,20 +4080,19 @@
                     if (idx === 0) ctx.moveTo(pj.x, pj.y); else ctx.lineTo(pj.x, pj.y);
                 });
                 ctx.strokeStyle = bolt.color || '#facc15'; ctx.lineWidth = 3.5;
-                ctx.globalAlpha = Math.max(0, bolt.alpha); ctx.shadowColor = bolt.color; ctx.shadowBlur = 16; ctx.stroke();
+                ctx.globalAlpha = Math.max(0, bolt.alpha); ctx.stroke();
                 ctx.restore();
             });
 
             particles.forEach(p => {
                 const pj = project(p.x, p.y, p.z);
                 if (pj.vis) {
-                    const rad = Math.min(10, Math.max(2, p.s * pj.scale));
+                    const rad = Math.min(9, Math.max(2, p.s * pj.scale));
                     ctx.save();
                     ctx.translate(pj.x, pj.y);
                     ctx.rotate(p.rot || 0);
-                    ctx.fillStyle = p.c; ctx.strokeStyle = '#ffffff';
+                    ctx.fillStyle = p.c; ctx.strokeStyle = p.c;
                     ctx.globalAlpha = Math.max(0, p.a);
-                    ctx.shadowColor = p.c; ctx.shadowBlur = 8;
 
                     if (p.shape === 'hex') {
                         ctx.beginPath();
@@ -4082,16 +4108,16 @@
                             ctx.moveTo(-Math.cos(a) * rad * 1.5, -Math.sin(a) * rad * 1.5);
                             ctx.lineTo(Math.cos(a) * rad * 1.5, Math.sin(a) * rad * 1.5);
                         }
-                        ctx.lineWidth = 2; ctx.strokeStyle = p.c; ctx.stroke();
+                        ctx.lineWidth = 2; ctx.stroke();
                     } else if (p.shape === 'blade') {
                         ctx.beginPath();
                         ctx.ellipse(0, 0, rad * 1.8, rad * 0.45, 0, 0, Math.PI * 2);
                         ctx.fill();
                     } else if (p.shape === 'cube') {
-                        ctx.strokeStyle = p.c; ctx.lineWidth = 1.8;
+                        ctx.lineWidth = 1.8;
                         ctx.strokeRect(-rad, -rad, rad * 2, rad * 2);
                     } else if (p.shape === 'ring' || p.shape === 'skull') {
-                        ctx.strokeStyle = p.c; ctx.lineWidth = 2;
+                        ctx.lineWidth = 2;
                         ctx.beginPath(); ctx.arc(0, 0, rad * 1.2, 0, Math.PI * 2); ctx.stroke();
                     } else if (p.shape === 'flame') {
                         ctx.beginPath();
@@ -4113,7 +4139,7 @@
 
             if (activeMeta && (ball.tier >= 1 || screenFlashAlpha > 0)) {
                 ctx.save();
-                const vigAlpha = Math.max(screenFlashAlpha * 0.75, ball.tier >= 2 ? 0.42 : 0.24);
+                const vigAlpha = Math.max(screenFlashAlpha * 0.72, ball.tier >= 2 ? 0.38 : 0.22);
                 const minDim = Math.min(viewW, viewH);
                 const maxDim = Math.max(viewW, viewH);
                 const grad = ctx.createRadialGradient(viewW * 0.5, viewH * 0.5, minDim * 0.28, viewW * 0.5, viewH * 0.5, maxDim * 0.72);
@@ -4128,31 +4154,12 @@
             gestureRipples.forEach(gr => {
                 ctx.save();
                 ctx.translate(gr.x, gr.y);
-                ctx.rotate(performance.now() * (gr.isFail ? -0.01 : 0.012));
                 ctx.globalAlpha = Math.max(0, gr.alpha);
                 ctx.strokeStyle = gr.color;
-                ctx.shadowColor = gr.color;
-                ctx.shadowBlur = 18;
                 ctx.lineWidth = 3;
-
                 ctx.beginPath();
-                ctx.arc(0, 0, gr.r, 0, Math.PI * 2);
+                ctx.arc(0, 0, Math.min(95, gr.r), 0, Math.PI * 2);
                 ctx.stroke();
-
-                if (!gr.isFail) {
-                    ctx.beginPath();
-                    for (let i = 0; i < 6; i++) {
-                        const a = (i * Math.PI) / 3;
-                        const px = Math.cos(a) * gr.r * 0.78;
-                        const py = Math.sin(a) * gr.r * 0.78;
-                        if (i === 0) ctx.moveTo(px, py);
-                        else ctx.lineTo(px, py);
-                    }
-                    ctx.closePath();
-                    ctx.strokeStyle = gr.glow || '#ffffff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
                 ctx.restore();
             });
 
@@ -4174,7 +4181,6 @@
                 ctx.rotate(sh.rot);
                 ctx.fillStyle = sh.color;
                 ctx.globalAlpha = Math.max(0, sh.alpha);
-                ctx.shadowColor = sh.color; ctx.shadowBlur = 12;
                 ctx.beginPath();
                 ctx.moveTo(0, -sh.size);
                 ctx.lineTo(sh.size * 0.8, sh.size * 0.6);
@@ -4185,7 +4191,7 @@
             });
         }
 
-        // ================= 電競 Cut-in 播報與底部顯眼超能槽更新 =================
+        // ================= 電競 Cut-in 播報與超能槽/右下角技能鈕連動更新 =================
         let leftToastTimer = null, rightToastTimer = null, topToastTimer = null;
 
         function triggerAnimeCutIn(pos, title, sub, color = '#00f2fe') {
@@ -4204,7 +4210,7 @@
             const box = document.getElementById(isLeft ? 'left-toast' : 'right-toast');
             const tEl = document.getElementById(isLeft ? 'left-toast-title' : 'right-toast-title');
             const sEl = document.getElementById(isLeft ? 'left-toast-sub' : 'right-toast-sub');
-            tEl.className = `text-base sm:text-2xl font-black cyber-font italic cutin-text-shadow tracking-wider truncate ${colorClass}`;
+            tEl.className = `text-lg sm:text-2xl font-black cyber-font italic cutin-text-shadow tracking-wider truncate ${colorClass}`;
             tEl.innerText = title;
             sEl.innerText = sub;
             box.classList.remove('opacity-0', isLeft ? '-translate-x-12' : 'translate-x-12');
@@ -4232,9 +4238,13 @@
             const statusText = document.getElementById('overdrive-status-text');
             const evBtn = document.getElementById('btn-evolve-prominent');
             const evNext = document.getElementById('btn-evolve-next-lv');
+            const mobPct = document.getElementById('mobile-skill-pct');
+            const mobBtn = document.getElementById('mobile-skill-btn');
 
+            const pct = Math.round(mana.p);
             pBar.style.width = `${mana.p}%`;
-            document.getElementById('hud-mana').innerText = `${Math.round(mana.p)}%`;
+            document.getElementById('hud-mana').innerText = `${pct}%`;
+            if (mobPct) mobPct.innerText = `${pct}%`;
 
             const canEvolve = skillLevel < 5 && roundsEvolvedThisRound < 2 && mana.p >= 100;
             evBtn.classList.toggle('hidden', !canEvolve);
@@ -4243,23 +4253,27 @@
             const sMeta = SKILL_META[cfgSkill];
             if (pPaddle.prechargedSkill) {
                 barContainer.classList.add('overdrive-ready');
+                if (mobBtn) mobBtn.classList.add('overdrive-ready');
                 statusText.innerText = `🔥 【${sMeta.name}】已上膛！100%絕對防禦破球並轟出必殺`;
                 statusText.className = 'text-amber-300 tracking-wider animate-pulse';
             } else if (mana.p >= 100) {
                 barContainer.classList.add('overdrive-ready');
+                if (mobBtn) mobBtn.classList.add('overdrive-ready');
                 statusText.innerText = isTouchMode
-                    ? `🔥 超能全滿！【雙指輕點】釋放 ${sMeta.name} ·【雙指連按2次】殺球`
+                    ? `🔥 超能全滿！點擊右下角【必殺技】釋放 ${sMeta.name}`
                     : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} ·【D鍵/Ctrl】殺球`;
                 statusText.className = 'text-amber-300 tracking-wider';
             } else if (mana.p >= 80) {
                 barContainer.classList.add('overdrive-ready');
+                if (mobBtn) mobBtn.classList.add('overdrive-ready');
                 statusText.innerText = isTouchMode
-                    ? `⚡ 已達 80% 反制門檻！敵方開大時【雙指輕點】觸發融合神技`
+                    ? `⚡ 已達 80% 反制門檻！敵方開大時點擊【必殺技】觸發融合神技`
                     : `⚡ 已達 80% 反制門檻！敵方開大時按【空白鍵】觸發融合神技`;
                 statusText.className = 'text-cyan-200 tracking-wider';
             } else {
                 barContainer.classList.remove('overdrive-ready');
-                statusText.innerText = `⚡ 超能核心蓄力中 (${Math.round(mana.p)}% · 80%反制必接 / 100%必殺)`;
+                if (mobBtn) mobBtn.classList.remove('overdrive-ready');
+                statusText.innerText = `⚡ 超能核心蓄力中 (${pct}% · 80%反制必接 / 100%必殺)`;
                 statusText.className = 'text-slate-300 tracking-wider';
             }
         }
@@ -4294,7 +4308,6 @@
         function initMatch(fromP2P = false) {
             sfx.init();
             requestAppFullscreen();
-            resizeCanvas();
 
             if (gameMode === 'p2p' && isHost && !fromP2P) {
                 sendP2P({ type: 'COUNTDOWN', timestamp: Date.now() });
@@ -4313,7 +4326,11 @@
             document.getElementById('hud-skill-name-short').className = `text-xs font-black ${sMeta.textCls}`;
             document.getElementById('hud-skill-icon-box').style.borderColor = sMeta.color;
 
+            const mobEmoji = document.getElementById('mobile-skill-emoji');
+            if (mobEmoji) mobEmoji.innerText = sMeta.name.slice(0, 2);
+
             restartMatch();
+            resizeCanvas();
         }
 
         function requestRematch() {
@@ -4376,6 +4393,7 @@
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.add('hidden');
             document.getElementById('bottom-overdrive-hud').classList.add('hidden');
+            document.getElementById('mobile-action-cluster').classList.add('hidden');
             document.getElementById('info-drawer').classList.add('hidden');
             document.getElementById('setup-modal').classList.remove('hidden');
         }
