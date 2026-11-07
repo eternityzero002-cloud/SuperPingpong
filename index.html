@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER PONG 2077 - 24超能×殺球破防×電競街機終極版</title>
+    <title>CYBER PONG 2077 - 荒野展櫃×ASD殺球×24超能質變終極版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { user-select: none; -webkit-user-select: none; touch-action: none; box-sizing: border-box; }
-        /* 允許手機端在選單與技能列表內順暢上下滑動 */
         .touch-scroll, .touch-scroll * {
             touch-action: pan-y !important;
             -webkit-overflow-scrolling: touch;
@@ -21,23 +20,38 @@
         }
         .cyber-font { font-family: 'Orbitron', 'Noto Sans TC', sans-serif; }
         .cyber-panel {
-            background: rgba(8, 14, 30, 0.86);
+            background: rgba(8, 14, 30, 0.88);
             border: 1px solid rgba(0, 242, 254, 0.45);
             box-shadow: 0 0 18px rgba(0, 242, 254, 0.16);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
         .cyber-btn {
             background: linear-gradient(135deg, rgba(255, 0, 128, 0.16) 0%, rgba(0, 242, 254, 0.16) 100%);
             border: 1px solid rgba(255, 255, 255, 0.24);
-            transition: all 0.15s ease;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .cyber-btn:hover, .cyber-btn.active {
-            background: linear-gradient(135deg, rgba(255, 0, 128, 0.6) 0%, rgba(0, 242, 254, 0.6) 100%);
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.65) 0%, rgba(0, 242, 254, 0.65) 100%);
             border-color: #00f2fe;
-            box-shadow: 0 0 16px rgba(0, 242, 254, 0.6);
-            transform: translateY(-1px);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.65);
+            transform: translateY(-2px) scale(1.02);
         }
         .cyber-btn:active { transform: scale(0.95); }
+        .brawl-card {
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.88) 100%);
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .brawl-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 242, 254, 0.75);
+        }
+        .brawl-card.active {
+            background: linear-gradient(160deg, rgba(8, 47, 73, 0.95) 0%, rgba(59, 7, 100, 0.9) 100%);
+            border-color: #fde047;
+            box-shadow: 0 0 22px rgba(253, 224, 71, 0.55), inset 0 0 12px rgba(0, 242, 254, 0.35);
+            transform: translateY(-3px) scale(1.03);
+        }
         @keyframes overdrivePulse {
             0%, 100% { box-shadow: 0 0 12px #00f2fe, inset 0 0 8px #00f2fe; border-color: #00f2fe; }
             50% { box-shadow: 0 0 28px #fde047, 0 0 45px #ec4899, inset 0 0 14px #fff; border-color: #fde047; }
@@ -58,7 +72,7 @@
     <div id="game-container" class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#03050c]">
         <canvas id="gameCanvas" class="block w-full h-full cursor-none"></canvas>
 
-        <!-- 頂部極簡街機 HUD（新增 5 分鐘計時器與球拍耐久顯示） -->
+        <!-- 頂部極簡街機 HUD -->
         <div id="in-game-hud" class="absolute top-2.5 inset-x-2.5 md:inset-x-6 z-20 flex justify-between items-start pointer-events-none hidden">
             <div class="flex flex-col gap-1.5">
                 <div class="cyber-panel px-3 py-1.5 rounded-xl flex items-center gap-2 pointer-events-auto">
@@ -106,7 +120,7 @@
             </div>
         </div>
 
-        <!-- 底部中央：超顯眼獨立「超能力必殺能量槽」、進化大按鈕與常駐灰色一行小字操作說明 -->
+        <!-- 底部中央：超能力必殺槽、進化大按鈕與自動適配單行提示 -->
         <div id="bottom-overdrive-hud" class="fixed bottom-2 inset-x-0 z-20 flex flex-col items-center gap-1 pointer-events-none hidden px-3">
             <button onclick="evolvePlayerSkill()" id="btn-evolve-prominent" class="hidden pointer-events-auto evolve-mega-btn px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 text-slate-950 font-black text-xs sm:text-sm cyber-font border-2 border-white flex items-center justify-center gap-1.5 shadow-2xl">
                 <span>⬆️ 能量全滿！點擊或【雙指下滑 / E鍵】進化至</span>
@@ -124,9 +138,8 @@
                 </div>
             </div>
 
-            <!-- 常駐灰色一行小字操作說明 -->
             <div id="controls-onboarding" class="text-[10px] sm:text-xs text-slate-400 bg-slate-950/85 px-3 py-0.5 rounded-full border border-slate-700/50 whitespace-nowrap max-w-[98vw] overflow-hidden text-ellipsis text-center">
-                💻 電腦：滑鼠移動(前壓近拉/退台長拉) · 左鍵旋球 · Ctrl殺球 · 右鍵高球 · 空白鍵必殺 · E進化 ｜ 📱 手機：單指滑動 · 單指連點2下殺球 · 雙指輕點必殺 · 雙指上滑高球 · 下滑進化
+                📱 單指全向滑動 · 雙指輕點必殺 · 雙指連按2次殺球 · 雙指上滑高球 · 雙指下滑進化
             </div>
         </div>
 
@@ -177,66 +190,184 @@
             </div>
         </div>
 
-        <!-- 戰前準備選單 -->
-        <div id="setup-modal" class="touch-scroll absolute inset-0 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
-            <div class="cyber-panel max-w-5xl w-full rounded-2xl p-3.5 sm:p-5 flex flex-col shadow-[0_0_50px_rgba(0,242,254,0.25)] pointer-events-auto my-auto">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
-                    <div>
-                        <h1 class="text-xl sm:text-3xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-500">
-                            CYBER PONG 2077 : SMASH & OVERDRIVE
-                        </h1>
-                        <p class="text-slate-300 text-[11px]">5分鐘計時賽 · Ctrl/雙擊殺球與破球機制 · 長拉與近拉 · 24大超能(含🧲磁極/🪃迴旋/💣星雷/🎱彈珠)</p>
+        <!-- 🏆 《荒野亂鬥》(Brawl Stars) 風格戰前選角展櫃 UI -->
+        <div id="setup-modal" class="touch-scroll absolute inset-0 bg-gradient-to-b from-[#060b1e] via-[#091330] to-[#03050c] flex items-center justify-center p-2 sm:p-4 z-40 overflow-y-auto">
+            <div class="cyber-panel max-w-5xl w-full rounded-3xl p-3 sm:p-5 flex flex-col shadow-[0_0_60px_rgba(0,242,254,0.28)] pointer-events-auto my-auto border-2 border-cyan-400/50">
+                <div class="flex flex-wrap justify-between items-center gap-2 pb-2 border-b border-slate-700/70">
+                    <div class="flex items-center gap-2.5">
+                        <div class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black cyber-font text-xs shadow-md">
+                            🏆 BRAWL LOBBY
+                        </div>
+                        <div>
+                            <h1 class="text-lg sm:text-2xl font-black cyber-font italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-pink-400 leading-tight">
+                                CYBER PONG 2077 : HYPER BRAWL
+                            </h1>
+                            <p class="text-slate-400 text-[10px] sm:text-[11px]">24款超能球拍展櫃 · ASD觸控板/雙指雙擊殺球 · 旋球×技能異變</p>
+                        </div>
                     </div>
-                    <div class="flex bg-slate-900/90 p-1 rounded-xl border border-cyan-500/40">
-                        <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500 text-slate-950 transition">🤖 單機 AI</button>
-                        <button onclick="switchMode('p2p')" id="tab-mode-p2p" class="px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition">🌐 雙人聯機 (P2P)</button>
-                    </div>
-                </div>
-
-                <div id="ai-setup-section" class="mb-2.5">
-                    <div class="text-[11px] font-bold text-cyan-400 mb-1 uppercase tracking-wider">1. 選擇 AI 難度 (11分制 × 3局2勝 · 5分鐘限時)</div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="selectDiff('easy')" id="diff-easy" class="cyber-btn py-1.5 px-3 rounded-xl text-center">
-                            <div class="font-bold text-xs">休閒 EASY</div>
-                        </button>
-                        <button onclick="selectDiff('normal')" id="diff-normal" class="cyber-btn active py-1.5 px-3 rounded-xl text-center">
-                            <div class="font-bold text-xs text-cyan-300">標準 NORMAL</div>
-                        </button>
-                        <button onclick="selectDiff('hard')" id="diff-hard" class="cyber-btn py-1.5 px-3 rounded-xl text-center">
-                            <div class="font-bold text-xs text-pink-400">狂暴宗師 INSANE 🔥</div>
-                        </button>
+                    <div class="flex items-center gap-2">
+                        <div class="flex bg-slate-950/90 p-1 rounded-xl border border-cyan-500/40">
+                            <button onclick="switchMode('ai')" id="tab-mode-ai" class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-400 text-slate-950 transition">🤖 單機聯賽</button>
+                            <button onclick="switchMode('p2p')" id="tab-mode-p2p" class="px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition">🌐 好友對戰 (P2P)</button>
+                        </div>
                     </div>
                 </div>
 
-                <div id="p2p-setup-section" class="hidden mb-2.5 p-3 rounded-xl bg-slate-950/90 border border-pink-500/40">
+                <!-- 荒野亂鬥風：中央 3D 球拍懸浮展示台 + 角色定位預覽 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 my-2.5 items-center bg-gradient-to-r from-slate-950/85 via-blue-950/45 to-slate-950/85 p-3 rounded-2xl border border-cyan-500/30 relative overflow-hidden">
+                    <div class="lg:col-span-5 flex items-center justify-center relative h-36 sm:h-44">
+                        <button onclick="prevBrawler()" class="z-10 w-9 h-9 rounded-full cyber-btn flex items-center justify-center text-base font-black text-cyan-300 shadow-lg">◀</button>
+                        <div onclick="openBrawlerDetailModal()" class="cursor-pointer relative flex flex-col items-center justify-center w-48 h-full group" title="點擊查看完整四維數值">
+                            <canvas id="showcaseCanvas" width="200" height="165" class="block group-hover:scale-105 transition-transform duration-200"></canvas>
+                            <div class="absolute bottom-1 px-2.5 py-0.5 rounded-full bg-slate-900/90 border border-amber-400/70 text-[10px] font-black text-amber-300 shadow">
+                                🔍 點擊檢視球拍數值
+                            </div>
+                        </div>
+                        <button onclick="nextBrawler()" class="z-10 w-9 h-9 rounded-full cyber-btn flex items-center justify-center text-base font-black text-cyan-300 shadow-lg">▶</button>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col justify-between gap-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span id="showcase-role-badge" class="px-2.5 py-0.5 rounded-md bg-rose-500/20 border border-rose-400 text-rose-300 text-[10px] font-black tracking-wider uppercase">破壞型 DESTRUCTION</span>
+                                <span class="text-[10px] font-bold text-amber-300 cyber-font">★ MYTHIC PADDLE</span>
+                            </div>
+                            <button onclick="openBrawlerDetailModal()" class="px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500/30 to-fuchsia-500/30 hover:from-cyan-500/60 hover:to-fuchsia-500/60 border border-cyan-300 text-xs font-black text-white flex items-center gap-1 shadow-md transition">
+                                📊 詳細數值與殺球突變
+                            </button>
+                        </div>
+
+                        <div>
+                            <div id="showcase-title" class="text-xl sm:text-2xl font-black cyber-font text-cyan-300">⚛️ 量子躍遷</div>
+                            <p id="showcase-desc" class="text-xs text-slate-200 mt-0.5">雙色蟲洞瞬間傳送球路至死角</p>
+                            <p id="showcase-smash" class="text-[11px] text-rose-300 font-bold mt-0.5">💥 殺球突變：穿透蟲洞後球體瞬時落地，完全跳過飛行過程！</p>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-2 pt-1">
+                            <div class="bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/70">
+                                <div class="flex justify-between text-[10px] font-bold text-rose-300"><span>💥力量</span><span id="mini-stat-pwr">90</span></div>
+                                <div class="w-full bg-slate-950 h-1.5 rounded-full mt-1 overflow-hidden"><div id="mini-bar-pwr" class="h-full bg-rose-500 rounded-full" style="width:90%"></div></div>
+                            </div>
+                            <div class="bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/70">
+                                <div class="flex justify-between text-[10px] font-bold text-cyan-300"><span>⚡速度</span><span id="mini-stat-spd">85</span></div>
+                                <div class="w-full bg-slate-950 h-1.5 rounded-full mt-1 overflow-hidden"><div id="mini-bar-spd" class="h-full bg-cyan-400 rounded-full" style="width:85%"></div></div>
+                            </div>
+                            <div class="bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/70">
+                                <div class="flex justify-between text-[10px] font-bold text-emerald-300"><span>🌪️旋轉</span><span id="mini-stat-spn">88</span></div>
+                                <div class="w-full bg-slate-950 h-1.5 rounded-full mt-1 overflow-hidden"><div id="mini-bar-spn" class="h-full bg-emerald-400 rounded-full" style="width:88%"></div></div>
+                            </div>
+                            <div class="bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/70">
+                                <div class="flex justify-between text-[10px] font-bold text-amber-300"><span>🛡️容錯</span><span id="mini-stat-ctl">82</span></div>
+                                <div class="w-full bg-slate-950 h-1.5 rounded-full mt-1 overflow-hidden"><div id="mini-bar-ctl" class="h-full bg-amber-400 rounded-full" style="width:82%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P2P 聯機面板 -->
+                <div id="p2p-setup-section" class="hidden mb-2 p-3 rounded-xl bg-slate-950/90 border border-pink-500/40">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div class="flex flex-col gap-1.5">
+                        <div class="flex flex-col gap-1">
                             <div class="text-xs font-bold text-cyan-300">🏠 創建房間 (HOST)</div>
                             <div class="flex items-center gap-2">
-                                <input id="p2p-pass-host" type="password" maxlength="6" placeholder="選填密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-28">
-                                <button onclick="createP2PRoom()" class="cyber-btn px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300">生成房間碼</button>
+                                <input id="p2p-pass-host" type="password" maxlength="6" placeholder="選填密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white w-28">
+                                <button onclick="createP2PRoom()" class="cyber-btn px-3 py-1 rounded-lg text-xs font-bold text-cyan-300">生成房間碼</button>
                             </div>
-                            <div id="p2p-host-code-display" class="text-xs text-amber-300 font-black cyber-font mt-0.5">尚未創建房間</div>
+                            <div id="p2p-host-code-display" class="text-xs text-amber-300 font-black cyber-font">尚未創建房間</div>
                         </div>
-                        <div class="flex flex-col gap-1.5">
+                        <div class="flex flex-col gap-1">
                             <div class="text-xs font-bold text-pink-300">🔗 加入房間 (JOIN)</div>
                             <div class="flex items-center gap-1.5">
-                                <input id="p2p-code-join" type="text" maxlength="6" placeholder="6位房間碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white uppercase cyber-font w-28">
-                                <input id="p2p-pass-join" type="password" maxlength="6" placeholder="密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white w-20">
-                                <button onclick="joinP2PRoom()" class="cyber-btn px-3 py-1.5 rounded-lg text-xs font-bold text-pink-300">連線</button>
+                                <input id="p2p-code-join" type="text" maxlength="6" placeholder="6位房間碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white uppercase cyber-font w-28">
+                                <input id="p2p-pass-join" type="password" maxlength="6" placeholder="密碼" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white w-20">
+                                <button onclick="joinP2PRoom()" class="cyber-btn px-3 py-1 rounded-lg text-xs font-bold text-pink-300">連線</button>
                             </div>
                             <div id="p2p-status-text" class="text-[11px] text-slate-400">狀態：待機中</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="text-[11px] font-bold text-pink-400 mb-1 uppercase tracking-wider">2. 選擇專屬超能力與球拍 (24 選 1 · 手機可上下滑動列表)</div>
-                    <div class="touch-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[38vh] sm:max-h-[42vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
+                <!-- 24 英雄球拍卡牌庫 -->
+                <div class="mb-2.5">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[11px] font-black text-amber-300 uppercase tracking-wider">⚡ 選擇出戰球拍與超能核心 (24 BRAWLERS · 點擊選取 / 點擊🔍看詳情)</span>
+                        <span class="text-[10px] text-slate-400">支援手機上下滑動</span>
+                    </div>
+                    <div class="touch-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5 max-h-[28vh] sm:max-h-[30vh] overflow-y-auto pr-1" id="skill-grid-container"></div>
                 </div>
 
-                <button onclick="initMatch()" id="btn-start-match" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500 hover:brightness-110 active:scale-98 text-white font-black text-sm sm:text-base cyber-font rounded-xl shadow-[0_0_25px_rgba(0,242,254,0.55)] transition">
-                    START HYPER MATCH (開始爽快對決)
+                <!-- 底部：難度選擇 + 開戰按鈕 -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center pt-1">
+                    <div id="ai-setup-section" class="sm:col-span-7 grid grid-cols-3 gap-1.5">
+                        <button onclick="selectDiff('easy')" id="diff-easy" class="cyber-btn py-2 px-2 rounded-xl text-center">
+                            <div class="font-black text-xs">休閒 EASY</div>
+                        </button>
+                        <button onclick="selectDiff('normal')" id="diff-normal" class="cyber-btn active py-2 px-2 rounded-xl text-center">
+                            <div class="font-black text-xs text-cyan-300">標準 NORMAL</div>
+                        </button>
+                        <button onclick="selectDiff('hard')" id="diff-hard" class="cyber-btn py-2 px-2 rounded-xl text-center">
+                            <div class="font-black text-xs text-pink-400">宗師 INSANE 🔥</div>
+                        </button>
+                    </div>
+                    <button onclick="initMatch()" id="btn-start-match" class="sm:col-span-5 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base sm:text-lg cyber-font rounded-2xl border-2 border-white shadow-[0_0_28px_rgba(251,191,36,0.75)] transition">
+                        ⚡ BATTLE! 開始對決
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📊 荒野亂鬥風「球拍詳細數值與機制百科」彈窗 -->
+        <div id="brawler-detail-modal" class="touch-scroll hidden absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 z-50 pointer-events-auto overflow-y-auto">
+            <div class="cyber-panel max-w-lg w-full rounded-3xl p-5 border-2 border-amber-400 shadow-[0_0_50px_rgba(251,191,36,0.35)] space-y-3 my-auto">
+                <div class="flex justify-between items-start border-b border-slate-700 pb-2">
+                    <div>
+                        <span id="detail-role" class="text-[10px] font-black px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">定位</span>
+                        <h3 id="detail-name" class="text-2xl font-black cyber-font text-amber-300 mt-1">⚛️ 量子躍遷</h3>
+                    </div>
+                    <button onclick="closeBrawlerDetailModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-600 text-white font-black flex items-center justify-center">✕</button>
+                </div>
+
+                <div class="space-y-2 bg-slate-950/90 p-3.5 rounded-2xl border border-slate-800">
+                    <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">PADDLE ATTRIBUTES (球拍四維屬性)</div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-rose-300 mb-0.5"><span>💥 力量 (Power · 破防與削耐久)</span><span id="detail-val-pwr">90 / 100</span></div>
+                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden"><div id="detail-bar-pwr" class="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-full" style="width:90%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-cyan-300 mb-0.5"><span>⚡ 速度 (Speed · 飛行與過網加速)</span><span id="detail-val-spd">85 / 100</span></div>
+                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden"><div id="detail-bar-spd" class="h-full bg-gradient-to-r from-blue-500 to-cyan-300 rounded-full" style="width:85%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-emerald-300 mb-0.5"><span>🌪️ 旋轉 (Spin · 弧圈曲率與側拐)</span><span id="detail-val-spn">88 / 100</span></div>
+                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden"><div id="detail-bar-spn" class="h-full bg-gradient-to-r from-teal-500 to-emerald-300 rounded-full" style="width:88%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-amber-300 mb-0.5"><span>🛡️ 容錯 (Control · 甜區與防失誤)</span><span id="detail-val-ctl">82 / 100</span></div>
+                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden"><div id="detail-bar-ctl" class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width:82%"></div></div>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                    <div class="p-2.5 rounded-xl bg-cyan-950/50 border border-cyan-500/40">
+                        <div class="font-black text-cyan-300 mb-0.5">⚡ 主動必殺技功效：</div>
+                        <div id="detail-active-desc" class="text-slate-200"></div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-rose-950/50 border border-rose-500/40">
+                        <div class="font-black text-rose-300 mb-0.5">💥 搭配殺球 (Smash) 突變效果：</div>
+                        <div id="detail-smash-desc" class="text-slate-200"></div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/40">
+                        <div class="font-black text-amber-300 mb-0.5">✦ 專屬常駐被動：</div>
+                        <div id="detail-passive-desc" class="text-slate-200"></div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40">
+                        <div class="font-black text-purple-300 mb-0.5">🌈 旋球 × 技能 化學反應 ＆ 推薦融合：</div>
+                        <div id="detail-fusion-tips" class="text-slate-200"></div>
+                    </div>
+                </div>
+
+                <button onclick="closeBrawlerDetailModal()" class="w-full py-2.5 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black rounded-xl cyber-font text-sm">
+                    確認裝備此球拍 (EQUIPPED)
                 </button>
             </div>
         </div>
@@ -255,66 +386,66 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <button onclick="requestRematch()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-sm cyber-font rounded-xl">PLAY AGAIN (再戰一場)</button>
-                    <button onclick="exitToMenu()" class="w-full py-2.5 cyber-btn text-white font-bold text-xs rounded-xl">更換技能 / 難度 (MENU)</button>
+                    <button onclick="exitToMenu()" class="w-full py-2.5 cyber-btn text-white font-bold text-xs rounded-xl">更換球拍 / 難度 (LOBBY)</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ================= 一、全新 24 大基礎技能（移除 4 舊技能 · 新增磁極/迴旋/星雷/彈珠） =================
+        // ================= 一、24 大超能球拍完整圖鑑 =================
         const ARCH_STYLE = {
-            fire:      { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400' },
-            thunder:   { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300' },
-            gravity:   { color: '#9333ea', glow: '#e879f9', textCls: 'text-purple-300' },
-            sonic:     { color: '#10b981', glow: '#a7f3d0', textCls: 'text-emerald-300' },
-            ghost:     { color: '#e879f9', glow: '#38bdf8', textCls: 'text-fuchsia-300' },
-            prism:     { color: '#00f2fe', glow: '#ffffff', textCls: 'text-cyan-300' },
-            chrono:    { color: '#38bdf8', glow: '#fde047', textCls: 'text-sky-300' },
-            leech:     { color: '#f43f5e', glow: '#fda4af', textCls: 'text-rose-400' },
-            mirror:    { color: '#f8fafc', glow: '#38bdf8', textCls: 'text-slate-200' },
-            laser:     { color: '#06b6d4', glow: '#f43f5e', textCls: 'text-cyan-200' },
-            void:      { color: '#7e22ce', glow: '#c084fc', textCls: 'text-purple-300' },
-            frost:     { color: '#38bdf8', glow: '#ffffff', textCls: 'text-sky-200' },
-            toxin:     { color: '#84cc16', glow: '#d9f99d', textCls: 'text-lime-400' },
-            cyclone:   { color: '#8b5cf6', glow: '#f0abfc', textCls: 'text-violet-300' },
-            aqua:      { color: '#0ea5e9', glow: '#a5f3fc', textCls: 'text-cyan-200' },
-            nova:      { color: '#f59e0b', glow: '#fef08a', textCls: 'text-yellow-200' },
-            web:       { color: '#cbd5e1', glow: '#ffffff', textCls: 'text-slate-300' },
-            twin:      { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300' },
-            rewind:    { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300' },
-            quantum:   { color: '#00f2fe', glow: '#f59e0b', textCls: 'text-cyan-300' },
-            magnet:    { color: '#ef4444', glow: '#3b82f6', textCls: 'text-rose-300' },
-            boomerang: { color: '#eab308', glow: '#fef08a', textCls: 'text-amber-300' },
-            bomb:      { color: '#f97316', glow: '#ef4444', textCls: 'text-orange-400' },
-            pinball:   { color: '#d946ef', glow: '#fde047', textCls: 'text-fuchsia-300' }
+            fire:      { color: '#ff3b00', glow: '#fde047', textCls: 'text-amber-400', shape: 'flame' },
+            thunder:   { color: '#facc15', glow: '#38bdf8', textCls: 'text-yellow-300', shape: 'bolt' },
+            gravity:   { color: '#9333ea', glow: '#e879f9', textCls: 'text-purple-300', shape: 'ring' },
+            sonic:     { color: '#10b981', glow: '#a7f3d0', textCls: 'text-emerald-300', shape: 'blade' },
+            ghost:     { color: '#e879f9', glow: '#38bdf8', textCls: 'text-fuchsia-300', shape: 'star' },
+            prism:     { color: '#00f2fe', glow: '#ffffff', textCls: 'text-cyan-300', shape: 'cube' },
+            chrono:    { color: '#38bdf8', glow: '#fde047', textCls: 'text-sky-300', shape: 'ring' },
+            leech:     { color: '#f43f5e', glow: '#fda4af', textCls: 'text-rose-400', shape: 'star' },
+            mirror:    { color: '#f8fafc', glow: '#38bdf8', textCls: 'text-slate-200', shape: 'cube' },
+            laser:     { color: '#06b6d4', glow: '#f43f5e', textCls: 'text-cyan-200', shape: 'bolt' },
+            void:      { color: '#7e22ce', glow: '#c084fc', textCls: 'text-purple-300', shape: 'ring' },
+            frost:     { color: '#38bdf8', glow: '#ffffff', textCls: 'text-sky-200', shape: 'hex' },
+            toxin:     { color: '#84cc16', glow: '#d9f99d', textCls: 'text-lime-400', shape: 'skull' },
+            cyclone:   { color: '#8b5cf6', glow: '#f0abfc', textCls: 'text-violet-300', shape: 'blade' },
+            aqua:      { color: '#0ea5e9', glow: '#a5f3fc', textCls: 'text-cyan-200', shape: 'ring' },
+            nova:      { color: '#f59e0b', glow: '#fef08a', textCls: 'text-yellow-200', shape: 'star' },
+            web:       { color: '#cbd5e1', glow: '#ffffff', textCls: 'text-slate-300', shape: 'hex' },
+            twin:      { color: '#14b8a6', glow: '#99f6e4', textCls: 'text-teal-300', shape: 'cube' },
+            rewind:    { color: '#3b82f6', glow: '#dbeafe', textCls: 'text-blue-300', shape: 'ring' },
+            quantum:   { color: '#00f2fe', glow: '#f59e0b', textCls: 'text-cyan-300', shape: 'star' },
+            magnet:    { color: '#ef4444', glow: '#3b82f6', textCls: 'text-rose-300', shape: 'ring' },
+            boomerang: { color: '#eab308', glow: '#fef08a', textCls: 'text-amber-300', shape: 'blade' },
+            bomb:      { color: '#f97316', glow: '#ef4444', textCls: 'text-orange-400', shape: 'flame' },
+            pinball:   { color: '#d946ef', glow: '#fde047', textCls: 'text-fuchsia-300', shape: 'star' }
         };
 
         const BASE_SKILLS = [
-            { id: 'quantum',   name: '⚛️ 量子躍遷', desc: '雙色蟲洞瞬間傳送球路至死角', passiveName: '疊加態', passiveDesc: '擊球+6%能量且相位偏移', arch: 'quantum' },
-            { id: 'fire',      name: '🔥 熾焰重扣', desc: '單發極致暴力·強行震飛敵拍削耐久', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量·破防+15%', arch: 'fire' },
-            { id: 'thunder',   name: '⚡ 雷霆瞬影', desc: '空中3次大跨度Z字折躍·絕不走直線', passiveName: '疾電', passiveDesc: '球拍移速+12%', arch: 'thunder' },
-            { id: 'gravity',   name: '🪐 黑洞重力', desc: '極重球體禁挑高球·強震動零彈跳', passiveName: '引力井', passiveDesc: '甜區半徑+12%·球重壓制', arch: 'gravity' },
-            { id: 'sonic',     name: '💨 音速疾風', desc: '越打越快無限疊速·拖尾逐拍暴漲', passiveName: '疾風', passiveDesc: '揮拍速度+15%·連拍疊速', arch: 'sonic' },
-            { id: 'ghost',     name: '🌀 次元幽靈', desc: '4球大散開4落點·真假難分落地互換', passiveName: '幻影', passiveDesc: 'AI預判誤差+18%', arch: 'ghost' },
-            { id: 'prism',     name: '🛡️ 稜鏡力場', desc: '張開全息盾牆自動攔截並必殺反彈', passiveName: '稜鏡', passiveDesc: '球拍耐久損耗-40%', arch: 'prism' },
-            { id: 'chrono',    name: '⏳ 時滯領域', desc: '空中明顯定格0.35秒後2.2倍速暴衝', passiveName: '時之沙', passiveDesc: '能量獲取+15%', arch: 'chrono' },
-            { id: 'leech',     name: '🩸 熵能汲取', desc: '抽乾來球力量轉化己用·敵越強我越強', passiveName: '吸取', passiveDesc: '每擊偷取4%能量與球威', arch: 'leech' },
-            { id: 'mirror',    name: '🪞 鏡像複製', desc: '真球100%+假球50%威力雙球同時齊發', passiveName: '鏡映', passiveDesc: '融合威力+15%', arch: 'mirror' },
-            { id: 'laser',     name: '💎 相位雷射', desc: '零延遲雷射瞬發命中·極限反應考驗', passiveName: '精準', passiveDesc: '甜區判定+12%', arch: 'laser' },
-            { id: 'void',      name: '🌑 虛空相位', desc: '過網後球與落點完全隱形·拍前突襲', passiveName: '虛無', passiveDesc: 'AI預判誤差+18%', arch: 'void' },
-            { id: 'frost',     name: '❄️ 絕對冰霜', desc: '凍結敵方整個半場桌面·劇烈溜冰打滑', passiveName: '冰晶', passiveDesc: '冰面減速與打滑+65%', arch: 'frost' },
-            { id: 'toxin',     name: '☠️ 劇毒腐蝕', desc: '三連毒沼腐蝕球拍耐久·走位左右顛倒', passiveName: '毒素', passiveDesc: '毒池+50%·耐久腐蝕加倍', arch: 'toxin' },
-            { id: 'cyclone',   name: '🌪️ 氣旋龍捲', desc: '狂暴大S型橫跨球桌·敵旋拍直接飛出界', passiveName: '螺旋', passiveDesc: '旋球曲率+25%', arch: 'cyclone' },
-            { id: 'aqua',      name: '🌊 潮汐水能', desc: '深海潮汐大幅減速敵方回球任你宰割', passiveName: '潮汐', passiveDesc: '敵方來球速度-20%', arch: 'aqua' },
-            { id: 'nova',      name: '💫 新星爆發', desc: '開啟3秒爆發期(可疊加)·每拍連續震飛敵拍', passiveName: '星核', passiveDesc: '擊球球速+12%', arch: 'nova' },
-            { id: 'web',       name: '🕸️ 相位蛛網', desc: '鋪滿八角巨網黏球急停+綁死對手0.9秒', passiveName: '黏絲', passiveDesc: '蛛網持續+50%', arch: 'web' },
-            { id: 'twin',      name: '👥 雙子分身', desc: '召喚分身協防·真身與分身同觸觸發雙倍合擊', passiveName: '雙生', passiveDesc: '分身擋球+25%能量', arch: 'twin' },
-            { id: 'rewind',    name: '⏪ 時光倒流', desc: '飛抵敵拍前瞬間倒帶回球網並改射空檔', passiveName: '回檔', passiveDesc: '每局免費1次漏球回溯', arch: 'rewind' },
-            { id: 'magnet',    name: '🧲 磁極反轉', desc: '同極相斥·敵拍越靠近球越自動彈開閃避', passiveName: '磁浮', passiveDesc: '自拍異極微幅吸附來球', arch: 'magnet' },
-            { id: 'boomerang', name: '🪃 次元迴旋', desc: '落地彈起後180度迴旋往球網方向倒飛', passiveName: '迴旋', passiveDesc: '側旋曲率額外+25%', arch: 'boomerang' },
-            { id: 'bomb',      name: '💣 定時星雷', desc: '頭頂3秒倒數炸彈·歸零直接引爆炸飛敵拍', passiveName: '引信', passiveDesc: '殺球使炸彈倒數加快0.6秒', arch: 'bomb' },
-            { id: 'pinball',   name: '🎱 星軌彈珠', desc: '兩側升起霓虹彈射軌·撞擊邊線高速Z字折返', passiveName: '彈射', passiveDesc: '殺球出界率-50%·擦邊率提升', arch: 'pinball' }
+            { id: 'quantum',   role: '詭術型 TRICKSTER', stats: { pwr: 84, spd: 94, spn: 90, ctl: 86 }, name: '⚛️ 量子躍遷', desc: '網前生成雙色蟲洞，穿過時直接傳送至對手大角空檔', smashDesc: '穿透蟲洞後球體【瞬時落地】，完全跳過飛行過程！', passiveName: '疊加態', passiveDesc: '擊球+6%能量且回球隨機相位偏移', fusionTips: '推薦配對：🔥耀斑星門 / ⚡閃電折躍', arch: 'quantum' },
+            { id: 'fire',      role: '破壞型 DESTROYER', stats: { pwr: 99, spd: 90, spn: 78, ctl: 76 }, name: '🔥 熾焰重扣', desc: '落地炸出火柱加速1.4倍，強行將對手球拍震開並震退80px', smashDesc: '觸發【熔岩斷頭台】：直接造成 45% 球拍耐久破壞，極易直接破球！', passiveName: '餘燼', passiveDesc: '擊球額外+5%能量·破防率+15%', fusionTips: '推薦配對：⚡雷炎裁決 / 🪐熔岩核心', arch: 'fire' },
+            { id: 'thunder',   role: '極速型 ASSASSIN',  stats: { pwr: 88, spd: 98, spn: 85, ctl: 80 }, name: '⚡ 雷霆瞬影', desc: '空中固定3次大跨度直角「Z字折躍」，連落點同步跳躍絕不走直線', smashDesc: '落地引發【天罰雷籠】：全場落雷將對手球拍麻痺鎖死 0.9 秒！', passiveName: '疾電', passiveDesc: '球拍全向移速+12%', fusionTips: '推薦配對：🔥雷炎裁決 / 💨超電磁砲', arch: 'thunder' },
+            { id: 'gravity',   role: '控場型 CONTROLLER',stats: { pwr: 96, spd: 78, spn: 92, ctl: 88 }, name: '🪐 黑洞重力', desc: '極重球體扣雙倍耐久·禁止挑高球(挑高必壓回)·落地零彈跳貼地平滾', smashDesc: '產生【引力坍縮】：強制將對手球拍吸向落點中心無法向兩側撲救！', passiveName: '引力井', passiveDesc: '甜區半徑+12%·球重壓制', fusionTips: '推薦配對：🌑終極奇點 / 💨重力彈弓', arch: 'gravity' },
+            { id: 'sonic',     role: '極速型 ASSASSIN',  stats: { pwr: 85, spd: 100, spn: 88, ctl: 82 }, name: '💨 音速疾風', desc: '對拉期間每一拍球速自動遞增15%(無限疊速)，背尾隨拍數成倍暴漲', smashDesc: '觸發【音障爆破】：突破音障產生衝擊波，直接抹消對手的旋球加成！', passiveName: '疾風', passiveDesc: '揮拍冷卻-15%·連拍自動疊速', fusionTips: '推薦配對：🌀音速殘影 / ⚡超電磁砲', arch: 'sonic' },
+            { id: 'ghost',     role: '詭術型 TRICKSTER', stats: { pwr: 82, spd: 88, spn: 96, ctl: 84 }, name: '🌀 次元幽靈', desc: '分裂4顆大散開實體球與4個落點光圈，真假難分，落地前真假互換', smashDesc: '4顆分身球同時燃燒殺球紫焰，對手猜錯假球將直接碎拍失分！', passiveName: '幻影', passiveDesc: 'AI預判誤差+18%', fusionTips: '推薦配對：🪞鏡幻分身 / 🕸️幻影蛛網', arch: 'ghost' },
+            { id: 'prism',     role: '守護型 DEFENDER',  stats: { pwr: 86, spd: 82, spn: 84, ctl: 98 }, name: '🛡️ 稜鏡力場', desc: '在己方台前張開全息實體盾牆，自動攔截敵方下一球並必殺反彈', smashDesc: '盾牆轉化為【重裝衝撞】：盾牆耐久加成並以殺球極速轟回死角！', passiveName: '稜鏡', passiveDesc: '球拍受到的耐久損耗降低40%', fusionTips: '推薦配對：💎稜鏡激光加農 / 👥雙盾壁壘', arch: 'prism' },
+            { id: 'chrono',    role: '控場型 CONTROLLER',stats: { pwr: 85, spd: 95, spn: 89, ctl: 90 }, name: '⏳ 時滯領域', desc: '球在網前明顯懸浮停頓0.35秒打亂節奏，隨後以2.2倍超高速暴衝下砸', smashDesc: '停頓延長至0.5秒，解除瞬間化為【極限近網短球】直接砸向網前死角！', passiveName: '時之沙', passiveDesc: '能量獲取效率+15%', fusionTips: '推薦配對：❄️時空凍結 / ⏪時間暫停', arch: 'chrono' },
+            { id: 'leech',     role: '詭術型 TRICKSTER', stats: { pwr: 92, spd: 86, spn: 85, ctl: 88 }, name: '🩸 熵能汲取', desc: '射出粗大猩紅鎖鏈抽乾來球速度與力量轉化己用：對手越強你打回去越強', smashDesc: '化為【鮮血斬擊】：抽走對手40%能量並直接恢復自身球拍 35% 耐久！', passiveName: '吸取', passiveDesc: '每擊偷取4%能量與基礎球威', fusionTips: '推薦配對：☠️腐蝕汲取 / 🛡️汲取壁壘', arch: 'leech' },
+            { id: 'mirror',    role: '詭術型 TRICKSTER', stats: { pwr: 90, spd: 89, spn: 92, ctl: 86 }, name: '🪞 鏡像複製', desc: '網前立起次元魔鏡，同時擊出真球(100%威力速度)與假球(50%威力速度)', smashDesc: '真假雙球皆升級為高速扣殺，對手若漏接假球將直接扣減 45% 耐久！', passiveName: '鏡映', passiveDesc: '觸發融合技時威力額外+15%', fusionTips: '推薦配對：🌀鏡幻分身 / 💫雙子新星', arch: 'mirror' },
+            { id: 'laser',     role: '極速型 ASSASSIN',  stats: { pwr: 76, spd: 100, spn: 72, ctl: 92 }, name: '💎 相位雷射', desc: '賣點為【零延遲瞬發】：觸球瞬間如雷射光束直接射達對方桌面(威力較輕)', smashDesc: '光束寬度暴增3倍，化為【貫穿粒子砲】落地零彈跳直接穿底線！', passiveName: '精準', passiveDesc: '甜區判定半徑擴大12%', fusionTips: '推薦配對：🌑次元湮滅 / 🎱光稜彈珠', arch: 'laser' },
+            { id: 'void',      role: '詭術型 TRICKSTER', stats: { pwr: 88, spd: 92, spn: 94, ctl: 82 }, name: '🌑 虛空相位', desc: '過網後球體、拖尾與落點圈100%完全隱形，直到對手拍前才突襲現形', smashDesc: '隱形期間進行一次【虛空橫移變向】，現形瞬間直接垂直暴扣！', passiveName: '虛無', passiveDesc: 'AI追蹤誤差率+18%', fusionTips: '推薦配對：🪐終極奇點 / ❄️凍結虛空', arch: 'void' },
+            { id: 'frost',     role: '控場型 CONTROLLER',stats: { pwr: 84, spd: 82, spn: 90, ctl: 92 }, name: '❄️ 絕對冰霜', desc: '將對手整個半場桌面完全凍結成巨型冰塊，對手移動產生劇烈溜冰打滑', smashDesc: '網前升起3根大型【極寒冰晶柱】，球撞擊冰柱會發生詭異反向折射！', passiveName: '冰晶', passiveDesc: '冰面減速與打滑失控強度+65%', fusionTips: '推薦配對：🌊極地冰川 / 🔥冰火湮滅', arch: 'frost' },
+            { id: 'toxin',     role: '控場型 CONTROLLER',stats: { pwr: 89, spd: 84, spn: 93, ctl: 85 }, name: '☠️ 劇毒腐蝕', desc: '炸開3灘冒泡酸液池，對手染毒後走位左右顛倒失常且快速腐蝕球拍耐久', smashDesc: '毒池引爆為【全場劇毒酸霧】：立即腐蝕對手 35% 球拍耐久並反轉走位！', passiveName: '毒素', passiveDesc: '毒沼範圍+50%·耐久腐蝕速度加倍', fusionTips: '推薦配對：🕸️劇毒蛛網 / 🌊腐蝕毒海', arch: 'toxin' },
+            { id: 'cyclone',   role: '控場型 CONTROLLER',stats: { pwr: 86, spd: 91, spn: 100, ctl: 80 }, name: '🌪️ 氣旋龍捲', desc: '空中呈極端大S型橫跨整張球桌蛇行，干擾對手預判與走位', smashDesc: '狂暴風眼將對手球拍【吹飛至球桌邊緣】並浮空硬直 0.65 秒！', passiveName: '螺旋', passiveDesc: '常規弧圈旋球曲率提升25%', fusionTips: '推薦配對：🌊毀滅颶風 / 🪃龍捲手裏劍', arch: 'cyclone' },
+            { id: 'aqua',      role: '守護型 DEFENDER',  stats: { pwr: 83, spd: 80, spn: 88, ctl: 95 }, name: '🌊 潮汐水能', desc: '掀起深海巨浪，直接將對手打過來的回球強制減速45%，化快球為慢球', smashDesc: '巨浪下砸形成【深海漩渦水牢】：對手球拍移速減緩70%且回球無力化！', passiveName: '潮汐', passiveDesc: '對手來球基礎速度常態降低20%', fusionTips: '推薦配對：❄️極地冰川 / 🔥蒸汽核爆', arch: 'aqua' },
+            { id: 'nova',      role: '破壞型 DESTROYER', stats: { pwr: 97, spd: 92, spn: 84, ctl: 82 }, name: '💫 新星爆發', desc: '開啟3秒【星核爆發期】(可疊加秒數)，期間每一拍落地皆核爆連續震開敵拍', smashDesc: '立即引爆累積星核，產生【全場超新星震爆】強行削掉對手 45% 耐久！', passiveName: '星核', passiveDesc: '自身擊球基礎球速常態+12%', fusionTips: '推薦配對：🔥太陽耀斑 / 💣超新星坍縮雷', arch: 'nova' },
+            { id: 'web',       role: '控場型 CONTROLLER',stats: { pwr: 82, spd: 78, spn: 95, ctl: 94 }, name: '🕸️ 相位蛛網', desc: '鋪滿白色八角巨網，球落地瞬間被蛛絲黏住急停，並射出蛛絲綁死敵拍0.9秒', smashDesc: '觸發【蛛絲橫向彈射】：球落地後被繃緊的蛛絲以90度橫向大角度彈開！', passiveName: '黏絲', passiveDesc: '蛛網覆蓋範圍與持續時間+50%', fusionTips: '推薦配對：☠️劇毒蛛網 / ⚡高壓電網', arch: 'web' },
+            { id: 'twin',      role: '守護型 DEFENDER',  stats: { pwr: 91, spd: 88, spn: 86, ctl: 96 }, name: '👥 雙子分身', desc: '召喚全息分身協防；若真身與分身同時觸球，觸發【雙子合擊】雙倍威力疊加', smashDesc: '真身與分身同步扣殺，轟出【十字交叉合扣】，破防率提升至200%！', passiveName: '雙生', passiveDesc: '分身救球成功時恢復25%能量與耐久', fusionTips: '推薦配對：🌀萬象分身 / 🛡️雙盾壁壘', arch: 'twin' },
+            { id: 'rewind',    role: '詭術型 TRICKSTER', stats: { pwr: 85, spd: 90, spn: 92, ctl: 95 }, name: '⏪ 時光倒流', desc: '飛抵敵拍前瞬間時間倒帶回球網中央並改射另一側死角；被動每局1次漏球回溯', smashDesc: '倒帶奇襲後球速暴增1.8倍，直接突襲對手因慣性無法回防的空檔！', passiveName: '回檔', passiveDesc: '每局享有1次免費漏球自動時間回溯', fusionTips: '推薦配對：⏳時間暫停 / 🌑虛空回檔', arch: 'rewind' },
+            { id: 'magnet',    role: '控場型 CONTROLLER',stats: { pwr: 88, spd: 87, spn: 94, ctl: 91 }, name: '🧲 磁極反轉', desc: '球包裹紅藍U型磁場電弧，對手球拍越靠近，觸發【同極相斥】自動把球推開閃避', smashDesc: '極性瞬間翻轉為【異極強吸】：強行把對手球拍拉往落點相反方向！', passiveName: '磁浮', passiveDesc: '己方球拍具異極引力，自動微幅吸附來球', fusionTips: '推薦配對：⚡電磁軌道炮 / 🎱電磁彈珠台', arch: 'magnet' },
+            { id: 'boomerang', role: '詭術型 TRICKSTER', stats: { pwr: 87, spd: 91, spn: 99, ctl: 84 }, name: '🪃 次元迴旋', desc: '球化為高速旋轉黃金光刃，在敵方桌面彈起後不往前飛，而是180度往球網倒飛', smashDesc: '化為【疾風風魔手裏劍】：落地後極速貼網倒飛，讓底線對手100%揮空！', passiveName: '迴旋', passiveDesc: '側旋球曲率額外提升25%', fusionTips: '推薦配對：💨音速光輪斬 / 🌪️龍捲手裏劍', arch: 'boomerang' },
+            { id: 'bomb',      role: '破壞型 DESTROYER', stats: { pwr: 100, spd: 86, spn: 80, ctl: 78 }, name: '💣 定時星雷', desc: '球頂顯示3➔2➔1倒數炸彈，對拉中倒數歸零直接在當前半場引爆，炸飛球拍扣60%耐久', smashDesc: '殺球猛擊引信使炸彈倒數【立刻縮短0.8秒】，逼對手接下即將爆炸的星雷！', passiveName: '引信', passiveDesc: '每次使用殺球時，炸彈倒數自動加快0.6秒', fusionTips: '推薦配對：🔥熱核聚變星雷 / 💫超新星坍縮雷', arch: 'bomb' },
+            { id: 'pinball',   role: '極速型 ASSASSIN',  stats: { pwr: 90, spd: 96, spn: 95, ctl: 92 }, name: '🎱 星軌彈珠', desc: '球桌兩側升起紫金高壓彈射軌，球大角度撞擊邊軌後觸發彈珠音效並高速Z字折返', smashDesc: '邊軌高壓通電：撞擊軌道後升級為【3倍速雷暴彈珠】直射死角！', passiveName: '彈射', passiveDesc: '邊線極限控球·擦邊球觸發率大幅提升', fusionTips: '推薦配對：💎光稜彈珠矩陣 / ⚡高壓電弧彈珠', arch: 'pinball' }
         ];
 
         const SKILL_META = {};
@@ -515,7 +646,7 @@
         };
 
         const GENERIC_SPIN_SUFFIX = {
-            topspin: '·墜星', backspin: '·逆流', sidespin: '·曲率', lob: '·天罰', dead: '·虛實', flat: ''
+            topspin: '·墜星急衝', backspin: '·逆流回吸', sidespin: '·曲率擦邊斬', lob: '·天罰轟雷', dead: '·虛實', flat: ''
         };
 
         const SAME_ARCH_FALLBACK = {
@@ -602,17 +733,22 @@
         let twinClone = { active: false, x: 0, y: 42, z: 410, timer: 0, cooldown: 0, orbX: null };
         let rewindState = { active: false, timer: 0, freeUsed: false };
         let quantumPortal = { active: false, inX: 0, outX: 0, timer: 0, teleported: false };
-        let novaBurstTimer = 0; // 新星爆發 3 秒可疊加爆發期
-        let sonicRallyStacks = 0; // 音速疾風越打越快疊層
-        let lastIncomingPower = 1.0; // 熵能汲取吸收的敵方球威
+        let novaBurstTimer = 0;
+        let sonicRallyStacks = 0;
+        let lastIncomingPower = 1.0;
 
         let skillVisuals = {
             leechBeam: null,
             mirrorWallTimer: 0,
             laserBeam: null,
             pinballRailsTimer: 0,
+            speedTrack: null,
             icePillars: []
         };
+
+        let gameMode = 'ai';
+        let cfgDiff = 'normal';
+        let cfgSkill = 'quantum';
 
         function hasPassive(id) {
             return cfgSkill === id;
@@ -662,28 +798,183 @@
             return {};
         }
 
-        let gameMode = 'ai';
-        let cfgDiff = 'normal';
-        let cfgSkill = 'quantum';
+        // ================= 荒野亂鬥風 3D 球拍展櫃與卡牌系統 =================
+        const showcaseCanvas = document.getElementById('showcaseCanvas');
+        const sCtx = showcaseCanvas.getContext('2d');
+
+        function drawPaddlePattern(targetCtx, arch, r) {
+            targetCtx.save();
+            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.36)';
+            targetCtx.lineWidth = Math.max(1.4, r * 0.055);
+            if (arch === 'quantum' || arch === 'pinball') {
+                targetCtx.beginPath();
+                targetCtx.ellipse(0, 0, r * 0.62, r * 0.24, Math.PI / 4, 0, Math.PI * 2);
+                targetCtx.stroke();
+                targetCtx.beginPath();
+                targetCtx.ellipse(0, 0, r * 0.62, r * 0.24, -Math.PI / 4, 0, Math.PI * 2);
+                targetCtx.stroke();
+            } else if (['fire', 'thunder', 'sonic', 'bomb'].includes(arch)) {
+                targetCtx.beginPath();
+                targetCtx.moveTo(-r * 0.28, -r * 0.50); targetCtx.lineTo(r * 0.14, -r * 0.05);
+                targetCtx.lineTo(-r * 0.14, r * 0.08); targetCtx.lineTo(r * 0.28, r * 0.50);
+                targetCtx.stroke();
+            } else if (['gravity', 'void', 'rewind', 'boomerang', 'magnet'].includes(arch)) {
+                targetCtx.beginPath();
+                for (let a = 0; a < Math.PI * 3.5; a += 0.25) {
+                    const rad = (a / (Math.PI * 3.5)) * r * 0.64;
+                    const px = Math.cos(a) * rad, py = Math.sin(a) * rad;
+                    if (a === 0) targetCtx.moveTo(px, py); else targetCtx.lineTo(px, py);
+                }
+                targetCtx.stroke();
+            } else {
+                targetCtx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const ang = (i * Math.PI) / 3;
+                    const px = Math.cos(ang) * r * 0.50, py = Math.sin(ang) * r * 0.50;
+                    if (i === 0) targetCtx.moveTo(px, py); else targetCtx.lineTo(px, py);
+                }
+                targetCtx.closePath(); targetCtx.stroke();
+            }
+            targetCtx.restore();
+        }
 
         function renderSkillGrid() {
             const container = document.getElementById('skill-grid-container');
             container.innerHTML = BASE_SKILLS.map(s => `
-                <button onclick="selectSkill('${s.id}')" id="skill-${s.id}" class="cyber-btn ${s.id === cfgSkill ? 'active' : ''} text-left p-2 rounded-xl flex flex-col justify-between gap-0.5">
+                <div onclick="selectSkill('${s.id}')" id="skill-${s.id}" class="brawl-card cursor-pointer ${s.id === cfgSkill ? 'active' : ''} p-2 rounded-2xl flex flex-col justify-between gap-1 relative">
                     <div class="flex items-center justify-between gap-1">
-                        <span class="font-bold text-xs ${SKILL_META[s.id].textCls} truncate">${s.name}</span>
-                        <span class="text-[9px] px-1 rounded bg-white/10 text-amber-200 shrink-0">✦${s.passiveName}</span>
+                        <span class="font-black text-xs ${SKILL_META[s.id].textCls} truncate">${s.name}</span>
+                        <button onclick="event.stopPropagation(); selectSkill('${s.id}'); openBrawlerDetailModal();" class="w-5 h-5 rounded-full bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-[10px] flex items-center justify-center shrink-0" title="詳細數值">🔍</button>
                     </div>
                     <div class="text-[10px] text-slate-300 truncate">${s.desc}</div>
-                    <div class="text-[9px] text-cyan-300/80 truncate">被動：${s.passiveDesc}</div>
-                </button>
+                    <div class="flex items-center justify-between text-[9px] pt-0.5 border-t border-slate-800">
+                        <span class="text-amber-300 font-bold">✦${s.passiveName}</span>
+                        <span class="text-cyan-300 cyber-font font-bold">PWR ${s.stats.pwr}</span>
+                    </div>
+                </div>
             `).join('');
+            updateShowcaseUI();
         }
-        renderSkillGrid();
+
+        function updateShowcaseUI() {
+            const s = BASE_SKILLS.find(k => k.id === cfgSkill) || BASE_SKILLS[0];
+            const meta = SKILL_META[s.id];
+            document.getElementById('showcase-role-badge').innerText = s.role;
+            document.getElementById('showcase-title').innerText = s.name;
+            document.getElementById('showcase-title').className = `text-xl sm:text-2xl font-black cyber-font ${meta.textCls}`;
+            document.getElementById('showcase-desc').innerText = `⚡ 主動技：${s.desc}`;
+            document.getElementById('showcase-smash').innerText = `💥 殺球突變：${s.smashDesc}`;
+
+            document.getElementById('mini-stat-pwr').innerText = s.stats.pwr;
+            document.getElementById('mini-bar-pwr').style.width = `${s.stats.pwr}%`;
+            document.getElementById('mini-stat-spd').innerText = s.stats.spd;
+            document.getElementById('mini-bar-spd').style.width = `${s.stats.spd}%`;
+            document.getElementById('mini-stat-spn').innerText = s.stats.spn;
+            document.getElementById('mini-bar-spn').style.width = `${s.stats.spn}%`;
+            document.getElementById('mini-stat-ctl').innerText = s.stats.ctl;
+            document.getElementById('mini-bar-ctl').style.width = `${s.stats.ctl}%`;
+        }
+
+        function prevBrawler() {
+            sfx.init(); sfx.swing();
+            const idx = BASE_SKILLS.findIndex(k => k.id === cfgSkill);
+            const nextIdx = (idx - 1 + BASE_SKILLS.length) % BASE_SKILLS.length;
+            selectSkill(BASE_SKILLS[nextIdx].id);
+        }
+
+        function nextBrawler() {
+            sfx.init(); sfx.swing();
+            const idx = BASE_SKILLS.findIndex(k => k.id === cfgSkill);
+            const nextIdx = (idx + 1) % BASE_SKILLS.length;
+            selectSkill(BASE_SKILLS[nextIdx].id);
+        }
+
+        function openBrawlerDetailModal() {
+            sfx.init(); sfx.bounce(false);
+            const s = BASE_SKILLS.find(k => k.id === cfgSkill) || BASE_SKILLS[0];
+            document.getElementById('detail-role').innerText = s.role;
+            document.getElementById('detail-name').innerText = s.name;
+            document.getElementById('detail-val-pwr').innerText = `${s.stats.pwr} / 100`;
+            document.getElementById('detail-bar-pwr').style.width = `${s.stats.pwr}%`;
+            document.getElementById('detail-val-spd').innerText = `${s.stats.spd} / 100`;
+            document.getElementById('detail-bar-spd').style.width = `${s.stats.spd}%`;
+            document.getElementById('detail-val-spn').innerText = `${s.stats.spn} / 100`;
+            document.getElementById('detail-bar-spn').style.width = `${s.stats.spn}%`;
+            document.getElementById('detail-val-ctl').innerText = `${s.stats.ctl} / 100`;
+            document.getElementById('detail-bar-ctl').style.width = `${s.stats.ctl}%`;
+
+            document.getElementById('detail-active-desc').innerText = s.desc;
+            document.getElementById('detail-smash-desc').innerText = s.smashDesc;
+            document.getElementById('detail-passive-desc').innerText = `【${s.passiveName}】${s.passiveDesc}`;
+            document.getElementById('detail-fusion-tips').innerText = `${s.fusionTips} ｜ 上旋+技能=【墜星急衝】· 下旋+技能=【逆流回吸】· 側旋+技能=【曲率擦邊斬】`;
+
+            document.getElementById('brawler-detail-modal').classList.remove('hidden');
+        }
+
+        function closeBrawlerDetailModal() {
+            document.getElementById('brawler-detail-modal').classList.add('hidden');
+        }
+
+        function drawShowcasePaddle() {
+            const modal = document.getElementById('setup-modal');
+            if (!modal || modal.classList.contains('hidden')) return;
+            const t = performance.now() * 0.003;
+            sCtx.clearRect(0, 0, 200, 165);
+            const sMeta = SKILL_META[cfgSkill] || SKILL_META.quantum;
+
+            sCtx.save();
+            sCtx.translate(100, 74 + Math.sin(t) * 6);
+
+            sCtx.save();
+            sCtx.translate(0, 62 - Math.sin(t) * 6);
+            sCtx.beginPath();
+            sCtx.ellipse(0, 0, 52, 12, 0, 0, Math.PI * 2);
+            sCtx.fillStyle = sMeta.color;
+            sCtx.globalAlpha = 0.28 + 0.1 * Math.sin(t * 2);
+            sCtx.fill();
+            sCtx.strokeStyle = sMeta.glow;
+            sCtx.globalAlpha = 0.85;
+            sCtx.lineWidth = 2;
+            sCtx.stroke();
+            sCtx.restore();
+
+            sCtx.save();
+            sCtx.rotate(t * 0.8);
+            sCtx.beginPath();
+            sCtx.ellipse(0, 0, 56, 22, 0, 0, Math.PI * 2);
+            sCtx.strokeStyle = sMeta.glow;
+            sCtx.globalAlpha = 0.55;
+            sCtx.lineWidth = 2;
+            sCtx.setLineDash([8, 6]);
+            sCtx.stroke();
+            sCtx.restore();
+
+            sCtx.rotate(Math.sin(t * 0.7) * 0.18);
+            const r = 42;
+            sCtx.fillStyle = '#92400e';
+            sCtx.strokeStyle = sMeta.color;
+            sCtx.lineWidth = 2;
+            sCtx.beginPath();
+            sCtx.roundRect(-r * 0.18, r * 0.72, r * 0.36, r * 0.68, 4);
+            sCtx.fill(); sCtx.stroke();
+
+            sCtx.beginPath();
+            sCtx.ellipse(0, 0, r, r * 0.94, 0, 0, Math.PI * 2);
+            sCtx.fillStyle = '#0f172a';
+            sCtx.strokeStyle = sMeta.color;
+            sCtx.lineWidth = 4;
+            sCtx.shadowColor = sMeta.color;
+            sCtx.shadowBlur = 20;
+            sCtx.fill(); sCtx.stroke();
+            sCtx.shadowBlur = 0;
+
+            drawPaddlePattern(sCtx, sMeta.arch, r);
+            sCtx.restore();
+        }
 
         function switchMode(m) {
             gameMode = m;
-            document.getElementById('tab-mode-ai').className = m === 'ai' ? 'px-3 py-1 rounded-lg text-xs font-black bg-cyan-500 text-slate-950 transition' : 'px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition';
+            document.getElementById('tab-mode-ai').className = m === 'ai' ? 'px-3 py-1 rounded-lg text-xs font-black bg-cyan-400 text-slate-950 transition' : 'px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition';
             document.getElementById('tab-mode-p2p').className = m === 'p2p' ? 'px-3 py-1 rounded-lg text-xs font-black bg-pink-500 text-white transition' : 'px-3 py-1 rounded-lg text-xs font-black text-slate-300 hover:text-white transition';
             document.getElementById('ai-setup-section').classList.toggle('hidden', m !== 'ai');
             document.getElementById('p2p-setup-section').classList.toggle('hidden', m !== 'p2p');
@@ -697,9 +988,16 @@
 
         function selectSkill(s) {
             cfgSkill = s;
-            BASE_SKILLS.forEach(k => document.getElementById('skill-' + k.id).classList.remove('active'));
-            document.getElementById('skill-' + s).classList.add('active');
+            BASE_SKILLS.forEach(k => {
+                const el = document.getElementById('skill-' + k.id);
+                if (el) el.classList.remove('active');
+            });
+            const target = document.getElementById('skill-' + s);
+            if (target) target.classList.add('active');
+            updateShowcaseUI();
         }
+
+        renderSkillGrid();
 
         // ================= PeerJS P2P 聯機對戰系統 =================
         const ROOM_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -893,12 +1191,22 @@
             document.getElementById('btn-sound').innerText = sfx.muted ? '🔇 音效：關閉' : '🔊 音效：開啟';
         }
 
-        // ================= 相機與投影：手機版對標「圖二」黃金比例（近端貼底、遠端桌面清晰寬闊） =================
+        // ================= 相機自適應與投影鎖定（防止手機豎屏無限放大） =================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const T_W = 230, T_L = 370, FLOOR_Y = -140, NET_H = 36;
         let viewW = window.innerWidth, viewH = window.innerHeight, dpr = 1;
         const CAM = { z: 650, y: 215, horiz: 0.26, focal: 540 };
+
+        function updateOnboardingText(isMobileDevice) {
+            const el = document.getElementById('controls-onboarding');
+            if (!el) return;
+            if (isMobileDevice || viewW < 820 || ('ontouchstart' in window && navigator.maxTouchPoints > 0 && viewW < 1024)) {
+                el.innerText = '📱 單指全向滑動 · 雙指輕點必殺 · 雙指連按2次殺球 · 雙指上滑高球 · 雙指下滑進化';
+            } else {
+                el.innerText = '💻 滑鼠/觸控板全向移動 · 左鍵/A鍵揮拍 · 右鍵/S鍵高球 · Ctrl/D鍵殺球 · 空白鍵必殺 · E鍵進化';
+            }
+        }
 
         function resizeCanvas() {
             viewW = window.innerWidth;
@@ -910,34 +1218,31 @@
 
             const isPortrait = viewH > viewW;
             if (isPortrait) {
-                // 對標圖二視角：拉近相機 (z=615)，提高球桌垂直展開高度，讓球桌近端貼近底部、遠端對面桌面清晰寬大
                 CAM.z = 615;
-                const rZNear = CAM.z - T_L; // 245
+                const rZNear = CAM.z - T_L;
                 CAM.focal = (viewW * 0.96 / (T_W * 2)) * rZNear;
                 const nearScale = CAM.focal / rZNear;
                 CAM.horiz = 0.34;
-                // 精確反推 CAM.y，使球桌近端邊緣固定落在螢幕高度 84% 處（正上方留給球桌縱深，完美呈現圖二比例）
                 CAM.y = ((0.84 - CAM.horiz) * viewH) / nearScale;
             } else if (viewW < 960) {
-                // 手機橫屏：100% 呈現圖二視角
                 CAM.z = 635;
                 CAM.y = 215;
                 CAM.horiz = 0.28;
                 CAM.focal = Math.min(viewW * 0.48, viewH * 0.76);
             } else {
-                // 電腦端黃金近景視角
                 CAM.z = 650;
                 CAM.y = 220;
                 CAM.horiz = 0.26;
                 CAM.focal = Math.min(viewW * 0.47, viewH * 0.74);
             }
+            updateOnboardingText(isPortrait);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         function project(x, y, z) {
             const rZ = Math.max(85, CAM.z - z);
-            const scale = CAM.focal / rZ;
+            const scale = Math.min(2.6, CAM.focal / rZ);
             return {
                 x: viewW * 0.5 + x * scale,
                 y: viewH * CAM.horiz + (CAM.y - y) * scale,
@@ -945,7 +1250,8 @@
                 vis: z < CAM.z - 55
             };
         }
-// ================= AI 難度與學習型記憶 =================
+
+        // ================= AI 難度與學習型記憶 =================
         const AI_PROFILES = {
             easy:   { name: 'EASY',          speed: 6.4,  flightFrames: 44, spread: 0.55, saveRate: 0.28, clashRate: 0.15, learnRate: 0.2 },
             normal: { name: 'NORMAL',        speed: 10.5, flightFrames: 36, spread: 0.75, saveRate: 0.58, clashRate: 0.48, learnRate: 0.6 },
@@ -956,7 +1262,6 @@
             'mirror', 'laser', 'void', 'frost', 'toxin', 'cyclone', 'aqua', 'nova',
             'web', 'twin', 'rewind', 'quantum', 'magnet', 'boomerang', 'bomb', 'pinball'
         ];
-        let aiTactic = 'attack';
 
         const aiMemory = {
             leftHits: 1, centerHits: 1, rightHits: 1,
@@ -980,12 +1285,12 @@
             }
         };
 
-        // ================= 遊戲狀態變數（含 5 分鐘計時器、殺球、球拍耐久與破球） =================
+        // ================= 遊戲狀態變數 =================
         let gameRunning = false, isPaused = false, isTouchMode = false;
         let mana = { p: 100, a: 30 };
         let rallyCount = 0, shake = 0, screenFlashAlpha = 0, screenFlashColor = '#00f2fe';
         let hitStopTimer = 0, roundWaitTimer = 0;
-        let matchTimer = 300; // 5 分鐘 (300 秒) 倒數計時
+        let matchTimer = 300;
         let suddenDeath = false;
 
         let matchState = {
@@ -1027,6 +1332,7 @@
             targetX: 0, targetZ: 0, showLandingRing: false, fakeRingOffsetX: 0,
             state: null, secondaryArch: null, tier: 0, voidTimer: 0, cycloneWave: false, trail: [],
             isSmashShot: false, shotPower: 1.0, faultType: null, strokeStyle: 'mid',
+            spinChem: null,
             ghostOffsets: [{ x: -135, y: 0 }, { x: -45, y: 0 }, { x: 45, y: 0 }, { x: 135, y: 0 }],
             ghostSwapped: false,
             thunderZigs: 0,
@@ -1038,6 +1344,7 @@
             boomerangActive: false,
             boomerangTurned: false,
             magnetActive: false,
+            magnetPolarity: 'repel',
             bombTimer: 0,
             pinballBounces: 0,
             mirrorTwin: null,
@@ -1070,11 +1377,11 @@
             hpEl.className = `cyber-font text-[10px] font-bold ${hpVal > 50 ? 'text-emerald-400' : (hpVal > 25 ? 'text-amber-300' : 'text-rose-400 animate-pulse')}`;
         }
 
-        // ================= 拋物線與正式乒乓規則解算器（支援擦網、擦邊、掛網、打自己桌、殺球出界） =================
-        function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false, allowFault = false) {
-            let frames = Math.max(9, isLob ? 52 : flightFrames);
-            let safeX = allowFault ? targetX : Math.max(-T_W * 0.88, Math.min(T_W * 0.88, targetX));
-            let safeZ = allowFault ? targetZ : (targetZ < 0 ? Math.max(-T_L * 0.90, Math.min(-115, targetZ)) : Math.min(T_L * 0.90, Math.max(115, targetZ)));
+        // ================= 拋物線物理發射器（街機爽快版：100% 保證安全過網不掛網） =================
+        function launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX = 0, spinAccY = 0, isLob = false) {
+            let frames = Math.max(8, isLob ? 50 : flightFrames);
+            let safeX = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, targetX));
+            let safeZ = targetZ < 0 ? Math.max(-T_L * 0.90, Math.min(-115, targetZ)) : Math.min(T_L * 0.90, Math.max(115, targetZ));
 
             ball.ax = spinAccX;
             ball.ay = spinAccY;
@@ -1086,6 +1393,7 @@
             ball.chronoFrozenDone = false;
             ball.chronoFreezeTimer = 0;
             ball.boomerangTurned = false;
+            ball.faultType = null;
 
             const effG = (isLob ? -0.48 : -0.42) + ball.ay;
             ball.vx = (safeX - ball.x - 0.5 * ball.ax * frames * frames) / frames;
@@ -1094,29 +1402,26 @@
 
             ball.vy = (0 - ball.y - 0.5 * effG * frames * frames) / frames;
 
-            // 若非掛網失誤球，確保過網高度安全
-            if (ball.faultType !== 'NET_FAULT' && ball.faultType !== 'OWN_SIDE') {
-                const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
-                if (framesToNet > 0 && framesToNet < frames) {
-                    const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
-                    const minClear = isLob ? NET_H + 85 : (hasBallArch('laser') ? NET_H + 6 : NET_H + 17);
-                    if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
-                }
+            const framesToNet = Math.abs((0 - ball.z) / (ball.vz || 1));
+            if (framesToNet > 0 && framesToNet < frames) {
+                const yAtNet = ball.y + ball.vy * framesToNet + 0.5 * effG * framesToNet * framesToNet;
+                const minClear = isLob ? NET_H + 92 : (hasBallArch('laser') ? NET_H + 6 : NET_H + 17);
+                if (yAtNet < minClear) ball.vy += (minClear - yAtNet) / framesToNet;
             }
 
             ball.targetX = safeX;
             ball.targetZ = safeZ;
             ball.bouncedOnTarget = false;
-            ball.showLandingRing = ball.faultType !== 'NET_FAULT';
+            ball.showLandingRing = true;
             ball.fakeRingOffsetX = (ball.state && (ball.spinType === 'dead' || hasBallArch('ghost'))) ? 65 : 0;
         }
 
-        // ================= 電腦左鍵/Ctrl殺球 + 手機單指雙擊殺球/雙指手勢系統 =================
+        // ================= 雙端控制：電腦 ASD 觸控板雙持/滑鼠 + 手機雙指連點 2 次殺球 =================
         const mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.72 };
         let singleTouchStart = null;
-        let lastSingleTapTime = 0;
         let twoFingerStart = null;
         let twoFingerLongPressTimer = null;
+        let lastTwoFingerTapTime = 0;
 
         window.addEventListener('mousemove', e => {
             mouse.x = e.clientX;
@@ -1126,6 +1431,7 @@
         window.addEventListener('mousedown', e => {
             if (!gameRunning || isPaused) return;
             isTouchMode = false;
+            updateOnboardingText(false);
             sfx.init();
             if (rewindState.active) {
                 if (e.button === 2) triggerRewindRestore();
@@ -1148,10 +1454,24 @@
         window.addEventListener('keydown', e => {
             if (e.code === 'Escape') { if (gameRunning) togglePause(); return; }
             if (!gameRunning || isPaused) return;
+            isTouchMode = false;
+            updateOnboardingText(false);
             sfx.init();
-            if (e.code === 'Space') { e.preventDefault(); castSkill(); }
-            else if (e.code === 'KeyE') { evolvePlayerSkill(); }
-            else if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                castSkill();
+            } else if (e.code === 'KeyE') {
+                evolvePlayerSkill();
+            } else if (e.code === 'KeyA') {
+                e.preventDefault();
+                pPaddle.wantLob = false;
+                pPaddle.wantSmash = false;
+                triggerPlayerSwing();
+            } else if (e.code === 'KeyS') {
+                e.preventDefault();
+                triggerLobShot();
+            } else if (e.code === 'KeyD' || e.code === 'ControlLeft' || e.code === 'ControlRight') {
                 e.preventDefault();
                 triggerSmashAction();
             }
@@ -1168,10 +1488,11 @@
         }
 
         window.addEventListener('touchstart', e => {
-            if (!gameRunning || isPaused) return;
             const t = e.target;
             if (t && (t.tagName === 'BUTTON' || (t.closest && (t.closest('button') || t.closest('.touch-scroll'))))) return;
             isTouchMode = true;
+            updateOnboardingText(true);
+            if (!gameRunning || isPaused) return;
             sfx.init();
 
             if (rewindState.active) {
@@ -1200,18 +1521,7 @@
 
             const touch = e.touches[0];
             if (!touch) return;
-            const now = Date.now();
-            // 手機單手連按 2 下觸發殺球 (Double Tap Smash)
-            if (now - lastSingleTapTime < 280) {
-                pPaddle.wantSmash = true;
-                document.getElementById('hud-smash-ready').classList.remove('hidden');
-                gestureRipples.push({ x: touch.clientX, y: touch.clientY, r: 8, maxR: 85, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
-                triggerPlayerSwing();
-                setTimeout(() => document.getElementById('hud-smash-ready').classList.add('hidden'), 450);
-            }
-            lastSingleTapTime = now;
-
-            singleTouchStart = { x: touch.clientX, y: touch.clientY, time: now };
+            singleTouchStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
             mouse.x = touch.clientX;
             mouse.y = touch.clientY - 24;
 
@@ -1256,7 +1566,17 @@
             if (twoFingerStart) {
                 if (!twoFingerStart.handled && (Date.now() - twoFingerStart.time < 420)) {
                     twoFingerStart.handled = true;
-                    triggerTwoFingerSkillGesture(twoFingerStart.x0, twoFingerStart.y0, twoFingerStart.x1, twoFingerStart.y1);
+                    const now = Date.now();
+                    if (now - lastTwoFingerTapTime < 340) {
+                        lastTwoFingerTapTime = 0;
+                        vibrate([45, 30, 65]);
+                        gestureRipples.push({ x: twoFingerStart.x0, y: twoFingerStart.y0, r: 10, maxR: 115, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
+                        gestureRipples.push({ x: twoFingerStart.x1, y: twoFingerStart.y1, r: 10, maxR: 115, color: '#f43f5e', glow: '#fde047', alpha: 1.0, isFail: false });
+                        triggerSmashAction();
+                    } else {
+                        lastTwoFingerTapTime = now;
+                        triggerTwoFingerSkillGesture(twoFingerStart.x0, twoFingerStart.y0, twoFingerStart.x1, twoFingerStart.y1);
+                    }
                 }
                 if (e.touches.length < 2) twoFingerStart = null;
                 return;
@@ -1278,11 +1598,12 @@
             const sMeta = SKILL_META[cfgSkill];
 
             if (mana.p < reqMana) {
+                if (pPaddle.prechargedSkill) return;
                 sfx.failBuzz();
                 vibrate([40, 40]);
                 gestureRipples.push({ x: x0, y: y0, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
                 gestureRipples.push({ x: x1, y: y1, r: 10, maxR: 75, color: '#ef4444', alpha: 1.0, isFail: true });
-                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量發動超能力`, 'text-rose-400', 850);
+                showSideToast('left', `能量不足 (${Math.round(mana.p)}%)`, `需 ${reqMana}% 能量 ｜ 雙指連按2次可殺球`, 'text-rose-400', 900);
                 return;
             }
 
@@ -1348,7 +1669,7 @@
             screenFlashColor = '#fde047';
             screenFlashAlpha = 0.7;
             spawnShatterEffect(sMeta.color);
-            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 45, 9);
+            spawnParticles(pPaddle.x, pPaddle.y, pPaddle.z, sMeta.color, 45, 9, sMeta.shape);
             updateHUD();
 
             triggerAnimeCutIn('center', `LEVEL UP! 超能進化 LV.${skillLevel}`, `${sMeta.name} · 威力×${LV_MULT[skillLevel - 1]} 範圍×${LV_RADIUS[skillLevel - 1]}`, '#fde047');
@@ -1383,7 +1704,6 @@
                 twinClone.x = -pPaddle.x * 0.5;
             }
             if (cfgSkill === 'nova') {
-                // 新星爆發：3 秒連續爆發期（可疊加！）
                 novaBurstTimer += 3.2;
                 updateContextBarUI();
             }
@@ -1411,13 +1731,13 @@
                 bar.innerText = `💫 星核爆發期：剩餘 ${novaBurstTimer.toFixed(1)}s (每拍連續震飛敵拍)`;
             } else if (sonicRallyStacks > 0 && cfgSkill === 'sonic') {
                 bar.classList.remove('hidden');
-                bar.innerText = `💨 音速疊層：x${sonicRallyStacks} (球速+${sonicRallyStacks * 12}%)`;
+                bar.innerText = `💨 音速疊層：x${sonicRallyStacks} (球速+${sonicRallyStacks * 15}%)`;
             } else {
                 bar.classList.add('hidden');
             }
         }
 
-        // ================= 玩家球拍更新：支援全向移動、近拉/長拉判定與被動磁吸 =================
+        // ================= 玩家球拍更新 =================
         function updatePlayerPaddle(dt) {
             const pMod = applyPassive(cfgSkill, 'paddle');
             const bMod = applyPassive(cfgSkill, 'bounce');
@@ -1429,7 +1749,9 @@
 
             if (twinClone.orbX !== null && Math.abs(pPaddle.x - twinClone.orbX) < 65) {
                 twinClone.orbX = null;
-                mana.p = Math.min(100, mana.p + 20);
+                mana.p = Math.min(100, mana.p + 25);
+                pPaddle.hp = Math.min(100, pPaddle.hp + 20);
+                updateTimerAndHpUI();
                 updateHUD();
             }
 
@@ -1495,7 +1817,6 @@
             }
             const nextY = pPaddle.y + (worldY - pPaddle.y) * followRate;
 
-            // 🧲 磁極反轉：若敵方打出磁極球，玩家球拍越靠近，球越自動被同極斥力推開！
             if (ball.vz > 0 && ball.magnetActive && ball.z > 130 && ball.z < pPaddle.z + 30) {
                 const distM = Math.hypot(ball.x - pPaddle.x, ball.z - pPaddle.z);
                 if (distM < 135) {
@@ -1503,7 +1824,6 @@
                     ball.x = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + repelDir * 6.5));
                 }
             } else if (hasPassive('magnet') && ball.vz > 0 && ball.z > 150) {
-                // 玩家自身裝備【磁浮】被動：微幅吸附來球
                 ball.x += (pPaddle.x - ball.x) * 0.035;
             }
 
@@ -1532,7 +1852,6 @@
         function isBallHittableByPlayer(extraBonus = 0) {
             if (ball.vz <= 0 || ball.z < 85 || ball.z > 545) return false;
             const pMod = applyPassive(cfgSkill, 'paddle');
-            // 放寬普通擊球判定，讓長拉與近拉更流暢好接
             const sideExpand = Math.abs(ball.x) > T_W * 0.36 ? 1.62 : 1.32;
             const dx3D = Math.abs(ball.x - pPaddle.x) / sideExpand;
             const dy3D = Math.abs(ball.y - Math.max(25, pPaddle.y)) * 0.70;
@@ -1556,8 +1875,8 @@
                 executePlayerReturn(forceSkill || Boolean(pPaddle.prechargedSkill));
             }
         }
-
-        // ================= 玩家回球：破球檢定、殺球失誤規則、長拉/近拉、雙子合擊與 24 大技能 =================
+        // ====== 【第 1 段結束位置：請將第 2 段直接貼在此行下方】 ======
+// ================= 玩家回球：破球檢定、殺球×技能突變、旋球×技能化學反應（100%過網無隨機失誤） =================
         function executePlayerReturn(usePlayerSkill = false) {
             pPaddle.hasHitThisSwing = true;
             const pMod = applyPassive(cfgSkill, 'paddle');
@@ -1574,15 +1893,13 @@
             const isSweetSpot = guaranteedPerfect || (hasActiveSwipe && dist <= sweetThreshold);
             guaranteedPerfect = false;
 
-            // --- 1. 球拍耐久度扣減與「破球震飛 (Ball Break)」判定 ---
-            // 若玩家開啟了技能迎擊（activeSkill），100% 絕對防禦不會破球！
+            // 1. 球拍耐久度扣減與「破球震飛 (Ball Break)」判定（開技能可 100% 絕對防禦）
             if (!activeSkill && (ball.state !== null || ball.isSmashShot || ball.shotPower >= 1.45)) {
                 const incomingPower = ball.shotPower * (ball.tier >= 2 ? 1.6 : (ball.state ? 1.3 : 1.0)) * (ball.isSmashShot ? 1.35 : 1.0);
                 const hpLoss = incomingPower * (isSweetSpot ? 14 : 28) * (hasPassive('prism') ? 0.6 : 1.0);
                 pPaddle.hp = Math.max(0, pPaddle.hp - hpLoss);
                 updateTimerAndHpUI();
 
-                // 破球率計算：依剩餘耐久、是否在甜區、以及玩家幸運值 (luck)
                 const breakChance = (incomingPower - 1.15) * 0.42 + (pPaddle.hp <= 0 ? 0.75 : (100 - pPaddle.hp) * 0.004) - (isSweetSpot ? 0.38 : 0) - pPaddle.luck;
                 if (Math.random() < breakChance) {
                     sfx.guardBreak();
@@ -1599,7 +1916,6 @@
                 }
             }
 
-            // 記錄敵方來球威力供【🩸 熵能汲取】轉化
             lastIncomingPower = ball.shotPower || 1.0;
 
             let isSmash = pPaddle.wantSmash;
@@ -1607,23 +1923,22 @@
             pPaddle.wantSmash = false;
             pPaddle.wantLob = false;
 
-            // 🪐 敵方黑洞重力球禁止挑高球（強行挑高球會被萬倍重力直接壓垮墜毀）
+            // 🪐 黑洞重力球壓制挑高球：強行把高吊球壓平為慢速中路球（不斷球、不自爆失誤）
+            let gravitySuppressed = false;
             if (isLob && hasBallArch('gravity')) {
+                isLob = false;
+                gravitySuppressed = true;
                 sfx.guardBreak();
-                triggerAnimeCutIn('right', '🪐 重力壓殺！GRAVITY CRUSH', '黑洞重力球無法挑高球！球被壓垮墜桌', '#9333ea');
-                ball.faultType = 'NET_FAULT';
-                launchBall3DSpin(ball.x, 20, 12, 0, -0.35, false, true);
-                return;
+                triggerAnimeCutIn('right', '🪐 重力壓制！GRAVITY SUPPRESS', '黑洞球無法挑高！球路被強行壓平減速', '#9333ea');
             }
 
-            // 👥 雙子分身【雙子合擊 TWIN STRIKE】：本體與分身同時觸球，威力與球速雙倍疊加！
             let twinDoubleHit = false;
             if (twinClone.active && Math.abs(pPaddle.x - twinClone.x) < 88 && Math.abs(ball.x - twinClone.x) < 95) {
                 twinDoubleHit = true;
                 sfx.fusionClash();
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 220, color: '#14b8a6', alpha: 1.0 });
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 28, maxR: 160, color: '#fde047', alpha: 1.0 });
-                triggerAnimeCutIn('left', '👥 雙子合擊！TWIN STRIKE', '真身與分身雙重疊加轟擊 · 威力×200%！', '#2dd4bf');
+                triggerAnimeCutIn('left', isSmash ? '👥 十字交叉合扣！TWIN SMASH' : '👥 雙子合擊！TWIN STRIKE', '真身與分身雙重疊加轟擊 · 威力×200%！', '#2dd4bf');
             }
 
             if (rMod.flatManaBonus > 0) mana.p = Math.min(100, mana.p + rMod.flatManaBonus);
@@ -1671,7 +1986,7 @@
                 activeSkill = ball.state || aiMemory.lastAiSkill || 'laser';
             }
 
-            // --- 2. 判斷長拉 (Long Drive) vs 近拉擺短 (Short Flick) 與多元旋球 ---
+            // 2. 判斷長拉 (Long Drive) vs 近拉擺短 (Short Flick) 與多元旋球
             let strokeStyle = 'mid';
             if (pPaddle.z >= 350) strokeStyle = 'long';
             else if (pPaddle.z <= 235) strokeStyle = 'short';
@@ -1697,17 +2012,11 @@
                 spinAccX = Math.sign(pPaddle.vx || (ball.x - pPaddle.x) || 1) * Math.min(0.42, Math.max(0.20, swipeSpeed * 0.024)) * rMod.spinCurveMult;
             }
 
-            // 🌪️ 敵方氣旋龍捲球反噬：若接氣旋球時強行拉大側旋且未開技能，可能直接失控飛出界！
-            let cycloneBackfire = false;
-            if (hasBallArch('cyclone') && !activeSkill && spinType === 'sidespin' && !isSweetSpot && Math.random() < 0.45) {
-                cycloneBackfire = true;
-            }
-
             if (spinType === spinChain.type && spinType !== 'flat') spinChain.count++;
             else { spinChain.type = spinType; spinChain.count = 1; }
             if (spinChain.count >= 3) {
                 spinAccX *= 1.45; spinAccY *= 1.45;
-                const sNames = { topspin: '極致弧圈！墜星急衝', backspin: '極致削球！逆流回吸', sidespin: '極致側旋！雙重C字斬', lob: '極致高吊！蒼穹墜落' };
+                const sNames = { topspin: '極致弧圈！墜星急衝', backspin: '極致削球！逆流回吸', sidespin: '極致側旋！雙重C字斬', lob: '極致高吊！天罰轟雷' };
                 triggerAnimeCutIn('left', sNames[spinType] || '旋球專精突破！', 'SPIN MASTERY x3 · 曲率放大 145%', '#34d399');
             }
 
@@ -1720,7 +2029,7 @@
                 triggerAnimeCutIn('center', '🌈 萬象旋球連攜！', '施展 4 種不同旋轉 · 能量 +25%！', '#38bdf8');
             }
 
-            // --- 3. 處理技能對撞融合、新星連發與殺球組合 ---
+            // 3. 處理技能對撞融合、新星連發與殺球組合
             let nextSkillState = null, nextSecondaryArch = null, nextTier = 0, displayFusionTitle = '';
             const incomingWasSkill = ball.state !== null;
 
@@ -1738,7 +2047,7 @@
                     vibrate([100, 50, 120]);
                     sfx.fusionClash();
                     hitStopTimer = isSmash ? 0.12 : 0.095;
-                    shake = isSmash ? 42 : 34;
+                    shake = isSmash ? 44 : 34;
                     screenFlashColor = fMeta.color;
                     screenFlashAlpha = 0.85;
                     resonanceActive = true;
@@ -1773,7 +2082,7 @@
                 } else if (activeSkill) {
                     const sm = SKILL_META[castId] || SKILL_META[cfgSkill];
                     sfx.skillCast(sm.arch);
-                    triggerAnimeCutIn('left', `${isSmash ? '💥 技能殺球！' : '領域展開！'}${sm.name.slice(3)}`, `LV.${skillLevel} 超能釋放 · ${GENERIC_SPIN_SUFFIX[spinType] || '強襲'}`, sm.color);
+                    triggerAnimeCutIn('left', `${isSmash ? '💥 技能殺球！' : '領域展開！'}${sm.name.slice(3)}`, `LV.${skillLevel} 超能釋放 ${GENERIC_SPIN_SUFFIX[spinType] || ''}`, sm.color);
                 }
 
                 const sm = SKILL_META[nextSkillState] || SKILL_META[cfgSkill];
@@ -1787,6 +2096,10 @@
                 else if (castId === 'leech') {
                     const st = Math.min(mana.a, 35 * LV_MULT[skillLevel - 1]);
                     mana.a -= st; mana.p = Math.min(100, mana.p + st);
+                    if (isSmash) {
+                        pPaddle.hp = Math.min(100, pPaddle.hp + 35);
+                        updateTimerAndHpUI();
+                    }
                     skillVisuals.leechBeam = { fromX: aPaddle.x, fromZ: aPaddle.z, toX: pPaddle.x, toZ: pPaddle.z, timer: 0.9, color: '#f43f5e' };
                 }
                 hitStopTimer = isSmash ? 0.08 : 0.05;
@@ -1807,10 +2120,11 @@
             ball.rewindTrickDone = false;
             ball.boomerangActive = false;
             ball.magnetActive = false;
+            ball.magnetPolarity = isSmash ? 'attract' : 'repel';
             ball.mirrorTwin = null;
+            ball.spinChem = nextSkillState ? spinType : null;
             rallyCount++;
 
-            // 💨 音速疾風：越打越快無限疊速
             if (hasBallArch('sonic') || cfgSkill === 'sonic') {
                 sonicRallyStacks = Math.min(8, sonicRallyStacks + 1);
                 updateContextBarUI();
@@ -1818,59 +2132,41 @@
                 sonicRallyStacks = 0;
             }
 
-            // 計算本球總威力 (shotPower)：結合殺球、長拉、雙子合擊、熵能汲取吸收的敵方球威
             let calcPower = (isSmash ? 1.65 : 1.0) * (strokeStyle === 'long' ? 1.2 : 1.0) * (twinDoubleHit ? 1.8 : 1.0) * LV_MULT[skillLevel - 1];
             if (hasBallArch('leech')) {
                 calcPower *= (1.25 + lastIncomingPower * 0.45);
-                showSideToast('left', `🩸 熵能轉化！威力×${calcPower.toFixed(1)}`, '吸收敵方球威反哺自身！', 'text-rose-400');
+                showSideToast('left', `🩸 熵能轉化！威力×${calcPower.toFixed(1)}`, isSmash ? '鮮血斬擊恢復35%球拍耐久！' : '吸收敵方球威反哺自身！', 'text-rose-400');
             }
-            if (hasBallArch('fire')) calcPower *= 1.35;
-            if (hasBallArch('gravity')) calcPower *= 1.30;
+            if (hasBallArch('fire')) calcPower *= (isSmash ? 1.75 : 1.35);
+            if (hasBallArch('gravity')) calcPower *= 1.35;
             ball.shotPower = calcPower;
 
-            // 計算目標 X 與 Z（結合長拉 vs 近拉擺短）
             let aimX = (ball.x - pPaddle.x) * 1.28 + pPaddle.vx * 9.0 + pPaddle.x * 0.35;
-            let targetX = Math.max(-T_W * 0.84, Math.min(T_W * 0.84, aimX));
+            let targetX = gravitySuppressed ? 0 : Math.max(-T_W * 0.84, Math.min(T_W * 0.84, aimX));
             let targetZ = strokeStyle === 'short' ? (-130 - Math.random() * 35) : (strokeStyle === 'long' ? (-295 - Math.random() * 45) : -250);
-            let flightFrames = isSweetSpot ? 26 : 31;
+            let flightFrames = gravitySuppressed ? 36 : (isSweetSpot ? 26 : 31);
+
+            if (ball.spinChem === 'sidespin') {
+                spinAccX = (targetX >= 0 ? 1 : -1) * 0.52;
+                ball.spinX = spinAccX;
+                targetX = (targetX >= 0 ? 1 : -1) * (T_W * 0.85);
+            } else if (ball.spinChem === 'topspin') {
+                spinAccY = -0.28;
+                flightFrames = Math.max(12, Math.round(flightFrames * 0.80));
+            } else if (ball.spinChem === 'backspin') {
+                targetZ = -135;
+            }
 
             const strokeLabel = isSmash ? '💥 殺球 SMASH' : (strokeStyle === 'long' ? '⚡ 退台長拉 LONG' : (strokeStyle === 'short' ? '🎯 台內擺短 SHORT' : `🏓 ${spinType.toUpperCase()}`));
             document.getElementById('hud-stroke-tag').innerText = strokeLabel;
 
-            // --- 4. 殺球失誤規則 (掛網 / 打自己桌 / 出界) 與 擦網/擦邊特殊好球 ---
-            const faultSaveMult = hasPassive('pinball') ? 0.45 : 1.0;
-            if (cycloneBackfire) {
-                ball.faultType = 'OUT_OF_BOUNDS';
-                targetX = (targetX >= 0 ? 1 : -1) * (T_W + 95);
-                targetZ = -280;
-                showSideToast('right', '🌪️ 氣旋反噬失控！', '強行切球導致飛出界外', 'text-violet-300');
-            } else if (isSmash && !activeSkill) {
-                if (ball.y < 17 && !isSweetSpot && Math.random() < 0.42 * faultSaveMult) {
-                    // 失誤 1：球過低強行殺球 -> 掛網 (Net Fault)
-                    ball.faultType = 'NET_FAULT';
-                    targetZ = -4;
-                    showSideToast('right', '⚠️ 殺球掛網！NET FAULT', '擊球點過低撞網失誤', 'text-rose-400');
-                } else if (pPaddle.z > 405 && ball.y < 24 && !isSweetSpot && Math.random() < 0.35 * faultSaveMult) {
-                    // 失誤 2：退台壓拍過度 -> 打自己桌 (Hit Own Side)
-                    ball.faultType = 'OWN_SIDE';
-                    targetZ = 135;
-                    showSideToast('right', '⚠️ 殺球砸己方桌面！', '壓拍過度未過網失誤', 'text-rose-400');
-                } else if (!isSweetSpot && dist > 68 && Math.random() < 0.38 * faultSaveMult) {
-                    // 失誤 3：偏心強行殺球 -> 殺球出界 (Out of Bounds)
-                    ball.faultType = 'OUT_OF_BOUNDS';
-                    targetZ = -T_L - 95;
-                    showSideToast('right', '⚠️ 殺球出界！OUT', '偏離甜區發力過猛出界', 'text-rose-400');
-                }
-            }
-
-            // --- 5. 24 大技能專屬飛行屬性初始化 ---
+            // 4. 24 大技能專屬飛行屬性與【殺球突變】初始化
             if (hasBallArch('laser')) {
-                // 💎 相位雷射：零延遲瞬發光束（速度極快，但破防倍率較低）
                 spinAccX = 0; spinAccY = 0; ball.spinX = 0;
                 targetX = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
-                flightFrames = 9;
-                ball.shotPower = 0.85;
-                skillVisuals.laserBeam = { x1: ball.x, y1: ball.y, z1: ball.z, x2: targetX, y2: 0, z2: targetZ, timer: 0.7, color: '#00f2fe' };
+                flightFrames = isSmash ? 7 : 9;
+                ball.shotPower = isSmash ? 1.35 : 0.85;
+                skillVisuals.laserBeam = { x1: ball.x, y1: ball.y, z1: ball.z, x2: targetX, y2: 0, z2: targetZ, timer: 0.75, color: '#00f2fe', wide: isSmash };
             }
             if (hasBallArch('web')) {
                 spinAccX = 0; spinAccY = 0; ball.spinX = 0;
@@ -1904,18 +2200,17 @@
             }
             if (hasBallArch('bomb')) {
                 if (ball.bombTimer <= 0) ball.bombTimer = 3.0;
-                if (isSmash) ball.bombTimer = Math.max(0.4, ball.bombTimer - 0.6);
+                if (isSmash) ball.bombTimer = Math.max(0.35, ball.bombTimer - 0.8);
             } else if (ball.bombTimer > 0 && isSmash && hasPassive('bomb')) {
                 ball.bombTimer = Math.max(0.3, ball.bombTimer - 0.6);
             }
             if (hasBallArch('pinball')) {
-                skillVisuals.pinballRailsTimer = 4.2;
+                skillVisuals.pinballRailsTimer = 4.5;
                 ball.pinballBounces = 2;
-                targetX = (Math.random() > 0.5 ? 1 : -1) * (T_W * 0.98);
+                targetX = (Math.random() > 0.5 ? 1 : -1) * (T_W * 0.96);
             }
             if (hasBallArch('mirror') || usedMirrorSkill) {
                 skillVisuals.mirrorWallTimer = 2.4;
-                // 🪞 鏡像複製：真球 100% 速度威力，假球 50% 速度威力獨立飛行！
                 ball.mirrorTwin = {
                     x: -ball.x * 0.6, y: ball.y, z: ball.z,
                     vx: (-targetX - (-ball.x * 0.6)) / (flightFrames * 1.45),
@@ -1937,18 +2232,18 @@
             aiMemory.recordPlayerShot(targetX);
 
             const lvSpeedFactor = skillLevel >= 2 ? 0.90 : 1.0;
-            const sonicSpeedFactor = Math.max(0.55, 1.0 - sonicRallyStacks * 0.08);
+            const sonicSpeedFactor = Math.max(0.50, 1.0 - sonicRallyStacks * 0.09);
             if (!hasBallArch('laser')) {
                 if (ball.tier >= 2) flightFrames = Math.round(17 * lvSpeedFactor * sonicSpeedFactor * rMod.flightFrameMult / cMod.fusionPowerMult);
                 else if (ball.state) flightFrames = Math.round((hasBallArch('frost') ? 23 : 19) * lvSpeedFactor * sonicSpeedFactor * rMod.flightFrameMult);
                 else flightFrames = Math.round(flightFrames * sonicSpeedFactor * rMod.flightFrameMult);
             }
-            if (isSmash) flightFrames = Math.max(10, Math.round(flightFrames * 0.72));
+            if (isSmash) flightFrames = Math.max(9, Math.round(flightFrames * 0.70));
             if (resonanceFastFlight) { flightFrames = Math.round(flightFrames * 0.78); resonanceFastFlight = false; }
 
             if (ball.state) {
                 const m = SKILL_META[ball.state] || SKILL_META.fire;
-                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 55 : 35, 9);
+                spawnParticles(ball.x, ball.y, ball.z, m.color, ball.tier >= 2 ? 55 : 35, 9, m.shape);
                 if (hasBallArch('thunder') || hasBallArch('laser')) {
                     createLightningChain(ball.x, ball.y, ball.z, targetX, 0, targetZ, m.glow);
                 }
@@ -1958,7 +2253,7 @@
                     sfx.smashHit();
                     shake = 16;
                     spawnSpeedLines('#f43f5e');
-                    if (!ball.faultType) showSideToast('left', '💥 雷霆殺球！SMASH', `球速暴增 · 削減敵拍耐久`, 'text-rose-400');
+                    showSideToast('left', '💥 雷霆殺球！SMASH', '球速暴增 · 強力削減敵拍耐久', 'text-rose-400');
                 } else {
                     sfx.hit(isSweetSpot, spinType);
                     shake = isSweetSpot ? 7 : 3;
@@ -1967,7 +2262,7 @@
                         showSideToast('left', spinNames[spinType] || '⚡ 強力旋球!', `${strokeStyle === 'long' ? '退台長拉' : (strokeStyle === 'short' ? '台內擺短' : '滑動暴擊')} · 能量 +28%`, 'text-cyan-300');
                     }
                 }
-                spawnParticles(ball.x, ball.y, ball.z, isSmash ? '#f43f5e' : (isSweetSpot ? '#00f2fe' : '#fff'), isSmash ? 34 : 20, 6.5);
+                spawnParticles(ball.x, ball.y, ball.z, isSmash ? '#f43f5e' : (isSweetSpot ? '#00f2fe' : '#fff'), isSmash ? 34 : 20, 6.5, isSmash ? 'star' : 'circle');
                 const prevMana = mana.p;
                 const baseGain = isSweetSpot ? 28 : (hasActiveSwipe ? 20 : 14);
                 const gain = baseGain * (resonanceActive ? 1.4 : 1.0) * rMod.manaGainMult;
@@ -1980,7 +2275,7 @@
             }
 
             updateHUD();
-            launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX, spinAccY, isLob, Boolean(ball.faultType));
+            launchBall3DSpin(targetX, targetZ, flightFrames, spinAccX, spinAccY, isLob);
 
             if (gameMode === 'p2p') {
                 sendP2P({
@@ -2013,22 +2308,19 @@
             if (aPaddle.webRootTimer > 0) { aPaddle.webRootTimer -= dt; return; }
             if (aPaddle.knockbackZ < 0) aPaddle.knockbackZ = Math.min(0, aPaddle.knockbackZ + dt * 95);
 
-            // 檢查鏡像假球是否抵達 AI 底線
             if (ball.mirrorTwin && ball.mirrorTwin.active && ball.mirrorTwin.z <= -355) {
                 const distTwin = Math.abs(ball.mirrorTwin.x - aPaddle.x);
                 ball.mirrorTwin.active = false;
                 if (distTwin > 75) {
-                    // AI 漏接了 50% 威力的鏡像假球：扣減 AI 35% 耐久並產生干擾震退！
-                    aPaddle.hp = Math.max(0, aPaddle.hp - 35);
+                    aPaddle.hp = Math.max(0, aPaddle.hp - (ball.isSmashShot ? 45 : 35));
                     aPaddle.stunTimer = 0.45;
-                    showSideToast('left', '🪞 鏡像分身球命中！', 'AI 分心漏接假球 · 耐久 -35%', 'text-cyan-200');
+                    showSideToast('left', '🪞 鏡像分身球命中！', `AI 分心漏接假球 · 耐久 -${ball.isSmashShot ? 45 : 35}%`, 'text-cyan-200');
                 }
             }
 
             if (ball.vz < 0) {
                 let desiredX = ball.x + ball.vx * 8 + aiMemory.predictedX * 0.25 * aiMod.aiErrorMult;
 
-                // 🪞 若有鏡像雙球，AI 會被假球吸引分心
                 if (ball.mirrorTwin && ball.mirrorTwin.active && ball.z > -220) {
                     desiredX = desiredX * 0.5 + ball.mirrorTwin.x * 0.5;
                 }
@@ -2038,13 +2330,16 @@
                     desiredX += Math.sin(ball.z * 0.055) * 115 * confuse;
                 }
 
-                // 🧲 磁極反轉：當 AI 球拍靠近球時，觸發「同極相斥」，把球自動推開閃避 AI 球拍！
                 if (ball.magnetActive && ball.z < -150 && ball.z > -390) {
                     const distMag = Math.hypot(ball.x - aPaddle.x, ball.z - aPaddle.z);
-                    if (distMag < 140) {
-                        const pushDir = Math.sign(ball.x - aPaddle.x || (aPaddle.x > 0 ? -1 : 1));
-                        ball.x = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + pushDir * 7.2));
-                        ball.targetX = ball.x;
+                    if (distMag < 145) {
+                        if (ball.magnetPolarity === 'attract') {
+                            aPaddle.x += Math.sign(-ball.x - aPaddle.x || 1) * 9.5;
+                        } else {
+                            const pushDir = Math.sign(ball.x - aPaddle.x || (aPaddle.x > 0 ? -1 : 1));
+                            ball.x = Math.max(-T_W * 0.88, Math.min(T_W * 0.88, ball.x + pushDir * 7.5));
+                            ball.targetX = ball.x;
+                        }
                         createLightningChain(aPaddle.x, aPaddle.y, aPaddle.z, ball.x, ball.y, ball.z, '#ef4444');
                     }
                 }
@@ -2054,9 +2349,9 @@
                 lingeringFields.forEach(f => {
                     if (f.z < 0 && Math.hypot(aPaddle.x - f.x, aPaddle.z - f.z) < f.r * 1.45) {
                         if (f.type === 'gravity') desiredX = f.x;
-                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 12.0;
+                        if (f.type === 'cyclone') aPaddle.x += Math.sign(aPaddle.x - f.x || 1) * 12.5;
                         if (f.type === 'frost') { fieldSlow = 0.32; onIce = true; }
-                        if (f.type === 'aqua') fieldSlow = 0.35;
+                        if (f.type === 'aqua') fieldSlow = 0.32;
                         if (f.type === 'thunder' || f.type === 'fire') fieldSlow = 0.45;
                         if (f.type === 'web' && !f.triggered) { f.triggered = true; aPaddle.webRootTimer = 0.95; }
                         if (f.type === 'nova' && !f.triggered) {
@@ -2066,7 +2361,7 @@
                         }
                         if (f.type === 'toxin') {
                             aPaddle.poisonStacks += dt * 2.0;
-                            aPaddle.hp = Math.max(0, aPaddle.hp - dt * 22);
+                            aPaddle.hp = Math.max(0, aPaddle.hp - dt * 24);
                             if (aPaddle.poisonStacks >= 2.0) {
                                 aPaddle.poisonStacks = 0;
                                 aPaddle.reverseTimer = 1.25;
@@ -2090,7 +2385,7 @@
                 aPaddle.y += (Math.max(20, ball.y) - aPaddle.y) * 0.25;
                 aPaddle.tilt = Math.max(-0.38, Math.min(0.38, -dx * 0.015));
 
-                if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player' && !ball.faultType) {
+                if (ball.z <= -330 && ball.z >= -485 && ball.lastHitBy === 'player') {
                     const distToAi = Math.hypot(ball.x - aPaddle.x, (ball.y - aPaddle.y) * 0.8);
                     let reach = aPaddle.rx * (cfgDiff === 'hard' ? 2.45 : 1.85);
 
@@ -2122,15 +2417,13 @@
             mana.a = Math.min(100, mana.a + (resonanceActive ? 30 : 22));
             const aiCanSkill = (incomingSkill && mana.a >= 80 && Math.random() < prof.clashRate) || (!incomingSkill && mana.a >= 100 && Math.random() < prof.clashRate);
 
-            // --- AI 球拍耐久度扣減與「破球震飛 (Ball Break)」判定 ---
             if (!aiCanSkill && (incomingSkill || incomingSmash || incomingPower >= 1.4)) {
-                const hpLoss = incomingPower * (hasBallArch('fire') ? 38 : (hasBallArch('gravity') ? 34 : 24)) * (distToAi < 35 ? 0.65 : 1.15);
+                const hpLoss = incomingPower * (hasBallArch('fire') ? 42 : (hasBallArch('gravity') ? 36 : 24)) * (distToAi < 35 ? 0.65 : 1.15);
                 aPaddle.hp = Math.max(0, aPaddle.hp - hpLoss);
 
-                // 🔥 熾焰重扣：單發極致暴力震開對手球拍
                 if (hasBallArch('fire') || novaBurstTimer > 0) {
-                    aPaddle.knockbackZ = -75;
-                    aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 95;
+                    aPaddle.knockbackZ = -80;
+                    aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 98;
                 }
 
                 const aiSweet = distToAi < 32;
@@ -2158,6 +2451,7 @@
             ball.magnetActive = false;
             ball.mirrorTwin = null;
             ball.isSmashShot = false;
+            ball.spinChem = null;
             rallyCount++;
 
             let aiNextSkill = null, aiNextSecondary = null, aiNextTier = 0, fusionLabel = '';
@@ -2206,7 +2500,7 @@
             } else {
                 if (hasBallArch('thunder')) aPaddle.stunTimer = 0.90;
                 sfx.hit(false, 'flat');
-                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 16, 4.5);
+                spawnParticles(ball.x, ball.y, ball.z, '#ec4899', 16, 4.5, 'circle');
             }
 
             ball.state = aiNextSkill;
@@ -2220,7 +2514,6 @@
             let targetZ = 195 + Math.random() * 95;
             let flightFrames = prof.flightFrames;
 
-            // 🌊 潮汐水能：大幅減速敵方回過來的球！
             if (aquaSlowNextReturn || hasPassive('aqua')) {
                 flightFrames = Math.round(flightFrames * (aquaSlowNextReturn ? 1.48 : 1.20));
                 if (aquaSlowNextReturn) {
@@ -2264,31 +2557,29 @@
             rewindState.active = false;
         }
 
-        // ================= 物理步進：時滯2.2倍暴衝、音速疊速、星軌彈珠、定時星雷、次元迴旋 =================
+        // ================= 物理步進：時滯2.2倍暴衝、量子殺球瞬落、星軌彈珠、定時星雷 =================
         function stepBallPhysics(simSpeed, dt = 0.016) {
-            // ⏳ 時滯領域：明顯停頓 0.35 秒，結束瞬間突然 2.2 倍超高速暴衝！
             if (ball.chronoFreezeTimer > 0) {
                 ball.chronoFreezeTimer -= dt;
-                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 2, 2.5);
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 2, 2.5, 'ring');
                 if (ball.chronoFreezeTimer <= 0) {
                     sfx.skillCast('sonic');
                     ball.vx *= 2.15;
-                    ball.vz *= 2.20;
-                    ball.vy = -6.5;
+                    ball.vz *= 2.25;
+                    ball.vy = -7.2;
                     spawnSpeedLines('#38bdf8');
-                    showSideToast(ball.vz < 0 ? 'left' : 'right', '⏳ 時滯暴衝！TIME BURST', '停頓結束 · 2.2倍極速突襲！', 'text-sky-300');
+                    showSideToast(ball.vz < 0 ? 'left' : 'right', '⏳ 時滯暴衝！TIME BURST', '停頓結束 · 2.2倍極速下砸！', 'text-sky-300');
                 }
                 return;
             }
             if (hasBallArch('chrono') && !ball.chronoFrozenDone && Math.abs(ball.z) < 28) {
                 ball.chronoFrozenDone = true;
-                ball.chronoFreezeTimer = 0.35;
+                ball.chronoFreezeTimer = ball.isSmashShot ? 0.48 : 0.35;
                 sfx.skillCast('chrono');
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 10, maxR: 135, color: '#fde047', alpha: 1.0 });
                 return;
             }
 
-            // 💣 定時星雷倒數引爆
             if (ball.bombTimer > 0) {
                 ball.bombTimer -= dt;
                 if (ball.bombTimer <= 0) {
@@ -2299,7 +2590,7 @@
                     screenFlashAlpha = 0.75;
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 15, maxR: 260, color: '#f97316', alpha: 1.0 });
                     lightPillars.push({ x: ball.x, z: ball.z, color: '#ef4444', r: 65, alpha: 1.0 });
-                    spawnParticles(ball.x, ball.y, ball.z, '#ef4444', 60, 11);
+                    spawnParticles(ball.x, ball.y, ball.z, '#ef4444', 60, 11, 'flame');
                     if (ball.z < 0) {
                         aPaddle.hp = Math.max(0, aPaddle.hp - 60);
                         aPaddle.knockbackZ = -90;
@@ -2318,32 +2609,30 @@
             }
 
             ball.flightTimer += dt;
-            if (Math.abs(ball.vz) < 6.5 && !ball.boomerangTurned) {
+            if (Math.abs(ball.vz) < 6.5 && !ball.boomerangTurned && ball.spinChem !== 'backspin') {
                 ball.vz = Math.sign(ball.vz || -1) * 6.5;
             }
 
             ball.vx += ball.ax * simSpeed;
             ball.x += ball.vx * simSpeed;
             if (ball.cycloneWave && !ball.bouncedOnTarget) {
-                // 🌪️ 氣旋龍捲：大幅度 S 型橫跨整張球桌
-                ball.x += Math.cos(ball.z * 0.045) * 9.2 * simSpeed;
+                ball.x += Math.cos(ball.z * 0.045) * 9.5 * simSpeed;
             }
             ball.y += ball.vy * simSpeed;
             ball.z += ball.vz * simSpeed;
             ball.vy += ((ball.lob ? -0.48 : -0.42) + ball.ay) * simSpeed;
 
-            // 🎱 星軌彈珠：撞擊左右兩側高壓彈射軌道，觸發高速 Z 字折返加速！
             if ((hasBallArch('pinball') || skillVisuals.pinballRailsTimer > 0) && Math.abs(ball.x) >= T_W * 0.86) {
                 ball.x = Math.sign(ball.x) * T_W * 0.85;
-                ball.vx = -ball.vx * 1.35 + (ball.x > 0 ? -5.5 : 5.5);
-                ball.vz *= 1.18;
+                const boostMult = ball.isSmashShot ? 1.65 : 1.35;
+                ball.vx = -ball.vx * boostMult + (ball.x > 0 ? -6.0 : 6.0);
+                ball.vz *= (ball.isSmashShot ? 1.35 : 1.18);
                 ball.targetX = -ball.targetX * 0.85;
                 sfx.pinballDing();
-                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 85, color: '#d946ef', alpha: 1.0 });
-                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 24, 7);
+                shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#d946ef', alpha: 1.0 });
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 26, 7.5, 'star');
             }
 
-            // 🪞 鏡像複製：50% 速度與威力的獨立假球物理推進
             if (ball.mirrorTwin && ball.mirrorTwin.active) {
                 ball.mirrorTwin.x += ball.mirrorTwin.vx * simSpeed;
                 ball.mirrorTwin.y += ball.mirrorTwin.vy * simSpeed;
@@ -2356,19 +2645,7 @@
                 }
             }
 
-            // 殺球掛網碰撞判定
-            if (ball.faultType === 'NET_FAULT' && Math.abs(ball.z) <= 12) {
-                sfx.guardBreak();
-                ball.vz = -ball.vz * 0.35;
-                ball.vy = 2.0;
-                shockwaves.push({ x: ball.x, y: NET_H * 0.6, z: 0, r: 6, maxR: 55, color: '#ef4444', alpha: 1.0 });
-                setTimeout(() => resolvePoint('NET_FAULT'), 320);
-                ball.faultType = 'RESOLVED';
-                return;
-            }
-
-            // 擦網球 (Net Cord) 驚喜判定：高精準非失誤球過網時，有機率觸發幸運擦網急墜！
-            if (!ball.faultType && !ball.sonicBoomDone && Math.abs(ball.z) <= 10 && Math.abs(ball.y - NET_H) < 7 && Math.random() < 0.18) {
+            if (!ball.sonicBoomDone && Math.abs(ball.z) <= 10 && Math.abs(ball.y - NET_H) < 7 && Math.random() < 0.18) {
                 ball.sonicBoomDone = true;
                 sfx.bounce(true);
                 ball.vz *= 0.62;
@@ -2376,60 +2653,62 @@
                 showSideToast(ball.vz < 0 ? 'left' : 'right', '🍀 幸運擦網球！NET CORD', '球擦過網頂急墜變速！', 'text-emerald-300');
             }
 
-            // 💨 音速疾風：過網炸開音爆環 + 依疊層二次飆速
             if (hasBallArch('sonic') && !ball.sonicBoomDone && Math.abs(ball.z) <= 22) {
                 ball.sonicBoomDone = true;
                 sfx.skillCast('sonic');
                 shockwaves.push({ x: ball.x, y: ball.y, z: 0, r: 12, maxR: 155, color: '#10b981', alpha: 1.0 });
-                ball.vz *= (1.35 + sonicRallyStacks * 0.06);
+                ball.vz *= (1.35 + sonicRallyStacks * 0.08);
                 const sharpTurn = (ball.x > 0 ? -1 : 1) * 4.5;
                 ball.vx += sharpTurn;
                 ball.targetX = Math.max(-T_W * 0.84, Math.min(T_W * 0.84, ball.targetX + sharpTurn * 10));
             }
 
-            // ⏪ 時光倒流（主動技）：飛抵敵拍前瞬間倒帶回球網並改射另一側死角
             if (ball.rewindTrickArm && !ball.rewindTrickDone && ball.vz < 0 && ball.z <= -195) {
                 ball.rewindTrickDone = true;
                 sfx.skillCast('chrono');
                 createLightningChain(ball.x, ball.y, ball.z, 0, 68, -15, '#3b82f6');
                 ball.x = 0; ball.y = 68; ball.z = -15;
                 const openCorner = aPaddle.x > 0 ? -T_W * 0.78 : T_W * 0.78;
-                launchBall3DSpin(openCorner, -275, 17, (openCorner > 0 ? 0.25 : -0.25), -0.12, false);
+                launchBall3DSpin(openCorner, -275, ball.isSmashShot ? 12 : 17, (openCorner > 0 ? 0.25 : -0.25), -0.12, false);
                 showSideToast('left', '⏪ 時空倒帶奇襲！', '球路回溯改射死角', 'text-blue-300');
                 return;
             }
 
-            // 🌀 次元幽靈：4 顆大散開分身球落地前真假互換
             if (hasBallArch('ghost') && !ball.ghostSwapped && !ball.bouncedOnTarget && ball.y <= 24 && Math.abs(ball.z) > 120) {
                 ball.ghostSwapped = true;
                 const pick = ball.ghostOffsets[Math.floor(Math.random() * 4)];
                 if (pick) {
-                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 22, 6);
+                    spawnParticles(ball.x, ball.y, ball.z, '#e879f9', 22, 6, 'star');
                     ball.x = Math.max(-T_W * 0.85, Math.min(T_W * 0.85, ball.x + pick.x * 0.75));
                     ball.targetX = ball.x;
-                    spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 22, 6);
+                    spawnParticles(ball.x, ball.y, ball.z, '#38bdf8', 22, 6, 'star');
                 }
             }
 
-            // ❄️ 冰晶柱碰撞折射
             skillVisuals.icePillars.forEach(pil => {
                 if (!pil.hit && Math.hypot(ball.x - pil.x, ball.z - pil.z) < pil.r + 18 && ball.y < 55) {
                     pil.hit = true;
                     sfx.skillCast('frost');
                     spawnParticles(pil.x, 20, pil.z, '#38bdf8', 25, 7, 'hex');
-                    ball.vx = (ball.x > 0 ? -1 : 1) * 6.2;
+                    ball.vx = (ball.x > 0 ? -1 : 1) * 6.5;
                 }
             });
 
-            // ⚛️ 量子躍遷蟲洞傳送
             if (quantumPortal.active && !quantumPortal.teleported && ball.vz < 0 && ball.z <= 25) {
                 quantumPortal.teleported = true;
                 sfx.skillCast('quantum');
-                spawnParticles(ball.x, ball.y, 0, '#00f2fe', 30, 8);
+                spawnParticles(ball.x, ball.y, 0, '#00f2fe', 30, 8, 'star');
                 ball.x = quantumPortal.outX;
-                ball.z = -110;
-                ball.vx = 0;
-                spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 35, 9);
+                if (ball.isSmashShot) {
+                    ball.z = -245;
+                    ball.y = 2;
+                    ball.vy = -8;
+                    showSideToast('left', '⚛️ 量子瞬落殺球！', '穿透蟲洞零飛行時間直接砸桌！', 'text-amber-300');
+                } else {
+                    ball.z = -110;
+                    ball.vx = 0;
+                }
+                spawnParticles(ball.x, ball.y, ball.z, '#f59e0b', 35, 9, 'star');
                 shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 95, color: '#f59e0b', alpha: 1.0 });
             }
 
@@ -2448,6 +2727,8 @@
             const rawDt = Math.min(0.04, (now - lastTime) / 1000);
             lastTime = now;
 
+            drawShowcasePaddle();
+
             if (chronoTimer > 0) chronoTimer = Math.max(0, chronoTimer - rawDt);
             if (prismShield.player > 0) prismShield.player = Math.max(0, prismShield.player - rawDt);
             if (ball.voidTimer > 0) ball.voidTimer = Math.max(0, ball.voidTimer - rawDt);
@@ -2461,6 +2742,10 @@
             }
             if (skillVisuals.mirrorWallTimer > 0) skillVisuals.mirrorWallTimer -= rawDt;
             if (skillVisuals.pinballRailsTimer > 0) skillVisuals.pinballRailsTimer -= rawDt;
+            if (skillVisuals.speedTrack) {
+                skillVisuals.speedTrack.timer -= rawDt;
+                if (skillVisuals.speedTrack.timer <= 0) skillVisuals.speedTrack = null;
+            }
             if (skillVisuals.leechBeam) {
                 skillVisuals.leechBeam.timer -= rawDt;
                 if (skillVisuals.leechBeam.timer <= 0) skillVisuals.leechBeam = null;
@@ -2498,7 +2783,6 @@
             const simSpeed = chronoTimer > 0 ? 0.52 : 1.0;
 
             if (gameRunning && !isPaused) {
-                // ⏱️ 5 分鐘計時系統更新
                 if (!suddenDeath && matchTimer > 0) {
                     matchTimer = Math.max(0, matchTimer - rawDt);
                     updateTimerAndHpUI();
@@ -2533,8 +2817,10 @@
                         twinClone.active = false;
                         twinClone.orbX = twinClone.x;
                         mana.p = Math.min(100, mana.p + 25);
+                        pPaddle.hp = Math.min(100, pPaddle.hp + 25);
+                        updateTimerAndHpUI();
                         sfx.fusionClash();
-                        showSideToast('left', '👥 雙子分身救球!', '能量 +25%', 'text-teal-300');
+                        showSideToast('left', '👥 雙子分身救球!', '能量與球拍耐久 +25%', 'text-teal-300');
                         pPaddle.x = twinClone.x;
                         executePlayerReturn(false);
                     }
@@ -2595,25 +2881,34 @@
             const meta = SKILL_META[ball.state] || SKILL_META.fire;
 
             if (hasBallArch('fire')) {
-                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'circle');
+                spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.35 ? '#ff3b00' : '#431407', ball.tier >= 2 ? 5 : 3, 4.5, 'flame');
             }
             if (hasBallArch('frost')) {
                 spawnParticles(ball.x, ball.y, ball.z, '#7dd3fc', 2, 3, 'hex');
             }
+            if (hasBallArch('toxin')) {
+                spawnParticles(ball.x, ball.y, ball.z, '#84cc16', 2, 3, 'skull');
+            }
             if (hasBallArch('gravity') || hasBallArch('void')) {
                 if (Math.random() < 0.45) {
-                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 44, maxR: 6, color: '#a855f7', alpha: 0.85 });
+                    shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 46, maxR: 6, color: '#a855f7', alpha: 0.85 });
+                }
+            }
+            if (hasBallArch('boomerang')) {
+                spawnParticles(ball.x, ball.y, ball.z, '#fde047', 2, 4, 'blade');
+            }
+            if (hasBallArch('magnet')) {
+                if (Math.random() < 0.4) {
+                    spawnParticles(ball.x, ball.y, ball.z, Math.random() > 0.5 ? '#ef4444' : '#3b82f6', 2, 3.5, 'ring');
                 }
             }
             if (hasBallArch('ghost')) {
-                // 🌀 次元幽靈：4 顆球大幅度散開（左、中左、中右、右），真假難分
                 const w = Math.sin(ball.z * 0.04) * 28;
                 ball.ghostOffsets[0] = { x: -135 + w, y: Math.cos(ball.z * 0.05) * 14 };
                 ball.ghostOffsets[1] = { x: -52 - w,  y: -Math.cos(ball.z * 0.05) * 14 };
                 ball.ghostOffsets[2] = { x: 52 + w,   y: Math.sin(ball.z * 0.05) * 14 };
                 ball.ghostOffsets[3] = { x: 135 - w,  y: -Math.sin(ball.z * 0.05) * 14 };
             }
-            // ⚡ 雷霆瞬影：超大跨度左右 Z 字折躍，連落點一起大幅跳躍，絕不走直線！
             if (hasBallArch('thunder') && gameMode === 'ai' && ball.thunderZigs > 0 && !ball.bouncedOnTarget) {
                 const zigZones = [110, -10, -130];
                 const nextZone = zigZones[3 - ball.thunderZigs] ?? 0;
@@ -2627,6 +2922,10 @@
                     createLightningChain(oldX, ball.y, ball.z, ball.x, ball.y, ball.z - ball.vz * 1.5, '#facc15');
                     shockwaves.push({ x: ball.x, y: ball.y, z: ball.z, r: 8, maxR: 65, color: '#facc15', alpha: 0.95 });
                 }
+            }
+            if (hasBallArch('void') && ball.isSmashShot && !ball.bouncedOnTarget && Math.abs(ball.z) < 40 && Math.abs(ball.z) > 15) {
+                ball.x = -ball.x * 0.85;
+                ball.targetX = ball.x;
             }
             if (hasBallArch('sonic') || hasBallArch('cyclone') || hasBallArch('quantum') || ball.tier === 3) {
                 if (Math.random() < 0.42) {
@@ -2642,25 +2941,11 @@
             ball.bounceCountOnSide++;
             ball.showLandingRing = false;
 
-            // 檢查是否為「打自己桌 (Hit Own Side)」失誤或「殺球出界 (Out of Bounds)」
-            if (ball.faultType === 'OWN_SIDE' || (ball.lastHitBy === 'player' && ball.z > 0 && ball.bounceCountOnSide === 1)) {
-                sfx.guardBreak();
-                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 8, maxR: 65, color: '#ef4444', alpha: 1.0, isFlat: true });
-                resolvePoint('OWN_SIDE');
-                return;
-            }
-            if (ball.faultType === 'OUT_OF_BOUNDS' || Math.abs(ball.x) > T_W + 12 || Math.abs(ball.z) > T_L + 12) {
-                sfx.guardBreak();
-                resolvePoint('OUT_OF_BOUNDS');
-                return;
-            }
-
-            // 擦邊球 (Edge Ball) 判定：落點極度接近左右邊線時觸發大角度側拐！
-            if (Math.abs(ball.x) >= T_W * 0.80 && Math.random() < (hasPassive('pinball') ? 0.65 : 0.30)) {
+            if (ball.spinChem === 'sidespin' || (Math.abs(ball.x) >= T_W * 0.80 && Math.random() < (hasPassive('pinball') ? 0.65 : 0.30))) {
                 sfx.pinballDing();
-                ball.vx += Math.sign(ball.x) * 5.2;
-                ball.vy = 2.2;
-                showSideToast(ball.z < 0 ? 'left' : 'right', '⚡ 極限擦邊球！EDGE BALL', '壓白線大角度側拐變向！', 'text-amber-300');
+                ball.vx += Math.sign(ball.x || ball.spinX || 1) * 6.2;
+                ball.vy = 2.0;
+                showSideToast(ball.z < 0 ? 'left' : 'right', ball.spinChem === 'sidespin' ? '🌪️ 曲率擦邊斬！CURVE CUT' : '⚡ 極限擦邊球！EDGE BALL', '壓白線大角度橫向側拐！', 'text-emerald-300');
             }
 
             ball.vx += ball.ax * 8.5;
@@ -2670,38 +2955,44 @@
                 ball.vx *= 0.45;
             }
 
-            // --- 旋球 × 技能 專屬落地化學反應 ---
-            if (ball.spinType === 'topspin') {
-                ball.vz *= (ball.state ? 1.38 : 1.25);
-                ball.vy = -ball.vy * (ball.state ? 0.55 : 0.68);
+            if (ball.spinChem === 'topspin') {
+                ball.vz *= 1.55;
+                ball.vy = 1.65;
+                skillVisuals.speedTrack = { x: ball.x, z1: ball.z, z2: ball.z + ball.vz * 12, timer: 1.6, color: SKILL_META[ball.state]?.color || '#ff5500' };
+                showSideToast(ball.z < 0 ? 'left' : 'right', '☄️ 墜星急衝！METEOR DIVE', '上旋×技能化學反應 · 貼地二段加速！', 'text-amber-300');
+            } else if (ball.spinChem === 'backspin') {
+                ball.vz = -ball.vz * 0.38;
+                ball.vy = 3.6;
+                showSideToast(ball.z < 0 ? 'left' : 'right', '🌊 逆流回吸！REVERSE PULL', '下旋×技能化學反應 · 落桌倒退回吸！', 'text-sky-300');
+            } else if (ball.spinChem === 'lob') {
+                ball.vy = -ball.vy * 0.65;
+                ball.vz *= 1.25;
+                lightPillars.push({ x: ball.x, z: ball.z, color: '#fde047', r: 65, alpha: 1.0 });
+                if (ball.z < 0) { aPaddle.knockbackZ = -75; aPaddle.stunTimer = 0.55; }
+                showSideToast(ball.z < 0 ? 'left' : 'right', '🌩️ 天罰轟雷！SKY PUNISHMENT', '高球×技能化學反應 · 垂直光柱震飛！', 'text-yellow-300');
+            } else if (ball.spinType === 'topspin') {
+                ball.vz *= 1.25; ball.vy = -ball.vy * 0.68;
             } else if (ball.spinType === 'backspin') {
-                // 【逆流回吸】：下旋配合技能落地時產生強大逆向煞車甚至回跳
-                ball.vz *= (ball.state ? 0.38 : 0.68);
-                ball.vy = -ball.vy * 0.90;
-            } else if (ball.spinType === 'sidespin' && ball.state) {
-                // 【曲率側斬】：側旋配合技能落地時劇烈橫向彈射
-                ball.vx += Math.sign(ball.spinX || 1) * 4.8;
-                ball.vy = -ball.vy * 0.78;
+                ball.vz *= 0.68; ball.vy = -ball.vy * 0.90;
             } else if (ball.spinType === 'lob') {
                 ball.vy = -ball.vy * 0.92; ball.vz *= 0.82;
             } else {
                 ball.vy = -ball.vy * 0.82;
             }
 
-            // 🪃 次元迴旋 (Boomerang Arc)：彈起後 180° 迴旋往球網方向倒飛！
             if (ball.boomerangActive && !ball.boomerangTurned) {
                 ball.boomerangTurned = true;
-                ball.vz = -ball.vz * 0.55;
-                ball.vy = 5.8;
-                ball.vx = (ball.x > 0 ? -1 : 1) * 4.5;
+                ball.vz = -ball.vz * (ball.isSmashShot ? 0.72 : 0.55);
+                ball.vy = ball.isSmashShot ? 3.8 : 5.8;
+                ball.vx = (ball.x > 0 ? -1 : 1) * 5.2;
                 sfx.skillCast('boomerang');
                 showSideToast(ball.z < 0 ? 'left' : 'right', '🪃 次元迴旋倒飛！', '球彈起後180度往球網倒飛！', 'text-amber-300');
-            } else if (Math.abs(ball.vz) < 7.0) {
+            } else if (Math.abs(ball.vz) < 7.0 && ball.spinChem !== 'backspin') {
                 ball.vz = Math.sign(ball.vz || 1) * 7.0;
             }
 
-            ball.vy = Math.max(4.0, ball.vy);
-            ball.vx = Math.max(-8.8, Math.min(8.8, ball.vx));
+            ball.vy = Math.max(1.4, ball.vy);
+            ball.vx = Math.max(-9.5, Math.min(9.5, ball.vx));
 
             if (ball.state) {
                 const meta = SKILL_META[ball.state] || SKILL_META.fire;
@@ -2709,12 +3000,12 @@
                 let fieldR = (ball.tier >= 2 ? 78 : 58) * lvRadMult;
 
                 sfx.bounce(true);
-                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.6, color: meta.color, alpha: 0.95, isFlat: true });
-                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 45 : 26, 8, hasBallArch('frost') ? 'hex' : 'circle');
+                shockwaves.push({ x: ball.x, y: 1, z: ball.z, r: 10, maxR: fieldR * 1.65, color: meta.color, alpha: 0.95, isFlat: true });
+                spawnParticles(ball.x, 3, ball.z, meta.color, ball.tier >= 2 ? 48 : 28, 8.5, meta.shape);
 
-                if (ball.tier >= 2) {
-                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 44, alpha: 1.0 });
-                    shake = ball.tier === 3 ? 26 : 18;
+                if (ball.tier >= 2 || ball.isSmashShot) {
+                    lightPillars.push({ x: ball.x, z: ball.z, color: meta.color, r: 46, alpha: 1.0 });
+                    shake = ball.tier === 3 ? 28 : 20;
                 } else {
                     shake = 12;
                 }
@@ -2724,68 +3015,103 @@
                 };
 
                 if (hasBallArch('gravity')) {
-                    // 🪐 黑洞重力：強烈震動 + 零彈跳貼地滾球 + 強引力井
-                    shake = 26;
-                    ball.vy = 0.9;
-                    ball.vz *= 1.28;
-                    spawnField('gravity', fieldR * 1.25, 2.8, '#9333ea');
+                    shake = 28;
+                    ball.vy = 0.85;
+                    ball.vz *= 1.30;
+                    spawnField('gravity', fieldR * 1.3, 2.8, '#9333ea');
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.x += (ball.x - aPaddle.x) * 0.75;
+                        showSideToast('left', '🪐 引力坍縮殺球！', '強制將對手球拍吸向黑洞中心！', 'text-purple-300');
+                    }
                 }
                 if (hasBallArch('fire')) {
-                    ball.vz *= 1.42;
-                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ff3b00', r: 42, alpha: 1.0 });
+                    ball.vz *= 1.45;
+                    lightPillars.push({ x: ball.x, z: ball.z, color: '#ff3b00', r: 48, alpha: 1.0 });
                     spawnField('fire', fieldR, 2.5, '#ff3b00');
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.hp = Math.max(0, aPaddle.hp - 45);
+                        aPaddle.knockbackZ = -85;
+                        showSideToast('left', '🔥 熔岩斷頭台！', '殺球突變直接轟穿敵方 45% 球拍耐久！', 'text-amber-400');
+                    }
                 }
                 if (hasBallArch('thunder')) {
                     createLightningChain(ball.x, 260, ball.z, ball.x, 0, ball.z, '#facc15');
                     spawnField('thunder', fieldR, 2.5, '#facc15');
-                    if (ball.z < 0 && Math.abs(aPaddle.x - ball.x) < 115) aPaddle.stunTimer = 0.80;
+                    const stunDur = ball.isSmashShot ? 0.90 : 0.75;
+                    if (ball.z < 0 && (ball.isSmashShot || Math.abs(aPaddle.x - ball.x) < 120)) aPaddle.stunTimer = stunDur;
                     if (ball.z > 0 && Math.abs(pPaddle.x - ball.x) < 115) pPaddle.stunTimer = 0.70;
                 }
                 if (hasBallArch('sonic')) {
-                    ball.vz *= (1.35 + sonicRallyStacks * 0.05);
+                    ball.vz *= (1.35 + sonicRallyStacks * 0.06);
+                }
+                if (hasBallArch('laser') && ball.isSmashShot) {
+                    ball.vy = 0.5;
+                    ball.vz *= 1.65;
                 }
                 if (hasBallArch('frost')) {
-                    // ❄️ 絕對冰霜：凍結整個敵方半場球桌
-                    spawnField('frost', 175, 3.2, '#38bdf8', 0, ball.z < 0 ? -210 : 210);
+                    spawnField('frost', 180, 3.2, '#38bdf8', 0, ball.z < 0 ? -210 : 210);
                     skillVisuals.icePillars = [
-                        { x: ball.x - 60, z: ball.z * 0.7, r: 18, timer: 2.8, hit: false },
-                        { x: ball.x,      z: ball.z * 0.85, r: 20, timer: 2.8, hit: false },
-                        { x: ball.x + 60, z: ball.z * 0.7, r: 18, timer: 2.8, hit: false }
+                        { x: ball.x - 62, z: ball.z * 0.7, r: 20, timer: 3.0, hit: false },
+                        { x: ball.x,      z: ball.z * 0.85, r: 22, timer: 3.0, hit: false },
+                        { x: ball.x + 62, z: ball.z * 0.7, r: 20, timer: 3.0, hit: false }
                     ];
                 }
                 if (hasBallArch('toxin')) {
-                    [-70, 0, 70].forEach(ox => {
-                        spawnField('toxin', 58 * lvRadMult, 3.4 * bMod.toxinDurMult, '#84cc16', Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + ox)), ball.z);
+                    [-72, 0, 72].forEach(ox => {
+                        spawnField('toxin', 60 * lvRadMult, 3.4 * bMod.toxinDurMult, '#84cc16', Math.max(-T_W * 0.82, Math.min(T_W * 0.82, ball.x + ox)), ball.z);
                     });
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.hp = Math.max(0, aPaddle.hp - 35);
+                        aPaddle.reverseTimer = 1.4;
+                        showSideToast('left', '☠️ 劇毒酸霧殺球！', '全場毒霧腐蝕敵拍 35% 耐久並顛倒方向！', 'text-lime-400');
+                    }
                 }
                 if (hasBallArch('cyclone')) {
-                    spawnField('cyclone', 80 * lvRadMult, 2.8, '#8b5cf6');
+                    spawnField('cyclone', 82 * lvRadMult, 2.8, '#8b5cf6');
+                    if (ball.isSmashShot && ball.z < 0) {
+                        aPaddle.x = (aPaddle.x >= 0 ? 1 : -1) * T_W * 1.15;
+                        aPaddle.stunTimer = 0.65;
+                        showSideToast('left', '🌪️ 龍捲吹飛殺球！', '強風將對手球拍捲飛至球桌邊界！', 'text-violet-300');
+                    }
                 }
                 if (hasBallArch('aqua')) {
-                    ball.vy *= 0.50;
+                    ball.vy *= 0.48;
                     ball.vz *= 0.85;
-                    spawnField('aqua', 105 * lvRadMult * bMod.aquaRadMult, 3.4, '#0ea5e9');
+                    spawnField('aqua', 110 * lvRadMult * bMod.aquaRadMult, 3.4, '#0ea5e9');
                 }
                 if (hasBallArch('web')) {
-                    ball.vx *= 0.12;
-                    ball.vz *= 0.42;
-                    ball.vy = 2.0;
-                    spawnField('web', 92 * lvRadMult, 3.6 * bMod.webDurMult, '#cbd5e1');
-                    if (ball.z < 0) aPaddle.webRootTimer = 0.90;
+                    if (ball.isSmashShot) {
+                        ball.vx = (ball.x > 0 ? -1 : 1) * 9.2;
+                        ball.vz *= 0.35;
+                        ball.vy = 2.2;
+                        showSideToast('left', '🕸️ 蛛絲橫向彈射！', '殺球突變 · 落地90度橫向詭異變向！', 'text-slate-200');
+                    } else {
+                        ball.vx *= 0.12;
+                        ball.vz *= 0.40;
+                        ball.vy = 1.9;
+                    }
+                    spawnField('web', 95 * lvRadMult, 3.6 * bMod.webDurMult, '#cbd5e1');
+                    if (ball.z < 0) aPaddle.webRootTimer = 0.92;
                     else pPaddle.webRootTimer = 0.85;
                 }
                 if (hasBallArch('nova')) {
-                    spawnField('nova', 78 * lvRadMult, 2.0, '#f59e0b');
+                    spawnField('nova', 80 * lvRadMult, 2.0, '#f59e0b');
                     if (ball.z < 0) {
-                        aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 95;
-                        aPaddle.knockbackZ = -65;
+                        aPaddle.x += Math.sign(aPaddle.x - ball.x || 1) * 98;
+                        aPaddle.knockbackZ = -70;
+                        if (ball.isSmashShot) {
+                            aPaddle.hp = Math.max(0, aPaddle.hp - 45);
+                            novaBurstTimer = 0;
+                            updateContextBarUI();
+                            showSideToast('left', '💫 超新星全場震爆！', '引爆星核強行震穿敵拍 45% 耐久！', 'text-yellow-300');
+                        }
                     }
                     const bx = ball.x, bz = ball.z;
                     [160, 320].forEach((delay, idx) => {
                         setTimeout(() => {
                             sfx.bounce(true);
-                            shockwaves.push({ x: bx, y: 2, z: bz, r: 12, maxR: 165 + idx * 45, color: '#fde047', alpha: 1.0, isFlat: true });
-                            lightPillars.push({ x: bx + (idx === 0 ? -45 : 45), z: bz, color: '#f59e0b', r: 32, alpha: 0.9 });
+                            shockwaves.push({ x: bx, y: 2, z: bz, r: 12, maxR: 170 + idx * 45, color: '#fde047', alpha: 1.0, isFlat: true });
+                            lightPillars.push({ x: bx + (idx === 0 ? -45 : 45), z: bz, color: '#f59e0b', r: 34, alpha: 0.9 });
                         }, delay);
                     });
                 }
@@ -2800,8 +3126,8 @@
             }
         }
 
-        // ================= 計分、失誤裁定與一鍵極速發球流程 =================
-        function resolvePoint(forcedReason = null) {
+        // ================= 計分與一鍵極簡發球流程 =================
+        function resolvePoint() {
             if (roundWaitTimer > 0) return;
             roundWaitTimer = 1;
             ball.showLandingRing = false;
@@ -2809,24 +3135,7 @@
             ball.bombTimer = 0;
             resonanceActive = false;
 
-            const reason = forcedReason || ball.faultType;
-            if (reason === 'NET_FAULT') {
-                skillChainCount = 0;
-                scorePoint('ai', 'NET FAULT · 殺球掛網失分！');
-                return;
-            }
-            if (reason === 'OWN_SIDE') {
-                skillChainCount = 0;
-                scorePoint('ai', 'FAULT · 擊球未過網砸己方桌失分！');
-                return;
-            }
-            if (reason === 'OUT_OF_BOUNDS') {
-                skillChainCount = 0;
-                scorePoint('ai', 'OUT OF BOUNDS · 強行殺球出界失分！');
-                return;
-            }
-
-            const playerMissed = (ball.z > 0 && !ball.boomerangTurned);
+            const playerMissed = (ball.z > 0 && !ball.boomerangTurned && ball.spinChem !== 'backspin');
             if (playerMissed) {
                 skillChainCount = 0;
                 scorePoint('ai', 'RIVAL BREAKTHROUGH · 對手強襲得分！');
@@ -2914,7 +3223,6 @@
             roundWaitTimer = 0;
             rallyCount = 0;
             sonicRallyStacks = 0;
-            // 每小輪開始時，雙方球拍耐久度自動刷新回 100%！
             pPaddle.hp = 100;
             aPaddle.hp = 100;
             updateTimerAndHpUI();
@@ -2923,7 +3231,7 @@
             ball.state = null; ball.secondaryArch = null; ball.tier = 0; ball.spinType = 'flat';
             ball.spinX = 0; ball.spinY = 0; ball.ax = 0; ball.ay = 0;
             ball.lob = false; ball.voidTimer = 0; ball.cycloneWave = false;
-            ball.isSmashShot = false; ball.shotPower = 1.0; ball.faultType = null;
+            ball.isSmashShot = false; ball.shotPower = 1.0; ball.faultType = null; ball.spinChem = null;
             ball.mirrorTwin = null; ball.rewindTrickArm = false;
             ball.boomerangActive = false; ball.magnetActive = false; ball.bombTimer = 0;
             ball.bounceCountOnSide = 0; ball.flightTimer = 0;
@@ -2966,7 +3274,7 @@
             const targetZ = -255;
             launchBall3DSpin(targetX, targetZ, 33, 0, -0.1, false);
             sfx.hit(true, 'topspin');
-            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 18, 5);
+            spawnParticles(ball.x, ball.y, ball.z, '#00f2fe', 18, 5, 'circle');
 
             if (gameMode === 'p2p') {
                 sendP2P({
@@ -2979,7 +3287,7 @@
             }
         }
 
-        // ================= 特效、24 技能專屬視覺場景與符文球體渲染 =================
+        // ================= 多元幾何粒子特效與 3D 場景渲染（全元件內建 Math.min 像素鎖定） =================
         function spawnParticles(x, y, z, color, count, speedScale = 5, shape = 'circle') {
             for (let i = 0; i < count; i++) {
                 const ang = Math.random() * Math.PI * 2;
@@ -2987,7 +3295,8 @@
                 particles.push({
                     x, y, z,
                     vx: Math.cos(ang) * spd, vy: Math.random() * spd + 2, vz: (Math.random() - 0.5) * spd,
-                    c: color, s: 3 + Math.random() * 4.5, a: 1.0, life: 0.38 + Math.random() * 0.25, shape
+                    c: color, s: 3.5 + Math.random() * 5.0, a: 1.0, life: 0.40 + Math.random() * 0.25, shape,
+                    rot: Math.random() * Math.PI * 2
                 });
             }
         }
@@ -3007,7 +3316,7 @@
             const pts = [];
             for (let i = 0; i <= 7; i++) {
                 const t = i / 7;
-                const jit = (i === 0 || i === 7) ? 0 : (Math.random() - 0.5) * 44;
+                const jit = (i === 0 || i === 7) ? 0 : (Math.random() - 0.5) * 48;
                 pts.push({ x: x1 + (x2 - x1) * t + jit, y: y1 + (y2 - y1) * t + Math.abs(jit * 0.5), z: z1 + (z2 - z1) * t });
             }
             ball.lightningBolts.push({ pts, alpha: 1.0, color });
@@ -3015,7 +3324,7 @@
 
         function updateEffects(dt) {
             for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i]; p.x += p.vx; p.y += p.vy; p.z += p.vz; p.a -= dt / p.life;
+                const p = particles[i]; p.x += p.vx; p.y += p.vy; p.z += p.vz; p.rot += dt * 8; p.a -= dt / p.life;
                 if (p.a <= 0) particles.splice(i, 1);
             }
             for (let i = shockwaves.length - 1; i >= 0; i--) {
@@ -3179,6 +3488,19 @@
             ctx.beginPath(); ctx.moveTo(pNL.x, pNL.y); ctx.lineTo(pNR.x, pNR.y); ctx.lineTo(pNRB.x, pNRB.y); ctx.lineTo(pNLB.x, pNLB.y); ctx.closePath();
             ctx.fillStyle = '#09152e'; ctx.fill(); ctx.strokeStyle = '#00f2fe'; ctx.lineWidth = 1.5; ctx.stroke();
 
+            if (skillVisuals.speedTrack) {
+                const st = skillVisuals.speedTrack;
+                const p1 = project(st.x, 1, st.z1), p2 = project(st.x, 1, Math.max(-T_L, Math.min(T_L, st.z2)));
+                if (p1.vis && p2.vis) {
+                    ctx.save();
+                    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = st.color; ctx.lineWidth = 18 * (st.timer / 1.6);
+                    ctx.globalAlpha = 0.65; ctx.shadowColor = st.color; ctx.shadowBlur = 20;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
             if (chronoTimer > 0) {
                 const pc = project(0, 1, 0);
                 const rx = Math.min(95, 110 * pc.scale);
@@ -3195,7 +3517,7 @@
             lingeringFields.forEach(f => {
                 const pf = project(f.x, 1, f.z);
                 if (pf.vis) {
-                    const rx = Math.min(82, f.r * pf.scale), ry = rx * 0.45;
+                    const rx = Math.min(86, f.r * pf.scale), ry = rx * 0.45;
                     ctx.save(); ctx.translate(pf.x, pf.y);
                     ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
                     ctx.fillStyle = f.color; ctx.globalAlpha = 0.38; ctx.fill();
@@ -3210,6 +3532,9 @@
                             ctx.lineTo(Math.cos(a) * rx, Math.sin(a) * ry);
                             ctx.stroke();
                         }
+                    } else if (f.type === 'gravity') {
+                        ctx.rotate(performance.now() * 0.008);
+                        ctx.setLineDash([10, 6]); ctx.stroke();
                     } else {
                         ctx.setLineDash([8, 6]); ctx.stroke();
                     }
@@ -3237,7 +3562,6 @@
                 };
 
                 if (hasBallArch('ghost')) {
-                    // 🌀 次元幽靈：4 個大散開落點光圈外觀 100% 相同，完全真假難分
                     [-125, -42, 42, 125].forEach(ox => drawRingAt(ox, ball.targetZ, '#e879f9'));
                 } else {
                     drawRingAt(ball.targetX, ball.targetZ, ringColor);
@@ -3249,35 +3573,33 @@
         }
 
         function drawSpecialSkillConstructs3D() {
-            // 1. 🎱 星軌彈珠：球桌左右兩條邊線升起發光紫金高壓彈射軌道
             if (hasBallArch('pinball') || skillVisuals.pinballRailsTimer > 0) {
                 [-T_W * 0.96, T_W * 0.96].forEach(rx => {
                     const pN = project(rx, 16, T_L * 0.92), pF = project(rx, 16, -T_L * 0.92);
                     if (pN.vis && pF.vis) {
                         ctx.save();
                         ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y);
-                        ctx.strokeStyle = '#d946ef'; ctx.lineWidth = 6;
-                        ctx.shadowColor = '#fde047'; ctx.shadowBlur = 18;
+                        ctx.strokeStyle = '#d946ef'; ctx.lineWidth = 7;
+                        ctx.shadowColor = '#fde047'; ctx.shadowBlur = 20;
                         ctx.stroke();
                         ctx.beginPath(); ctx.moveTo(pN.x, pN.y); ctx.lineTo(pF.x, pF.y);
-                        ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2; ctx.stroke();
+                        ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5; ctx.stroke();
                         ctx.restore();
                     }
                 });
             }
 
-            // 2. ❄️ 絕對冰霜：立體冰晶柱
             skillVisuals.icePillars.forEach(pil => {
-                const pb = project(pil.x, 0, pil.z), pt = project(pil.x, 52, pil.z);
+                const pb = project(pil.x, 0, pil.z), pt = project(pil.x, 56, pil.z);
                 if (pb.vis && pt.vis) {
-                    const w = Math.min(22, 18 * pb.scale);
+                    const w = Math.min(24, 19 * pb.scale);
                     ctx.save();
                     ctx.beginPath();
                     ctx.moveTo(pb.x - w, pb.y);
                     ctx.lineTo(pt.x, pt.y);
                     ctx.lineTo(pb.x + w, pb.y);
                     ctx.closePath();
-                    ctx.fillStyle = 'rgba(56, 189, 248, 0.65)';
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.72)';
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 2;
                     ctx.fill(); ctx.stroke();
@@ -3285,7 +3607,6 @@
                 }
             });
 
-            // 3. 🪞 鏡像複製：球網上方銀白次元魔鏡
             if (skillVisuals.mirrorWallTimer > 0) {
                 const mL = project(-T_W * 0.75, 0, 0), mR = project(T_W * 0.75, 0, 0);
                 const mTR = project(T_W * 0.75, 85, 0), mTL = project(-T_W * 0.75, 85, 0);
@@ -3298,7 +3619,6 @@
                 ctx.restore();
             }
 
-            // 4. 🩸 熵能汲取：能量抽取鎖鏈
             if (skillVisuals.leechBeam) {
                 const lb = skillVisuals.leechBeam;
                 const p1 = project(lb.fromX, 35, lb.fromZ), p2 = project(lb.toX, 35, lb.toZ);
@@ -3308,36 +3628,35 @@
                     ctx.moveTo(p1.x, p1.y);
                     ctx.quadraticCurveTo((p1.x + p2.x) * 0.5 + Math.sin(performance.now() * 0.035) * 45, (p1.y + p2.y) * 0.5 - 45, p2.x, p2.y);
                     ctx.strokeStyle = lb.color;
-                    ctx.lineWidth = 6;
-                    ctx.shadowColor = lb.color; ctx.shadowBlur = 20;
+                    ctx.lineWidth = 6.5;
+                    ctx.shadowColor = lb.color; ctx.shadowBlur = 22;
                     ctx.stroke();
                     ctx.restore();
                 }
             }
 
-            // 5. 💎 相位雷射：貫穿全場的瞬發雷射光束
             if (skillVisuals.laserBeam) {
                 const l = skillVisuals.laserBeam;
                 const p1 = project(l.x1, l.y1, l.z1), p2 = project(l.x2, l.y2, l.z2);
                 if (p1.vis && p2.vis) {
+                    const wMult = l.wide ? 22 : 8;
                     ctx.save();
                     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 8 * (l.timer / 0.7);
-                    ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 22;
+                    ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = wMult * (l.timer / 0.75);
+                    ctx.shadowColor = '#00f2fe'; ctx.shadowBlur = 24;
                     ctx.stroke();
                     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = (l.wide ? 7 : 2.5); ctx.stroke();
                     ctx.restore();
                 }
             }
 
-            // 6. 💣 定時星雷：球體上方跳動的倒數計時器
             if (ball.bombTimer > 0) {
                 const pb = project(ball.x, ball.y + 42, ball.z);
                 if (pb.vis) {
                     ctx.save();
                     ctx.translate(pb.x, pb.y);
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
                     ctx.strokeStyle = '#ef4444';
                     ctx.lineWidth = 2.5;
                     ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 14;
@@ -3432,7 +3751,6 @@
             ctx.shadowColor = '#f43f5e'; ctx.shadowBlur = 14;
             ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
 
-            // AI 球拍耐久度條
             const barW = r * 1.6;
             ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
             ctx.fillRect(-barW * 0.5, -r - 10, barW, 4);
@@ -3467,42 +3785,6 @@
             }
         }
 
-        function drawPaddlePattern(ctx, arch, r) {
-            ctx.save();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
-            ctx.lineWidth = Math.max(1.2, r * 0.05);
-            if (arch === 'quantum' || arch === 'pinball') {
-                ctx.beginPath();
-                ctx.ellipse(0, 0, r * 0.62, r * 0.24, Math.PI / 4, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.ellipse(0, 0, r * 0.62, r * 0.24, -Math.PI / 4, 0, Math.PI * 2);
-                ctx.stroke();
-            } else if (['fire', 'thunder', 'sonic', 'bomb'].includes(arch)) {
-                ctx.beginPath();
-                ctx.moveTo(-r * 0.28, -r * 0.50); ctx.lineTo(r * 0.14, -r * 0.05);
-                ctx.lineTo(-r * 0.14, r * 0.08); ctx.lineTo(r * 0.28, r * 0.50);
-                ctx.stroke();
-            } else if (['gravity', 'void', 'rewind', 'boomerang', 'magnet'].includes(arch)) {
-                ctx.beginPath();
-                for (let a = 0; a < Math.PI * 3.5; a += 0.25) {
-                    const rad = (a / (Math.PI * 3.5)) * r * 0.64;
-                    const px = Math.cos(a) * rad, py = Math.sin(a) * rad;
-                    if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-                }
-                ctx.stroke();
-            } else {
-                ctx.beginPath();
-                for (let i = 0; i < 6; i++) {
-                    const ang = (i * Math.PI) / 3;
-                    const px = Math.cos(ang) * r * 0.50, py = Math.sin(ang) * r * 0.50;
-                    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-                }
-                ctx.closePath(); ctx.stroke();
-            }
-            ctx.restore();
-        }
-
         function drawPlayerPaddle3D() {
             const swingRatio = pPaddle.swingTimer / pPaddle.swingMax;
             const lungeZ = pPaddle.swingTimer > 0 ? Math.sin(swingRatio * Math.PI) * 42 : 0;
@@ -3511,7 +3793,7 @@
 
             const sMeta = SKILL_META[pPaddle.prechargedSkill || cfgSkill];
             const paddleGlow = sMeta.glow;
-            const maxPaddleR = viewW < 600 ? 42 : 62;
+            const maxPaddleR = viewW < 600 ? 42 : 58;
             const r = Math.min(maxPaddleR, pPaddle.rx * pp.scale);
 
             ctx.save();
@@ -3557,7 +3839,6 @@
             ctx.textAlign = 'center';
             ctx.fillText(`LV.${skillLevel}`, 0, r * 1.12);
 
-            // 玩家球拍下方耐久度光條
             const hpW = r * 1.3;
             ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
             ctx.fillRect(-hpW * 0.5, r * 1.48, hpW, 4.5);
@@ -3596,8 +3877,7 @@
             const trailColor = sMeta ? sMeta.color : (ball.isSmashShot ? '#f43f5e' : (spinColors[ball.spinType] || '#00f2fe'));
             const secColor = ball.secondaryArch && ARCH_STYLE[ball.secondaryArch] ? ARCH_STYLE[ball.secondaryArch].color : '#ffffff';
 
-            // 💨 音速疾風：拖尾隨連拍疊層越來越粗、越來越明顯！
-            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.22;
+            const sonicWidthBoost = 1.0 + sonicRallyStacks * 0.25;
 
             if (ball.trail.length > 1) {
                 ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -3610,12 +3890,12 @@
                         ctx.beginPath();
                         ctx.moveTo(p0.x, p0.y);
                         if (hasBallArch('thunder')) {
-                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 12, p1.y + (Math.random() - 0.5) * 12);
+                            ctx.lineTo(p1.x + (Math.random() - 0.5) * 14, p1.y + (Math.random() - 0.5) * 14);
                         } else {
                             ctx.lineTo(p1.x, p1.y);
                         }
                         ctx.strokeStyle = trailColor;
-                        ctx.lineWidth = Math.min(32, br * wMult * ratio);
+                        ctx.lineWidth = Math.min(34, br * wMult * ratio);
                         ctx.globalAlpha = ratio * 0.92;
                         ctx.shadowColor = trailColor;
                         ctx.shadowBlur = 22;
@@ -3633,7 +3913,6 @@
                 ctx.restore();
             }
 
-            // 🪞 鏡像複製：50% 威力與速度的實體假球渲染
             if (ball.mirrorTwin && ball.mirrorTwin.active) {
                 const pm = project(ball.mirrorTwin.x, ball.mirrorTwin.y, ball.mirrorTwin.z);
                 if (pm.vis) {
@@ -3647,7 +3926,6 @@
                 }
             }
 
-            // 🌀 次元幽靈：4 顆大散開分身球同時飛行，外觀與真球 100% 一致
             if (hasBallArch('ghost')) {
                 for (let idx = 0; idx < 4; idx++) {
                     const off = ball.ghostOffsets[idx];
@@ -3662,6 +3940,34 @@
                         ctx.restore();
                     }
                 }
+            }
+
+            if (hasBallArch('boomerang')) {
+                ctx.save();
+                ctx.translate(pb.x, pb.y);
+                ctx.rotate(ball.orbitalAngle * 1.8);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 3;
+                for (let b = 0; b < 4; b++) {
+                    ctx.rotate(Math.PI / 2);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(br * 1.6, -br * 0.8, br * 2.8, 0);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            if (hasBallArch('magnet')) {
+                ctx.save();
+                ctx.translate(pb.x, pb.y);
+                ctx.rotate(ball.orbitalAngle);
+                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = '#ef4444';
+                ctx.beginPath(); ctx.arc(0, 0, br * 2.1, 0, Math.PI); ctx.stroke();
+                ctx.strokeStyle = '#3b82f6';
+                ctx.beginPath(); ctx.arc(0, 0, br * 2.1, Math.PI, Math.PI * 2); ctx.stroke();
+                ctx.restore();
             }
 
             if (sMeta) {
@@ -3754,21 +4060,48 @@
             particles.forEach(p => {
                 const pj = project(p.x, p.y, p.z);
                 if (pj.vis) {
-                    const rad = Math.min(9, Math.max(2, p.s * pj.scale));
+                    const rad = Math.min(10, Math.max(2, p.s * pj.scale));
                     ctx.save();
+                    ctx.translate(pj.x, pj.y);
+                    ctx.rotate(p.rot || 0);
                     ctx.fillStyle = p.c; ctx.strokeStyle = '#ffffff';
                     ctx.globalAlpha = Math.max(0, p.a);
                     ctx.shadowColor = p.c; ctx.shadowBlur = 8;
+
                     if (p.shape === 'hex') {
-                        ctx.translate(pj.x, pj.y);
                         ctx.beginPath();
                         for (let k = 0; k < 6; k++) {
                             const a = (k * Math.PI) / 3;
                             ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * rad * 1.4, Math.sin(a) * rad * 1.4);
                         }
                         ctx.lineWidth = 1.8; ctx.stroke();
+                    } else if (p.shape === 'star') {
+                        ctx.beginPath();
+                        for (let k = 0; k < 4; k++) {
+                            const a = (k * Math.PI) / 2;
+                            ctx.moveTo(-Math.cos(a) * rad * 1.5, -Math.sin(a) * rad * 1.5);
+                            ctx.lineTo(Math.cos(a) * rad * 1.5, Math.sin(a) * rad * 1.5);
+                        }
+                        ctx.lineWidth = 2; ctx.strokeStyle = p.c; ctx.stroke();
+                    } else if (p.shape === 'blade') {
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, rad * 1.8, rad * 0.45, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (p.shape === 'cube') {
+                        ctx.strokeStyle = p.c; ctx.lineWidth = 1.8;
+                        ctx.strokeRect(-rad, -rad, rad * 2, rad * 2);
+                    } else if (p.shape === 'ring' || p.shape === 'skull') {
+                        ctx.strokeStyle = p.c; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.arc(0, 0, rad * 1.2, 0, Math.PI * 2); ctx.stroke();
+                    } else if (p.shape === 'flame') {
+                        ctx.beginPath();
+                        ctx.moveTo(0, -rad * 1.5);
+                        ctx.lineTo(rad, rad);
+                        ctx.lineTo(-rad, rad);
+                        ctx.closePath();
+                        ctx.fill();
                     } else {
-                        ctx.beginPath(); ctx.arc(pj.x, pj.y, rad, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2); ctx.fill();
                     }
                     ctx.restore();
                 }
@@ -3915,8 +4248,8 @@
             } else if (mana.p >= 100) {
                 barContainer.classList.add('overdrive-ready');
                 statusText.innerText = isTouchMode
-                    ? `🔥 超能全滿！【雙指輕點螢幕】釋放 ${sMeta.name}`
-                    : `🔥 超能全滿！按【空白鍵 / 點此處】釋放 ${sMeta.name}`;
+                    ? `🔥 超能全滿！【雙指輕點】釋放 ${sMeta.name} ·【雙指連按2次】殺球`
+                    : `🔥 超能全滿！按【空白鍵】釋放 ${sMeta.name} ·【D鍵/Ctrl】殺球`;
                 statusText.className = 'text-amber-300 tracking-wider';
             } else if (mana.p >= 80) {
                 barContainer.classList.add('overdrive-ready');
@@ -3968,6 +4301,7 @@
             }
 
             document.getElementById('setup-modal').classList.add('hidden');
+            document.getElementById('brawler-detail-modal').classList.add('hidden');
             document.getElementById('gameover-modal').classList.add('hidden');
             document.getElementById('pause-modal').classList.add('hidden');
             document.getElementById('in-game-hud').classList.remove('hidden');
@@ -4009,6 +4343,7 @@
             skillVisuals.icePillars = [];
             skillVisuals.leechBeam = null;
             skillVisuals.laserBeam = null;
+            skillVisuals.speedTrack = null;
             skillVisuals.pinballRailsTimer = 0;
             twinClone.active = false; twinClone.cooldown = 0; twinClone.orbX = null;
             rewindState.active = false; rewindState.freeUsed = false;
